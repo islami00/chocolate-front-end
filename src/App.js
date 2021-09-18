@@ -1,11 +1,13 @@
 import React, { useState, createRef } from 'react';
-import { Container, Dimmer, Loader, Grid, Sticky, Message } from 'semantic-ui-react';
+import { Grid, Sticky, Message } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { DeveloperConsole } from './substrate-lib/components';
 
 import AccountSelector from './AccountSelector';
+import './styles/index.scss';
+import { Loading } from './customComponents/loading';
 
 function Main () {
   const [accountAddress, setAccountAddress] = useState(null);
@@ -13,9 +15,9 @@ function Main () {
   const accountPair = accountAddress && keyringState === 'READY' && keyring.getPair(accountAddress);
 
   const loader = (text) => (
-    <Dimmer active>
-      <Loader size='small'>{text}</Loader>
-    </Dimmer>
+    <main className='main-wrap'>
+      <Loading message={text} />
+    </main>
   );
 
   const message = (err) => (

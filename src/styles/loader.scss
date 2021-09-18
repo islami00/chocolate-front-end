@@ -1,0 +1,45 @@
+/* <Loader> */
+.load-wrap {
+  /* init */
+  width: 100%;
+  height: 100%;
+  /* center content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* spinner */
+.loader {
+  /* center spinner and message */
+  display: grid;
+  grid-template-columns: 100%;
+  justify-items: center;
+  /* space between them */
+  row-gap: 0.5rem;
+}
+
+/* loader-styles - copied from: https://dev.to/afif/i-made-100-css-loaders-for-your-next-project-4eje#the-bars*/
+
+.loader::before {
+  /* init */
+  content: '';
+  width: 1rem;
+  height: 1rem;
+  /* circling */
+  border-radius: 50%;
+  /* spinner fill and nib size*/
+  border: 0.2rem solid;
+  border-color: lightblue;
+  /* nib fill */
+  border-right-color: hsl(14deg, 48%, 53%);
+  animation: s2 1s infinite linear;
+}
+
+@keyframes s2 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+/* <Loader/> */

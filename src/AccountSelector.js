@@ -34,48 +34,33 @@ function Main (props) {
   };
 
   return (
-    <Menu
-      attached='top'
-      tabular
-      style={{
-        backgroundColor: '#fff',
-        borderColor: '#fff',
-        paddingTop: '1em',
-        paddingBottom: '1em'
-      }}>
-      <Container>
-        <Menu.Menu>
-          <Image src={`${process.env.PUBLIC_URL}/assets/substrate-logo.png`} size='mini' />
-        </Menu.Menu>
-        <Menu.Menu position='right' style={{ alignItems: 'center' }}>
-          {!accountSelected
-            ? (
-            <span>
-              Add your account with the{' '}
-              <a target='_blank' rel='noopener noreferrer' href='https://github.com/polkadot-js/extension'>
-                Polkadot JS Extension
-              </a>
-            </span>
-              )
-            : null}
-          <CopyToClipboard text={accountSelected}>
-            <Button basic circular size='large' icon='user' color={accountSelected ? 'green' : 'red'} />
-          </CopyToClipboard>
-          <Dropdown
-            search
-            selection
-            clearable
-            placeholder='Select an account'
-            options={keyringOptions}
-            onChange={(_, dropdown) => {
-              onChange(dropdown.value);
-            }}
-            value={accountSelected}
-          />
-          <BalanceAnnotation accountSelected={accountSelected} />
-        </Menu.Menu>
-      </Container>
-    </Menu>
+    <Menu.Menu position='right' style={{ alignItems: 'center' }}>
+      {!accountSelected
+        ? (
+        <span>
+          Add your account with the{' '}
+          <a target='_blank' rel='noopener noreferrer' href='https://github.com/polkadot-js/extension'>
+            Polkadot JS Extension
+          </a>
+        </span>
+          )
+        : null}
+      <CopyToClipboard text={accountSelected}>
+        <Button basic circular size='large' icon='user' color={accountSelected ? 'green' : 'red'} />
+      </CopyToClipboard>
+      <Dropdown
+        search
+        selection
+        clearable
+        placeholder='Select an account'
+        options={keyringOptions}
+        onChange={(_, dropdown) => {
+          onChange(dropdown.value);
+        }}
+        value={accountSelected}
+      />
+      <BalanceAnnotation accountSelected={accountSelected} />
+    </Menu.Menu>
   );
 }
 
@@ -90,9 +75,10 @@ function BalanceAnnotation (props) {
 
     // If the user has selected an address, create a new subscription
     accountSelected &&
-      api.query.system.account(accountSelected, (balance) => {
-        setAccountBalance(balance.data.free.toHuman());
-      })
+      api.query.system
+        .account(accountSelected, (balance) => {
+          setAccountBalance(balance.data.free.toHuman());
+        })
         .then((unsub) => {
           unsubscribe = unsub;
         })
