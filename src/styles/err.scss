@@ -1,0 +1,9 @@
+.err-wrap {
+  width: 100%;
+  height: 100%;
+  //   functionify. flex-parent, cover center init.
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
