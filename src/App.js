@@ -10,7 +10,6 @@ import AccountSelector from './AccountSelector';
 // custom components
 import { Loading } from './customComponents/loading';
 import { Err } from './customComponents/err';
-import { Login } from './customComponents/Login';
 import { Home } from './customComponents/Home';
 // styles
 import './styles/index.scss';
@@ -18,7 +17,6 @@ import './styles/index.scss';
 function Main() {
   const [accountAddress, setAccountAddress] = useState(null);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const [isSignedUp, setIsSignedUp] = useState(false);
   const accountPair = accountAddress && keyringState === 'READY' && keyring.getPair(accountAddress);
   // my state logic
   /* Bind component to active state. Default is home. Change state in nav links. Can do so via checking url params - but that would mean unmounting. sigh. */
@@ -34,14 +32,10 @@ function Main() {
     return loader("Loading accounts (please review any extension's authorization)");
   }
 
-  if (accountAddress && !isSignedUp) {
-    return <Login user={accountAddress} setIsSignedUp={setIsSignedUp} />;
-    const useSignUp = (param) => {
-      console.log(param);
-    };
-    //api.query.usersModule.users(keyring.getPairs()[0].address).then((resp)=>console.log(resp.value.isEmpty))
-    useSignUp(accountPair.address);
-  }
+  // if (accountAddress && !isSignedUp) {
+  //   //api.query.usersModule.users(keyring.getPairs()[0].address).then((resp)=>console.log(resp.value.isEmpty))
+  //   // useSignUp(accountPair.address);
+  // }
 
   const contextRef = createRef();
 
@@ -50,7 +44,7 @@ function Main() {
     <div ref={contextRef}>
       {/* <Menu> */}
       <Sticky context={contextRef}>
-        <AccountSelector setAccountAddress={setAccountAddress} setIsSignedUp={setIsSignedUp} />
+        <AccountSelector setAccountAddress={setAccountAddress} />
       </Sticky>
       <DeveloperConsole />
       {/* <Menu/> */}
