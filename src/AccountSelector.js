@@ -8,7 +8,7 @@ import { useSubstrate } from './substrate-lib';
 
 function Main (props) {
   const { keyring } = useSubstrate();
-  const { setAccountAddress } = props;
+  const { setAccountAddress, setIsSignedUp } = props;
   const [accountSelected, setAccountSelected] = useState('');
 
   // Get the list of accounts we possess the private key for
@@ -31,6 +31,7 @@ function Main (props) {
     // Update state with new account address
     setAccountAddress(address);
     setAccountSelected(address);
+    setIsSignedUp(false);
   };
 
   return (

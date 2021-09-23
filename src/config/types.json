@@ -1,1 +1,14 @@
-{}
+{
+  "User": {
+    "rank_points": "u32"
+  },
+  "Project": {
+    "title": "String",
+    "ownerAddress": "AccountID",
+    "reviews": ["Review"]
+  },
+  "Review": {
+    "author": "AccountID",
+    "content": "String"
+  }
+}
