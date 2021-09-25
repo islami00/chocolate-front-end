@@ -5,10 +5,12 @@
   "Project": {
     "title": "String",
     "ownerAddress": "AccountID",
-    "reviews": ["Review"]
+    "reviews": ["Review"],
+    "id": "Hash"
   },
   "Review": {
     "author": "AccountID",
-    "content": "String"
+    "content": "String",
+    "id": "Hash"
   }
 }

@@ -11,18 +11,18 @@ import AccountSelector from './AccountSelector';
 import { Loading } from './customComponents/loading';
 import { Err } from './customComponents/err';
 import { Home } from './customComponents/Home';
+import { useApp, AppContextProvider } from './customComponents/state';
 // styles
 import './styles/index.scss';
+
+const image = 'https://avatars.githubusercontent.com/u/89528034?s=300&v=4';
 
 function Main() {
   const [accountAddress, setAccountAddress] = useState(null);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const accountPair = accountAddress && keyringState === 'READY' && keyring.getPair(accountAddress);
-  // my state logic
-  /* Bind component to active state. Default is home. Change state in nav links. Can do so via checking url params - but that would mean unmounting. sigh. */
-  /* Problem: avoid having to reload the page from routing. */
-  // react router solves this. Hope it works here
-  const loader = (text) => <Loading message={text} />;
+
+  const loader = (text) => <Loading message={text} img={image} />;
   const message = (err) => <Err this_error={err} />;
 
   if (apiState === 'ERROR') return message(apiError);
@@ -31,11 +31,6 @@ function Main() {
   if (keyringState !== 'READY') {
     return loader("Loading accounts (please review any extension's authorization)");
   }
-
-  // if (accountAddress && !isSignedUp) {
-  //   //api.query.usersModule.users(keyring.getPairs()[0].address).then((resp)=>console.log(resp.value.isEmpty))
-  //   // useSignUp(accountPair.address);
-  // }
 
   const contextRef = createRef();
 
@@ -58,7 +53,9 @@ function Main() {
 export default function App() {
   return (
     <SubstrateContextProvider>
-      <Main />
+      <AppContextProvider>
+        <Main />
+      </AppContextProvider>
     </SubstrateContextProvider>
   );
 }
