@@ -10,7 +10,6 @@ import { useSubstrate } from './substrate-lib';
 
 function Main(props) {
   const { keyring } = useSubstrate();
-  const { setAccountAddress } = props;
   const [accountSelected, setAccountSelected] = useState('');
   const { state, dispatch } = useApp();
 
@@ -26,15 +25,13 @@ function Main(props) {
     keyringOptions.length > 0 ? [keyringOptions[0].value, keyringOptions[0].text] : ['', ''];
   // Set the initial address
   useEffect(() => {
-    setAccountAddress(initialAddress);
     setAccountSelected(initialAddress);
     dispatch({ type: 'USER_DATA', payload: { accountAddress: initialAddress, name: initialName } });
-  }, [setAccountAddress, initialAddress, initialName]);
+  }, [initialAddress, initialName]);
 
   const onChange = (address) => {
     // Update state with new account address
     let userName;
-    setAccountAddress(address);
     setAccountSelected(address);
     // find the userName from existing list
     keyringOptions.find((thisOpt) => {

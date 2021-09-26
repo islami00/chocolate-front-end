@@ -18,9 +18,10 @@ import './styles/index.scss';
 const image = 'https://avatars.githubusercontent.com/u/89528034?s=300&v=4';
 
 function Main() {
-  const [accountAddress, setAccountAddress] = useState(null);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const accountPair = accountAddress && keyringState === 'READY' && keyring.getPair(accountAddress);
+  const { state } = useApp();
+  const { userData } = state;
+  const accountPair = userData.accountAddress && keyringState === 'READY' && keyring.getPair(userData.accountAddress);
 
   const loader = (text) => <Loading message={text} img={image} />;
   const message = (err) => <Err this_error={err} />;
@@ -39,7 +40,7 @@ function Main() {
     <div ref={contextRef}>
       {/* <Menu> */}
       <Sticky context={contextRef}>
-        <AccountSelector setAccountAddress={setAccountAddress} />
+        <AccountSelector />
       </Sticky>
       <DeveloperConsole />
       {/* <Menu/> */}
