@@ -3,14 +3,30 @@
     "rank_points": "u32"
   },
   "Project": {
-    "title": "String",
-    "ownerAddress": "AccountID",
+    "ownerID": "AccountID",
     "reviews": ["Review"],
-    "id": "Hash"
+    "proposalID": "u64",
+    "metaData": "MetaData",
+    "proposalStatus": "Status",
+    "badge": "Option<Hash>"
+  },
+  "Status": {
+    "status": "String",
+    "reason": "String"
   },
   "Review": {
-    "author": "AccountID",
-    "content": "String",
-    "id": "Hash"
+    "proposalID": "u64",
+    "userID": "AccountID",
+    "text": "String",
+    "projectID": "u64"
+  },
+  "MetaData": {
+    "ProjectName": "String",
+    "projectSocial": "Social",
+    "founderSocial": ["Social"]
+  },
+  "Social": {
+    "twitter": "String",
+    "instagram": "String"
   }
 }

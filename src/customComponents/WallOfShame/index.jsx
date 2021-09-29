@@ -8,4 +8,4 @@ function WallOfShame() {
   );
 }
 
-export { WallOfShame };
+export default WallOfShame;

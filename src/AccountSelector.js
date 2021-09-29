@@ -41,7 +41,7 @@ function Main(props) {
   };
 
   return (
-    <Menu.Menu position='right' style={{ alignItems: 'center' }}>
+    <section>
       {!accountSelected ? (
         <span>
           Add your account with the{' '}
@@ -65,7 +65,7 @@ function Main(props) {
         value={accountSelected}
       />
       <BalanceAnnotation accountSelected={accountSelected} />
-    </Menu.Menu>
+    </section>
   );
 }
 
@@ -118,7 +118,7 @@ function BalanceAnnotation(props) {
         {accountBalance}
       </Label>
       <Label pointing='left'>
-        <Icon name='points' color='brown' />
+        <Icon name='point' color='brown' />
         {state.userData.rankPoints}
       </Label>
     </>
