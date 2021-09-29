@@ -4,29 +4,44 @@
   },
   "Project": {
     "ownerID": "AccountID",
-    "reviews": ["Review"],
-    "proposalID": "u64",
+    "reviews": "Option<Vec<Review>>",
+    "badge": "Option<Hash>",
+    "proposalID": "Option<ProposalID>",
     "metaData": "MetaData",
-    "proposalStatus": "Status",
-    "badge": "Option<Hash>"
+    "proposalStatus": "ProposalStatus"
+  },
+  "ProposalID": "u32",
+  "ProjectID": "u32",
+  "ProposalStatus": {
+    "status": "Status",
+    "reason": "Reason"
   },
   "Status": {
-    "status": "String",
-    "reason": "String"
+    "_enum": ["PendingCreation", "Proposed", "MovedToMotion", "Voting", "Accepted", "Rejected"]
   },
-  "Review": {
-    "proposalID": "u64",
-    "userID": "AccountID",
-    "text": "String",
-    "projectID": "u64"
+  "Reason": {
+    "_enum": ["InsufficientMetaData", "Malicious", "PassedRequirements"]
   },
   "MetaData": {
-    "ProjectName": "String",
-    "projectSocial": "Social",
-    "founderSocial": ["Social"]
+    "projectName": "Text",
+    "projectSocials": "ProjectSocials",
+    "founderSocials": "Vec<Social>"
   },
+  "ProjectSocials": "Vec<Social>",
   "Social": {
-    "twitter": "String",
-    "instagram": "String"
+    "_enum": {
+      "Twitter": "Text",
+      "Facebook": "Text",
+      "Instagram": "Text",
+      "Riot": "Text",
+      "Email": "Text",
+      "None": null
+    }
+  },
+  "Review": {
+    "proposalID": "ProposalID",
+    "userID": "AccountID",
+    "revText": "Text",
+    "projectID": "ProjectID"
   }
 }
