@@ -2,8 +2,10 @@
   "User": {
     "rank_points": "u32"
   },
+  "ProjectAl": "Project",
+  "ListOfNames": "Vec<Text>",
   "Project": {
-    "ownerID": "AccountID",
+    "ownerID": "AccountId",
     "reviews": "Option<Vec<Review>>",
     "badge": "Option<Hash>",
     "proposalID": "Option<ProposalID>",
