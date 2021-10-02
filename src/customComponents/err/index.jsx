@@ -1,7 +1,7 @@
 import React from 'react';
 import { Message } from 'semantic-ui-react';
-
 import '../../styles/err.scss';
+
 function Err(props) {
   const { this_error: err } = props;
   return (

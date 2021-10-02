@@ -1,20 +1,17 @@
-/* eslint-disable multiline-ternary */
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-
-import { Menu, Button, Dropdown, Container, Icon, Image, Label } from 'semantic-ui-react';
+import { Button, Dropdown, Icon, Label } from 'semantic-ui-react';
 import { useApp } from './customComponents/state';
-
 import { useSubstrate } from './substrate-lib';
 
-function Main(props) {
+function Main() {
   const { keyring } = useSubstrate();
   const [accountSelected, setAccountSelected] = useState('');
-  const { state, dispatch } = useApp();
+  const { dispatch } = useApp();
 
   // Get the list of accounts we possess the private key for
-  const keyringOptions = keyring.getPairs().map((account) => ({
+  const keyringOptions = keyring.getPairs().map(account => ({
     key: account.address,
     value: account.address,
     text: account.meta.name.toUpperCase(),
@@ -27,16 +24,13 @@ function Main(props) {
   useEffect(() => {
     setAccountSelected(initialAddress);
     dispatch({ type: 'USER_DATA', payload: { accountAddress: initialAddress, name: initialName } });
-  }, [initialAddress, initialName]);
+  }, [dispatch, initialAddress, initialName]);
 
-  const onChange = (address) => {
+  const onChange = address => {
     // Update state with new account address
-    let userName;
     setAccountSelected(address);
     // find the userName from existing list
-    keyringOptions.find((thisOpt) => {
-      if (thisOpt.value === address) userName = thisOpt.text;
-    });
+    const userName = keyringOptions.find(thisOpt => thisOpt.value === address).text;
     dispatch({ type: 'USER_DATA', payload: { accountAddress: address, name: userName } });
   };
 
@@ -77,20 +71,21 @@ function BalanceAnnotation(props) {
 
   // When account address changes, update subscriptions
   useEffect(() => {
-    let unsubscribe, unsubscribe2;
+    let unsubscribe;
+    let unsubscribe2;
 
     function desub(...subs) {
-      subs.forEach((unsubable) => {
+      subs.forEach(unsubable => {
         unsubable && unsubable();
       });
     }
     // If the user has selected an address, create a new subscription
     accountSelected &&
       api.query.system
-        .account(accountSelected, (balance) => {
+        .account(accountSelected, balance => {
           setAccountBalance(balance.data.free.toHuman());
         })
-        .then((unsub) => {
+        .then(unsub => {
           unsubscribe = unsub;
         })
         .catch(console.error);
@@ -98,17 +93,17 @@ function BalanceAnnotation(props) {
     // get user rank point data; Include reviews when obtained
     accountSelected &&
       api.query.usersModule
-        .users(accountSelected, (userOpt) => {
+        .users(accountSelected, userOpt => {
           const rank = userOpt.value.toHuman()?.rank_points || 0;
 
           dispatch({ type: 'USER_DATA', payload: { rankPoints: rank } });
         })
-        .then((unsub) => {
+        .then(unsub => {
           unsubscribe2 = unsub;
         });
     // unsubscribe from previous
     return () => desub(unsubscribe, unsubscribe2);
-  }, [api, accountSelected]);
+  }, [api, accountSelected, dispatch]);
 
   // display review along with balance. Label doesn't really fit
   return accountSelected ? (

@@ -2,22 +2,25 @@
   "User": {
     "rank_points": "u32"
   },
+  "ProjectAl": "Project",
+  "ListOfNames": "Vec<Text>",
+  "TextAl": "Text",
   "Project": {
-    "ownerID": "AccountID",
-    "reviews": "Option<Vec<Review>>",
+    "ownerID": "AccountId",
+    "reviews": "Option<Vec<ReviewID>>",
     "badge": "Option<Hash>",
-    "proposalID": "Option<ProposalID>",
     "metaData": "MetaData",
     "proposalStatus": "ProposalStatus"
   },
-  "ProposalID": "u32",
   "ProjectID": "u32",
+  "ReviewID": "u64",
+
   "ProposalStatus": {
     "status": "Status",
     "reason": "Reason"
   },
   "Status": {
-    "_enum": ["PendingCreation", "Proposed", "MovedToMotion", "Voting", "Accepted", "Rejected"]
+    "_enum": ["Proposed", "Accepted", "Rejected"]
   },
   "Reason": {
     "_enum": ["InsufficientMetaData", "Malicious", "PassedRequirements"]
@@ -39,9 +42,9 @@
     }
   },
   "Review": {
-    "proposalID": "ProposalID",
-    "userID": "AccountID",
-    "revText": "Text",
+    "proposalStatus": "ProposalStatus",
+    "userID": "AccountId",
+    "reviewText": "Text",
     "projectID": "ProjectID"
   }
 }

@@ -11,8 +11,9 @@ $user-av-size: 38px;
   padding: 9.5px;
   /* rounding */
   border-radius: 2rem;
+  // border to avoid bouncing
+  border: 1px solid transparent;
 }
-
 
 .nav_link:hover,
 .nav_link.active {
