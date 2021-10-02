@@ -20,7 +20,7 @@
     "reason": "Reason"
   },
   "Status": {
-    "_enum": ["Proposed","Accepted", "Rejected"]
+    "_enum": ["Proposed", "Accepted", "Rejected"]
   },
   "Reason": {
     "_enum": ["InsufficientMetaData", "Malicious", "PassedRequirements"]

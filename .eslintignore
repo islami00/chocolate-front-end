@@ -1,0 +1,6 @@
+src/substrate-lib/*
+src/config/*
+src/*.js
+!src/customComponents/**/*.js
+!src/App.js
+!src/AccountSelector.js

@@ -1,0 +1,36 @@
+{
+  "extends": ["react-app", "wesbos"],
+  "rules": {
+    "no-console": 0,
+    "prettier/prettier": [
+      "warn",
+      {
+        "trailingComma": "es5",
+        "singleQuote": true,
+        "printWidth": 120,
+        "tabWidth": 2,
+        "arrowParens": "avoid",
+        "bracketSpacing": true,
+        "endOfLine": "lf",
+        "htmlWhitespaceSensitivity": "css",
+        "insertPragma": false,
+        "jsxBracketSameLine": true,
+        "jsxSingleQuote": true,
+        "proseWrap": "preserve",
+        "quoteProps": "as-needed",
+        "requirePragma": false,
+        "semi": true,
+        "useTabs": false,
+        "vueIndentScriptAndStyle": false
+      }
+    ],
+
+    "quotes": 1,
+    "no-use-before-define": 0,
+    "@typescript-eslint/no-use-before-define": 1,
+    "react/prop-types": 0,
+    "no-unused-expressions": ["warn", { "allowShortCircuit": true, "allowTernary": true }]
+
+  },
+  "plugins": ["eslint-plugin-only-warn"]
+}
