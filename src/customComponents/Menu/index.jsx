@@ -10,11 +10,11 @@ import '../../styles/menu.scss';
 
 function Menu(props) {
   const { children } = props;
-  const urlIfy = (link) => (link === 'Home' ? '/' : `/${kebabCase(link)}`);
+  const urlIfy = link => (link === 'Home' ? '/' : `/${kebabCase(link)}`);
 
   const menuLinks = ['Home', 'Projects', 'Review', 'Council', 'Wall of Shame'];
   // transform for easy editing of individual links
-  const menuEls = menuLinks.map((linkText) => (
+  const menuEls = menuLinks.map(linkText => (
     <li className={menu.nav_li} key={linkText}>
       <NavLink className='link nav_link' exact to={urlIfy(linkText)}>
         {linkText}

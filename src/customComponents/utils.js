@@ -4,7 +4,7 @@
  * @returns {boolean}
  *
  */
-const isEmpty = (type) => {
+const isEmpty = type => {
   switch (type) {
     case type instanceof Array || type instanceof String:
       if (!type.length) return true;

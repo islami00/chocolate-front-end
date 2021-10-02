@@ -1,5 +1,5 @@
-import React, { useContext, useReducer, useEffect } from 'react';
-import { useSubstrate } from '../../substrate-lib';
+import React, { useContext, useReducer } from 'react';
+
 const AppContext = React.createContext();
 const Motion = { for: '', ayes: '', nays: '' };
 const INIT_STATE = {
@@ -43,13 +43,13 @@ function reducer(state, action) {
   }
 }
 
-const AppContextProvider = (props) => {
+const AppContextProvider = props => {
   // filtering props and merge with default param value
   const initState = { ...INIT_STATE };
-
+  const { children } = props;
   const [state, dispatch] = useReducer(reducer, initState);
 
-  return <AppContext.Provider value={{ state, dispatch }}>{props.children}</AppContext.Provider>;
+  return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
 };
 
 const useApp = () => ({ ...useContext(AppContext) });
