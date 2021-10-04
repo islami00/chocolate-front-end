@@ -13,6 +13,11 @@ const envVars = envVarNames.reduce((mem, n) => {
   if (process.env[n] !== undefined) mem[n.slice(10)] = process.env[n];
   return mem;
 }, {});
-
+/** 
+ * @typedef {{PROVIDER_SOCKET:string; DEVELOPMENT_KEYRING:boolean;}} EnvVars
+ * @typedef {typeof configCommon} ConfigCommon
+ * @type {{types: typeof types;} & ConfigCommon & EnvVars}
+ * 
+ */
 const config = { ...configCommon, ...configEnv, ...envVars, types };
 export default config;
