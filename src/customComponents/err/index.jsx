@@ -1,8 +1,10 @@
 import React from 'react';
 import { Message } from 'semantic-ui-react';
 import '../../styles/err.scss';
-
-function Err(props) {
+/**
+ *@type {React.FC<{this_error:any}>}
+ */
+const Err = function (props) {
   const { this_error: err } = props;
   return (
     <section className='err-wrap'>
@@ -16,6 +18,6 @@ function Err(props) {
       />
     </section>
   );
-}
+};
 
 export { Err };
