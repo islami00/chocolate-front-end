@@ -29,7 +29,7 @@ const Main = () => {
 
   /**
    * @description redirects for possible preserved options taken by users on clicking confirm button.
-  *  @description This is done based on the value of the drop prop. which is set on default case.
+   * @description This is done based on the value of the drop prop. which is set on default case.
    * @description As of now, the route being worked on is general -> user route redirect to projects page
    *  */
   let content;
