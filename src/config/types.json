@@ -2,6 +2,7 @@
   "User": {
     "rank_points": "u32"
   },
+  "ReviewAl": "Review",
   "ProjectAl": "Project",
   "ListOfNames": "Vec<Text>",
   "TextAl": "Text",

@@ -2,7 +2,8 @@ import React, { useReducer, useContext } from 'react';
 import PropTypes from 'prop-types';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import queryString from 'query-string';
-
+// doc imports
+import {DefinitionRpcExt} from '@polkadot/types/types'
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import keyring from '@polkadot/ui-keyring';
@@ -18,6 +19,9 @@ console.log(`Connected socket: ${connectedSocket}`);
 
 const INIT_STATE = {
   socket: connectedSocket,
+  /** 
+   * @type {typeof jsonrpc & config["RPC"]} 
+   */
   jsonrpc: { ...jsonrpc, ...config.RPC },
   types: config.types,
   keyring: null,
@@ -30,7 +34,24 @@ const INIT_STATE = {
 ///
 // Reducer function for `useReducer`
 
-const reducer = (state, action) => {
+/**
+ * @typedef {{socket:
+ *    INIT_STATE["socket"];
+ *    jsonrpc:INIT_STATE["jsonrpc"]; types: INIT_STATE["types"];
+ *    keyring: null | typeof keyring; 
+ *    keyringState: null | string;
+ *    api: null | ApiPromise;
+ *    apiError: null | any;
+ *    apiState: null | string; 
+ *  }} SubstrState
+ * @typedef {{ type: string; 
+ * payload?: ApiPromise & string & typeof keyring;
+ *  }} action 
+ * @type {React.Reducer<SubstrState,action>}
+ * 
+ * @returns {SubstrState}
+ */
+const reducer = (state,action) => {
   switch (action.type) {
     case 'CONNECT_INIT':
       return { ...state, apiState: 'CONNECT_INIT' };
@@ -60,7 +81,13 @@ const reducer = (state, action) => {
 
 ///
 // Connecting to the Substrate node
-
+/**
+ *  Connecting to the Substrate node
+ *  @param {SubstrState} state
+ *  @typedef {{ (value: action): void; (arg0: { type: string; payload?: any; }): void; }} overload_dispatch
+ *  @param {overload_dispatch} dispatch
+ * 
+*/
 const connect = (state, dispatch) => {
   const { apiState, socket, jsonrpc, types } = state;
   // We only want this function to be performed once
@@ -85,6 +112,13 @@ const connect = (state, dispatch) => {
 // Loading accounts from dev and polkadot-js extension
 
 let loadAccts = false;
+/**
+ *  Loading accounts from dev and polkadot-js extension.  
+ *  Async, closes upon loadAccts bool for state management.
+ *  @param {SubstrState} state
+ *  @param {overload_dispatch} dispatch
+ * 
+*/
 const loadAccounts = (state, dispatch) => {
   const asyncLoadAccounts = async () => {
     dispatch({ type: 'LOAD_KEYRING' });
@@ -112,8 +146,13 @@ const loadAccounts = (state, dispatch) => {
   asyncLoadAccounts();
 };
 
-const SubstrateContext = React.createContext();
 
+/** @type {React.Context<null | SubstrState>} */
+const SubstrateContext = React.createContext(null);
+
+/** 
+ *  @description At a glance this is a top-level provider for only the context, but it also allows for definition of types and a socket that overrides those preset in config, all from app.js
+ *  @type {React.FC<{[x:string]: any;socket?:string; types?:{[x:string]:any};}>}*/
 const SubstrateContextProvider = (props) => {
   // filtering props and merge with default param value
   const initState = { ...INIT_STATE };
