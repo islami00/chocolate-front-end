@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import queryString from 'query-string';
 // doc imports
-import {DefinitionRpcExt} from '@polkadot/types/types'
+import {DefinitionRpcExt,AnyJson} from '@polkadot/types/types'
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import keyring from '@polkadot/ui-keyring';
@@ -16,7 +16,19 @@ console.log(`Connected socket: ${connectedSocket}`);
 
 ///
 // Initial state for `useReducer`
-
+/**
+ * @typedef {{[x:string]:any;
+ *  socket: typeof connectedSocket;
+ *  jsonrpc: typeof jsonrpc & typeof config["RPC"];
+ * types: typeof config["types"];
+ * keyring: null;
+ * keyringState:null;
+ * api:null;
+ * apiError:null;
+ * apiState:null;
+ * }} INIT
+ * @type {INIT}
+ */
 const INIT_STATE = {
   socket: connectedSocket,
   /** 
@@ -35,18 +47,19 @@ const INIT_STATE = {
 // Reducer function for `useReducer`
 
 /**
- * @typedef {{socket:
- *    INIT_STATE["socket"];
- *    jsonrpc:INIT_STATE["jsonrpc"]; types: INIT_STATE["types"];
- *    keyring: null | typeof keyring; 
- *    keyringState: null | string;
- *    api: null | ApiPromise;
- *    apiError: null | any;
- *    apiState: null | string; 
+ * @typedef {{
+ *    [x: string]:any;
+ *    socket: INIT["socket"];
+ *    jsonrpc:INIT["jsonrpc"]; types: INIT["types"];
+ *    keyring:null | typeof keyring;
+ *    keyringState:null | 'LOADING' | "ERROR" | "READY";
+ *    api:null | ApiPromise;
+ *    apiState:null | "CONNECT_INIT" | "CONNECTING" | "READY" | "ERROR"; 
+ *    apiError: AnyJson;
  *  }} SubstrState
- * @typedef {{ type: string; 
- * payload?: ApiPromise & string & typeof keyring;
- *  }} action 
+ * @typedef {{ type: "CONNECT_INIT" | "CONNECT_SUCCESS" | "LOAD_KEYRING" |"KEYRING_ERROR" ;} | 
+ * {type: "CONNECT"; payload: ApiPromise;}| {type:"CONNECT_ERROR"; payload:any;} |
+ * {type:"SET_KEYRING";payload:typeof keyring} | {type:"other";payload:any;}} action 
  * @type {React.Reducer<SubstrState,action>}
  * 
  * @returns {SubstrState}
@@ -84,7 +97,7 @@ const reducer = (state,action) => {
 /**
  *  Connecting to the Substrate node
  *  @param {SubstrState} state
- *  @typedef {{ (value: action): void; (arg0: { type: string; payload?: any; }): void; }} overload_dispatch
+ *  @typedef {{ (value: action): void;}} overload_dispatch
  *  @param {overload_dispatch} dispatch
  * 
 */
@@ -147,10 +160,13 @@ const loadAccounts = (state, dispatch) => {
 };
 
 
-/** @type {React.Context<null | SubstrState>} */
-const SubstrateContext = React.createContext(null);
+/** This is a necessary evil as we need to have a value for the context.
+ * @type {React.Context<SubstrState>} */
+// @ts-expect-error
+const SubstrateContext = React.createContext();
 
 /** 
+ *  ** RENDER BEFORE USING SUBSTRATECONTEXT **
  *  @description At a glance this is a top-level provider for only the context, but it also allows for definition of types and a socket that overrides those preset in config, all from app.js
  *  @type {React.FC<{[x:string]: any;socket?:string; types?:{[x:string]:any};}>}*/
 const SubstrateContextProvider = (props) => {

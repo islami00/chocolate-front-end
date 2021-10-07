@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": "C:\\Users\\Islam\\Documents\\choco\\chocolate-front-end",
+    "paths": {
+      "chocolate/*": ["./src/*"],
+      "@polkadot/api/augment": ["./src/interfaces/augment-api.ts"],
+      "@polkadot/types/augment": ["./src/interfaces/augment-types.ts"]
+    }
+  }
+}
