@@ -51,9 +51,10 @@ function Main() {
     <div>
       <Router>
         <Menu>
+          {/* Load accounts here on render */}
           <AccountSelector />
-          <DeveloperConsole />
         </Menu>
+        <DeveloperConsole />
         <Switch>
           <Redirect from='/substrate-front-end-template' to='/' />
           {userData.accountType === 'unset' && <Redirect exact from='/' to='/sign-up/unset' />}
@@ -95,3 +96,4 @@ export default function App() {
   );
 }
 // to-do: decorator: refactor for button triggered load accounts
+// to-do: decorator: static landing page route before load app - check index.js
