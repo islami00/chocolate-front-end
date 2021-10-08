@@ -75,7 +75,7 @@ function Main() {
           <Route exact path='/sign-up'>
             <SignUp />
           </Route>
-          <Route path='/sign-up/:id'>
+          <Route exact path='/sign-up/:id'>
             <SignUp />
           </Route>
           <Route path='*'>{message('404! Not found')}</Route>
