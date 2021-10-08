@@ -11,7 +11,7 @@ import type { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
 import type { GrandpaEquivocationProof, KeyOwnerProof } from '@polkadot/types/interfaces/grandpa';
 import type { AccountId, AssetId, Balance, BalanceOf, BlockNumber, Call, ChangesTrieConfiguration, Hash, KeyValue, LookupSource, Moment, Perbill, Weight } from '@polkadot/types/interfaces/runtime';
 import type { Key } from '@polkadot/types/interfaces/system';
-import type { ProjectSocials, Social } from 'chocolate/interfaces/chocolateModule';
+import type { ProjectSocials, Social, TextAl } from 'chocolate/interfaces/chocolateModule';
 import type { ApiTypes, SubmittableExtrinsic } from '@polkadot/api/types';
 
 declare module '@polkadot/api/types/submittable' {
@@ -536,12 +536,13 @@ declare module '@polkadot/api/types/submittable' {
       /**
        * Create a project
        **/
-      createProject: AugmentedSubmittable<(projectName: Bytes | string | Uint8Array, founderSocials: Vec<Social> | (Social | { Twitter: any } | { Facebook: any } | { Instagram: any } | { Riot: any } | { Email: any } | { None: any } | string | Uint8Array)[], projectSocials: ProjectSocials) => SubmittableExtrinsic<ApiType>, [Bytes, Vec<Social>, ProjectSocials]>;
+      createProject: AugmentedSubmittable<(projectName: TextAl | string, founderSocials: Vec<Social> | (Social | { Twitter: any } | { Facebook: any } | { Instagram: any } | { Riot: any } | { Email: any } | { None: any } | string | Uint8Array)[], projectSocials: ProjectSocials) => SubmittableExtrinsic<ApiType>, [TextAl, Vec<Social>, ProjectSocials]>;
       /**
        * An example dispatchable that takes a singles value as a parameter, writes the value to
        * storage and emits an event. This function must be dispatched by a signed extrinsic.
        **/
       doSomething: AugmentedSubmittable<(something: u32 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [u32]>;
+      mint: AugmentedSubmittable<(x: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [BalanceOf]>;
       /**
        * Generic tx
        **/

@@ -7,7 +7,7 @@ import type { TAssetBalance } from '@polkadot/types/interfaces/assets';
 import type { BalanceStatus } from '@polkadot/types/interfaces/balances';
 import type { MemberCount, ProposalIndex } from '@polkadot/types/interfaces/collective';
 import type { AuthorityList } from '@polkadot/types/interfaces/grandpa';
-import type { AccountId, AssetId, Balance, Hash } from '@polkadot/types/interfaces/runtime';
+import type { AccountId, AssetId, Balance, BalanceOf, Hash } from '@polkadot/types/interfaces/runtime';
 import type { DispatchError, DispatchInfo, DispatchResult } from '@polkadot/types/interfaces/system';
 import type { ApiTypes } from '@polkadot/api/types';
 
@@ -138,6 +138,10 @@ declare module '@polkadot/api/types/events' {
       [key: string]: AugmentedEvent<ApiType>;
     };
     chocolateModule: {
+      /**
+       * Minted [amount]
+       **/
+      Minted: AugmentedEvent<ApiType, [BalanceOf]>;
       /**
        * parameters. [owner,name]
        **/

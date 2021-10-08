@@ -9,7 +9,7 @@
   "Project": {
     "ownerID": "AccountId",
     "reviews": "Option<Vec<ReviewID>>",
-    "badge": "Option<Hash>",
+    "badge": "Option<bool>",
     "metaData": "MetaData",
     "proposalStatus": "ProposalStatus"
   },
@@ -24,7 +24,7 @@
     "_enum": ["Proposed", "Accepted", "Rejected"]
   },
   "Reason": {
-    "_enum": ["InsufficientMetaData", "Malicious", "PassedRequirements"]
+    "_enum": { "Other": "Text", "InsufficientMetaData": null, "Malicious": null, "PassedRequirements": null }
   },
   "MetaData": {
     "projectName": "Text",
@@ -47,5 +47,7 @@
     "userID": "AccountId",
     "reviewText": "Text",
     "projectID": "ProjectID"
-  }
+  },
+  "Balance": "u128",
+  "BalanceOf": "Balance"
 }
