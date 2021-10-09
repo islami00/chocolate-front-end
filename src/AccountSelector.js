@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Button, Dropdown, Icon, Label } from 'semantic-ui-react';
@@ -8,30 +7,34 @@ import { useSubstrate } from './substrate-lib';
 function Main() {
   const { keyring } = useSubstrate();
   const [accountSelected, setAccountSelected] = useState('');
-  const { dispatch } = useApp();
-
+  const { state, dispatch } = useApp();
   // Get the list of accounts we possess the private key for
-  const keyringOptions = keyring.getPairs().map(account => ({
+  /**
+   *  @type {Record<"key" | "value"|"text"|"icon",string>[] | undefined}
+   *
+   */
+  const keyringOptions = keyring?.getPairs().map(account => ({
     key: account.address,
     value: account.address,
-    text: account.meta.name.toUpperCase(),
+    text: String(account.meta.name).toUpperCase(),
     icon: 'user',
   }));
 
   const [initialAddress, initialName] =
-    keyringOptions.length > 0 ? [keyringOptions[0].value, keyringOptions[0].text] : ['', ''];
+    keyringOptions?.length > 0 ? [keyringOptions[0].value, keyringOptions[0].text] : ['', ''];
   // Set the initial address
   useEffect(() => {
     setAccountSelected(initialAddress);
     dispatch({ type: 'USER_DATA', payload: { accountAddress: initialAddress, name: initialName } });
   }, [dispatch, initialAddress, initialName]);
 
-  const onChange = address => {
+  const onChange = (/** @type {string} */ address) => {
     // Update state with new account address
     setAccountSelected(address);
     // find the userName from existing list
-    const userName = keyringOptions.find(thisOpt => thisOpt.value === address).text;
-    dispatch({ type: 'USER_DATA', payload: { accountAddress: address, name: userName } });
+    /** @type {NonNullable<typeof keyringOptions[number]>} */
+    const userName = keyringOptions.find(thisOpt => thisOpt.value === address);
+    dispatch({ type: 'USER_DATA', payload: { accountAddress: address, name: userName.text } });
   };
 
   return (
@@ -52,9 +55,9 @@ function Main() {
         selection
         clearable
         placeholder='Select an account'
-        options={keyringOptions}
+        options={keyringOptions ?? undefined}
         onChange={(_, dropdown) => {
-          onChange(dropdown.value);
+          onChange(String(dropdown.value));
         }}
         value={accountSelected}
       />
@@ -62,45 +65,59 @@ function Main() {
     </section>
   );
 }
-
-function BalanceAnnotation(props) {
+/**
+ *
+ * @type {React.FC<{accountSelected?:string;}>}
+ * @returns
+ */
+const BalanceAnnotation = function (props) {
   const { accountSelected } = props;
   const { api } = useSubstrate();
-  const [accountBalance, setAccountBalance] = useState(0);
+  const [accountBalance, setAccountBalance] = useState('0');
+
   const { state, dispatch } = useApp();
 
   // When account address changes, update subscriptions
   useEffect(() => {
+    /** @typedef {{():void}} voidFn @type {voidFn} */
     let unsubscribe;
-    let unsubscribe2;
+    let /** @type {{():void}}  */ unsubscribe2;
 
+    /** @param {...voidFn} subs */
     function desub(...subs) {
       subs.forEach(unsubable => {
         unsubable && unsubable();
       });
     }
     // If the user has selected an address, create a new subscription
-    accountSelected &&
-      api.query.system
-        .account(accountSelected, balance => {
-          setAccountBalance(balance.data.free.toHuman());
-        })
-        .then(unsub => {
-          unsubscribe = unsub;
-        })
-        .catch(console.error);
+    if (accountSelected) {
+      api &&
+        api.query.system
+          .account(accountSelected, balance => {
+            setAccountBalance(balance.data.free.toHuman());
+          })
+          .then(unsub => {
+            unsubscribe = unsub;
+          })
+          .catch(console.error);
+    }
 
     // get user rank point data; Include reviews when obtained
-    accountSelected &&
-      api.query.usersModule
-        .users(accountSelected, userOpt => {
-          const rank = userOpt.value.toHuman()?.rank_points || 0;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 
-          dispatch({ type: 'USER_DATA', payload: { rankPoints: rank } });
-        })
-        .then(unsub => {
-          unsubscribe2 = unsub;
-        });
+    if (accountSelected) {
+      api &&
+        api.query.usersModule
+          .users(accountSelected, userOpt => {
+            const rank = userOpt.unwrapOrDefault().rank_points;
+            // can't pass structs/objects as props
+            dispatch({ type: 'USER_DATA', payload: { rankPoints: rank.toHuman() } });
+          })
+          .then(unsub => {
+            unsubscribe2 = unsub;
+          });
+    }
+
     // unsubscribe from previous
     return () => desub(unsubscribe, unsubscribe2);
   }, [api, accountSelected, dispatch]);
@@ -118,9 +135,12 @@ function BalanceAnnotation(props) {
       </Label>
     </>
   ) : null;
-}
+};
 
+/**
+ * @param {JSX.IntrinsicAttributes} props
+ */
 export default function AccountSelector(props) {
   const { api, keyring } = useSubstrate();
-  return keyring.getPairs && api.query ? <Main {...props} /> : null;
+  return keyring && keyring.getPairs && api?.query ? <Main {...props} /> : null;
 }

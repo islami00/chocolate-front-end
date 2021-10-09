@@ -1,13 +1,21 @@
-import { Struct } from '@polkadot/types';
+import { Struct, U32 } from '@polkadot/types';
+import { ReviewAl } from 'chocolate/interfaces';
 import React, { useContext, useReducer } from 'react';
-
+/**
+ * @type {{userData:{
+ * name: string;
+ * accountAddress: string;
+ * rankPoints: U32 | 0 |string;
+ * userReviews:[ReviewAl?];
+ * accountType:""|"unset" | "user" |"project";
+ * }}}
+ */
 const INIT_STATE = {
   userData: {
     name: '',
     accountAddress: '',
     rankPoints: 0,
     userReviews: [],
-    /** @type {""|"unset" | "user" |"project"} */
     accountType: '',
   },
 };
@@ -15,11 +23,10 @@ const INIT_STATE = {
 /**
  * @typedef {[undefined] | [Struct]}  ArrNothingOrStruct
  * @typedef {{
- *    userData:INIT_STATE["userData"]
+ *    userData:typeof INIT_STATE["userData"]
  * }} AppState
- * @typedef
  * @typedef {{type:"USER_DATA";
- *    payload: Record<string,string|number> | INIT_STATE["userData"];
+ *    payload:  Partial<typeof INIT_STATE["userData"]>;
  * }} action
  * @type {React.Reducer<AppState,action>}
  * @returns
@@ -38,9 +45,10 @@ function reducer(state, action) {
 
 /**
  * @typedef {{state: AppState;dispatch : React.Dispatch<action>}} AppCTX
- * @type {React.Context<null | AppCTX>}
+ * @type {React.Context<AppCTX>}
  *  */
-const AppContext = React.createContext(null);
+// @ts-expect-error
+const AppContext = React.createContext();
 
 /** @type {React.FC} */
 const AppContextProvider = props => {
