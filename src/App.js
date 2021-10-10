@@ -51,9 +51,10 @@ function Main() {
     <div>
       <Router>
         <Menu>
+          {/* Load accounts here on render */}
           <AccountSelector />
-          <DeveloperConsole />
         </Menu>
+        <DeveloperConsole />
         <Switch>
           <Redirect from='/substrate-front-end-template' to='/' />
           {userData.accountType === 'unset' && <Redirect exact from='/' to='/sign-up/unset' />}
@@ -75,7 +76,7 @@ function Main() {
           <Route exact path='/sign-up'>
             <SignUp />
           </Route>
-          <Route path='/sign-up/:id'>
+          <Route exact path='/sign-up/:id'>
             <SignUp />
           </Route>
           <Route path='*'>{message('404! Not found')}</Route>
@@ -95,3 +96,4 @@ export default function App() {
   );
 }
 // to-do: decorator: refactor for button triggered load accounts
+// to-do: decorator: static landing page route before load app - check index.js

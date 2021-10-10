@@ -1,15 +1,18 @@
 // regular imports
-import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
 import { kebabCase } from 'lodash';
-// util imports
-import { chocolateLogo } from '../constants';
+import React from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import { Button } from 'semantic-ui-react';
 // styles
 import menu from '../../styles/menu.module.scss';
 import '../../styles/menu.scss';
+// util imports
+import { chocolateLogo } from '../constants';
+import { useApp } from '../state';
 
 function Menu(props) {
   const { children } = props;
+  const { state } = useApp();
   const urlIfy = link => (link === 'Home' ? '/' : `/${kebabCase(link)}`);
 
   const menuLinks = ['Projects', 'Review', 'Council', 'Wall of Shame'];
@@ -33,8 +36,16 @@ function Menu(props) {
       <nav className={menu.nav}>
         <ul className={menu.nav_ul}>{menuEls}</ul>
       </nav>
-      {/* AccountSelector/userModal */}
-      {children}
+      {/* AccountSelector/userModal, or sign-up btn */}
+      <section style={{ display: 'flex', alignItems: 'center' }}>
+        {state.userData.accountType === 'unset' ? (
+          <Button as={Link} exact to='/sign-up' color='blue'>
+            Sign up
+          </Button>
+        ) : (
+          children
+        )}
+      </section>
     </header>
   );
 }

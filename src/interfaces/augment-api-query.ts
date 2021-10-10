@@ -85,7 +85,7 @@ declare module '@polkadot/api/types/storage' {
        **/
       projectNames: AugmentedQuery<ApiType, () => Observable<Option<ListOfNames>>, []> & QueryableStorageEntry<ApiType, []>;
       /**
-       * Storage map from the project index - id to the projects
+       * Storage map from the project index - id to the projects. getters are for json rpc.
        **/
       projects: AugmentedQuery<ApiType, (arg: ProjectID | AnyNumber | Uint8Array) => Observable<Option<ProjectAl>>, [ProjectID]> & QueryableStorageEntry<ApiType, [ProjectID]>;
       /**

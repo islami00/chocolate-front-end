@@ -1,11 +1,11 @@
-import { Struct, U32 } from '@polkadot/types';
-import { ReviewAl } from 'chocolate/interfaces';
+import { Struct } from '@polkadot/types';
+import { ReviewAl, User } from 'chocolate/interfaces';
 import React, { useContext, useReducer } from 'react';
 /**
  * @type {{userData:{
  * name: string;
  * accountAddress: string;
- * rankPoints: U32 | 0 |string;
+ * rankPoints:  User["rank_points"] |0| string;
  * userReviews:[ReviewAl?];
  * accountType:""|"unset" | "user" |"project";
  * }}}
