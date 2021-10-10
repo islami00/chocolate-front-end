@@ -36,14 +36,12 @@ function Menu(props) {
       <nav className={menu.nav}>
         <ul className={menu.nav_ul}>{menuEls}</ul>
       </nav>
-      {/* AccountSelector/userModal, and sign-up btn */}
+      {/* AccountSelector/userModal, or sign-up btn */}
       <section style={{ display: 'flex', alignItems: 'center' }}>
         {state.userData.accountType === 'unset' ? (
-          <NavLink exact to='/sign-up'>
-            <Button type='sign-up' color='blue'>
-              Sign up
-            </Button>
-          </NavLink>
+          <Button as={Link} exact to='/sign-up' color='blue'>
+            Sign up
+          </Button>
         ) : (
           children
         )}
