@@ -12,13 +12,34 @@ import { Link } from 'react-router-dom';
 // icons
 import { Button, Icon } from 'semantic-ui-react';
 import { useSubstrate } from '../../substrate-lib';
-import { Chocolate } from '../../typeSystem/jsonTypes';
+import { Chocolate, ProjectWithIndex } from '../../typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
-
+/** @param {string} name */
+const cleanName = function (name) {
+  const re = /[A-Z]/;
+  const foundAt = name.search(re);
+  return name.slice(foundAt);
+};
+/**
+ * @description Cleans the utf-8 bytes on the project and founder socials
+ * by removing anything before founder, or before any word before Inc/_Stash
+ * Note: The object passed is mutated directly
+ * @param {Partial<Chocolate["Social"]>} soc */
+const MutateSocials = function (soc) {
+  const cleanReg = /([\s\S](?=founder))|([^A-Za-z_](?!(gmail|com)))|([\s\S]+?(?=[A-Z][a-z]+)(?!(Inc|Stash)))/g;
+  const keys = Object.keys(soc);
+  for (let i = 0; i < keys.length; i += 1) {
+    const element = keys[i];
+    const social = soc[element];
+    soc[element] = social.replaceAll(cleanReg, '');
+  }
+  return soc;
+};
 /**
  * OwnerID shoould be changed to projectAddress in input
  * @description gets the projects and filters them by not proposed, and adds exta data e.g subscan links and also dispatches state update
  * @param {Promise<[StorageKey<[ProjectID]>, Option<ProjectAl>][]>} projects
+ * @returns {Promise<ProjectWithIndex[]>}
  */
 const getProjects = async function (projects) {
   // projects are properly passed here
@@ -35,9 +56,18 @@ const getProjects = async function (projects) {
       return null;
     }
     const Id = rawId;
-    const secondReturnable = rawProject.toHuman();
-    /** @type {Chocolate["ProjectWithIndex"]} */
+    /** @type {Chocolate["Project"]} */
     // @ts-expect-error
+    const secondReturnable = rawProject.toHuman();
+    console.log('returned', secondReturnable);
+    // mutate socials and project names
+    const {
+      metaData: { projectName },
+    } = secondReturnable;
+    secondReturnable.metaData.founderSocials.forEach(MutateSocials);
+    secondReturnable.metaData.projectSocials.forEach(MutateSocials);
+
+    secondReturnable.metaData.projectName = cleanName(projectName).replaceAll('_', ' ');
     const ret = { Id, project: secondReturnable };
     return ret;
   });
@@ -55,9 +85,9 @@ const getMockProjects = async function (pairs) {
     const projectName = `${each.meta.name}_Inc`;
     const founderName = projectName.split('_')[0];
     const theProperlyFormattedName = projectName.split('_').join(' ');
-    const theName = projectName.split('_').join('').split(' ').join('_');
+    const theName = projectName.replace('_', '').replace(' ', '_');
     const Id = index;
-    /** @type {Chocolate["ProjectWithIndex"]} */
+    /** @type {ProjectWithIndex} */
     const returnable = {
       Id,
       // @ts-expect-error Intentionally ignoreing proposal status for now as it is unneeded
@@ -78,7 +108,7 @@ const getMockProjects = async function (pairs) {
 
 /**
  * @description Houses a single project
- * @type {React.FC<{data: Chocolate["ProjectWithIndex"]}>} - Give proper types later
+ * @type {React.FC<{data: ProjectWithIndex}>} - Give proper types later
  * @returns
  */
 const ProjectView = function (props) {
@@ -130,7 +160,7 @@ const ProjectView = function (props) {
         <Icon.Group>{icons}</Icon.Group>
       </div>
 
-      <Button as={Link} to={`/projects/${Id}`} color='brown' icon labelPosition='right' size='medium' role='link'>
+      <Button as={Link} to={`/app/projects/${Id}`} color='brown' icon labelPosition='right' size='medium' role='link'>
         To Project
         <Icon name='arrow right' />
       </Button>
@@ -140,7 +170,7 @@ const ProjectView = function (props) {
 
 /**
  * @description Houses the projects
- * @type  {React.FC<{data : Chocolate["ProjectWithIndex"][]}>}
+ * @type  {React.FC<{data : ProjectWithIndex[]}>}
  */
 const ProjectsView = function (props) {
   const { data } = props;

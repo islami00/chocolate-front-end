@@ -35,10 +35,10 @@ const Main = () => {
   let content;
   switch (id) {
     case 'unset':
-      content = <Redirect exact to='/sign-up' />;
+      content = <Redirect exact to='/app/sign-up' />;
       break;
     case 'user':
-      content = <Redirect exact to='/projects' />;
+      content = <Redirect exact to='/app/projects' />;
       break;
     default:
       // base page. id:'unset'
@@ -53,7 +53,7 @@ const Main = () => {
             selection
             options={opts}
           />
-          <Link to={`/sign-up/${drop}`} onClick={setStore}>
+          <Link to={`/app/sign-up/${drop}`} onClick={setStore}>
             <Button fluid color='blue'>
               Confirm
             </Button>

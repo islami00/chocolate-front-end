@@ -13,13 +13,14 @@ import { useApp } from '../state';
 function Menu(props) {
   const { children } = props;
   const { state } = useApp();
-  const urlIfy = link => (link === 'Home' ? '/' : `/${kebabCase(link)}`);
+  const urlIfy = (link, root = '') =>
+    link === 'Home' ? `/${root}` : `/${root}${root !== '' && '/'}${kebabCase(link)}`;
 
   const menuLinks = ['Projects', 'Review', 'Council', 'Wall of Shame'];
-  // transform for easy editing of individual links
+  // transform for easy editing of individual links - note: this is the menu for the app component
   const menuEls = menuLinks.map(linkText => (
     <li className={menu.nav_li} key={linkText}>
-      <NavLink className='link nav_link' exact to={urlIfy(linkText)}>
+      <NavLink className='link nav_link' exact to={urlIfy(linkText, 'app')}>
         {linkText}
       </NavLink>
     </li>
@@ -39,7 +40,7 @@ function Menu(props) {
       {/* AccountSelector/userModal, or sign-up btn */}
       <section style={{ display: 'flex', alignItems: 'center' }}>
         {state.userData.accountType === 'unset' ? (
-          <Button as={Link} exact to='/sign-up' color='blue'>
+          <Button as={Link} to='/app/sign-up' color='blue'>
             Sign up
           </Button>
         ) : (
