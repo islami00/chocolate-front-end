@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import { Button, Container, Dropdown } from 'semantic-ui-react';
 import { storageKey } from '../loading';
-import { AppState } from '../state';
+import { AppState, useApp } from '../state';
 
 const Main = () => {
   const [drop, setDrop] = useState('unset');
   //   initial decision
+  const { dispatch } = useApp();
   /** @type {[string,AppState["userData"]["accountType"]][]} */
   const optt = [
     ['Write reviews', 'user'],
@@ -15,6 +16,7 @@ const Main = () => {
 
   const setStore = val => {
     window.localStorage.setItem(storageKey, val);
+    dispatch({ type: 'USER_DATA', payload: { accountType: val } });
   };
   // convert options to dropdown props
   const opts = optt.map(each => ({
@@ -53,7 +55,7 @@ const Main = () => {
             selection
             options={opts}
           />
-          <Link to={`/app/sign-up/${drop}`} onClick={setStore}>
+          <Link to={`/app/sign-up/${drop}`} onClick={() => setStore(drop)}>
             <Button fluid color='blue'>
               Confirm
             </Button>

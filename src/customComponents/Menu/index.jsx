@@ -8,11 +8,12 @@ import menu from '../../styles/menu.module.scss';
 import '../../styles/menu.scss';
 // util imports
 import { chocolateLogo } from '../constants';
+import { storageKey } from '../loading';
 import { useApp } from '../state';
 
 function Menu(props) {
   const { children } = props;
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
   const urlIfy = (link, root = '') =>
     link === 'Home' ? `/${root}` : `/${root}${root !== '' && '/'}${kebabCase(link)}`;
 
@@ -25,7 +26,10 @@ function Menu(props) {
       </NavLink>
     </li>
   ));
-
+  const handleSignOut = function () {
+    window.localStorage.setItem(storageKey, 'unset');
+    dispatch({ type: 'USER_DATA', payload: { accountType: 'unset' } });
+  };
   return (
     <header className={menu.header}>
       <Link to='/'>
@@ -44,7 +48,12 @@ function Menu(props) {
             Sign up
           </Button>
         ) : (
-          children
+          <>
+            {children}
+            <Button as={Link} to='/app/sign-up' color='blue' onClick={() => handleSignOut()}>
+              Sign out
+            </Button>
+          </>
         )}
       </section>
     </header>
