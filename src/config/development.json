@@ -1,3 +1,4 @@
 {
-  "PROVIDER_SOCKET": "wss://192.168.8.185:443"
+  "PROVIDER_SOCKET": "wss:///192.168.8.185:443",
+  "PROVIDER_PLAYGROUND": "wss:///islami00.playground.substrate.dev/wss"
 }

@@ -1,0 +1,53 @@
+{
+  "User": {
+    "rank_points": "u32"
+  },
+  "ReviewAl": "Review",
+  "ProjectAl": "Project",
+  "ListOfNames": "Vec<Text>",
+  "TextAl": "Text",
+  "Project": {
+    "ownerID": "AccountId",
+    "reviews": "Option<Vec<ReviewID>>",
+    "badge": "Option<bool>",
+    "metaData": "MetaData",
+    "proposalStatus": "ProposalStatus"
+  },
+  "ProjectID": "u32",
+  "ReviewID": "u64",
+
+  "ProposalStatus": {
+    "status": "Status",
+    "reason": "Reason"
+  },
+  "Status": {
+    "_enum": ["Proposed", "Accepted", "Rejected"]
+  },
+  "Reason": {
+    "_enum": { "Other": "Text", "InsufficientMetaData": null, "Malicious": null, "PassedRequirements": null }
+  },
+  "MetaData": {
+    "projectName": "Text",
+    "projectSocials": "ProjectSocials",
+    "founderSocials": "Vec<Social>"
+  },
+  "ProjectSocials": "Vec<Social>",
+  "Social": {
+    "_enum": {
+      "Twitter": "Text",
+      "Facebook": "Text",
+      "Instagram": "Text",
+      "Riot": "Text",
+      "Email": "Text",
+      "None": null
+    }
+  },
+  "Review": {
+    "proposalStatus": "ProposalStatus",
+    "userID": "AccountId",
+    "reviewText": "Text",
+    "projectID": "ProjectID"
+  },
+  "Balance": "u128",
+  "BalanceOf": "Balance"
+}
