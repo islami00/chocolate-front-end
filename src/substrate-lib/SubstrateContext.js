@@ -164,7 +164,8 @@ const loadAccounts = (state, dispatch) => {
  * @type {React.Context<SubstrState>} */
 // @ts-expect-error
 const SubstrateContext = React.createContext();
-
+/** @type {React.Context<{dispatch:React.Dispatch<action>;loadAccounts: typeof loadAccounts}>} */
+const DispatchContext = React.createContext(Object());
 /** 
  *  ** RENDER BEFORE USING SUBSTRATECONTEXT **
  *  @description At a glance this is a top-level provider for only the context, but it also allows for definition of types and a socket that overrides those preset in config, all from app.js
@@ -179,11 +180,15 @@ const SubstrateContextProvider = (props) => {
 
   const [state, dispatch] = useReducer(reducer, initState);
   connect(state, dispatch);
-  loadAccounts(state, dispatch);
+  // loadAccounts(state, dispatch);
 
-  return <SubstrateContext.Provider value={state}>
-    {props.children}
-  </SubstrateContext.Provider>;
+
+  return <DispatchContext.Provider value={{dispatch,loadAccounts}}>
+          <SubstrateContext.Provider value={state}>
+            {props.children}
+          </SubstrateContext.Provider>
+        </DispatchContext.Provider>
+
 };
 
 // prop typechecking
@@ -193,5 +198,5 @@ SubstrateContextProvider.propTypes = {
 };
 
 const useSubstrate = () => ({ ...useContext(SubstrateContext) });
-
-export { SubstrateContextProvider, useSubstrate };
+const useAccounts = ()=> ({...useContext(DispatchContext)})
+export { SubstrateContextProvider, useSubstrate, useAccounts };

@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useAccounts, useSubstrate } from 'chocolate/substrate-lib/SubstrateContext';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
-import "./index.css";
-/**
- * @description calls async load accounts
- * */
-const handleConnect = function () {
-  alert("Connected!");
-};
+import './index.css';
 
 /**
  * @description - A modal that either shows wallet info - account
@@ -14,24 +11,39 @@ const handleConnect = function () {
  */
 const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
   const { connected } = props;
+  const { keyringState } = useSubstrate();
+  const [run, setRun] = useState(false);
+  const { dispatch, loadAccounts } = useAccounts();
+  const state = useSubstrate();
+
+  useEffect(() => {
+    if (run) {
+      let doRun = async () => {
+        return loadAccounts(state, dispatch);
+      };
+
+      doRun().then(() => {
+        alert(keyringState);
+        setRun(false);
+      });
+    }
+  }, [run]);
   let content;
-  if (!connected) {
+  // do the keyring stuff here too.
+  if (keyringState === 'LOADING') content = <p>Loading... </p>;
+  else if (keyringState === 'ERROR') content = <p>Something went wrong, please refresh the page</p>;
+  else if (!connected) {
     content = (
       <>
         <p>Your wallet is not connected, do connect</p>
-        <button onClick={handleConnect}>Connect wallet</button>
+        <button onClick={() => setRun(true)}>Connect wallet</button>
       </>
     );
   } else {
     content = (
-      <>
-        <ul>
-          <li>Account selected: </li>
-          <li>Balance:</li>
-          <li>Rank points: </li>
-        </ul>
-      </>
+      <AccountSelector/>
     );
+    return content;
   }
 
   return <div>{content}</div>;
@@ -43,22 +55,28 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
  * If wallet is not collected, show dropdown with connectWallet button.
  *
  */
-const handleWallet = function () {
-  const connected = false;
-  if (connected) {
+const HandleWallet = function () {
+  const { keyringState } = useSubstrate();
+  const [connected, setConnected] = useState(false);
+  useEffect(() => {
+    if (keyringState === 'READY') setConnected(true);
+  }, [connected]);
+
+  if (connected || keyringState === 'READY') {
     return <WalletModal connected></WalletModal>;
   } else {
     return <WalletModal></WalletModal>;
   }
 };
+
 function Navlinks() {
   return (
     <nav className='nav-links'>
       <ul className='nav-links_ul'>
-        <li className='nav-link'>About</li>
-        <li className='nav-link'>Team</li>
-        <li className='nav-link'>Projects</li>
-        <li className='nav-link'>CHOC Token</li>
+        <li className='nav-link'><Link to='/about'>About</Link></li>
+        <li className='nav-link'><Link to='/team'>Team</Link></li>
+        <li className='nav-link'><Link to='/projects'>Projects</Link></li>
+        <li className='nav-link'><Link to='/choc'>CHOC Token</Link></li>
       </ul>
     </nav>
   );
@@ -75,9 +93,9 @@ function Wallet() {
   const Modal = () => modal;
   // manage modal state
   const handleModal = () => {
-    setOpen((prev) => !prev);
+    setOpen(prev => !prev);
     if (!open) {
-      return setModal(handleWallet());
+      return setModal(<HandleWallet />);
     } else {
       return setModal(<></>);
     }
@@ -86,7 +104,7 @@ function Wallet() {
   return (
     <section className='wallet'>
       <button className='wallet_btn' onClick={handleModal}>
-        <img src={WalletPurple} alt="Wallet" className='wallet-icon' />
+        <img src={WalletPurple} alt='Wallet' className='wallet-icon' />
       </button>
       {/* Position absolute, start at leftmost part */}
       <Modal />
@@ -94,7 +112,6 @@ function Wallet() {
   );
 }
 function Menu() {
-  // const walletContext = createContext({connected: false});
   return (
     <header>
       <Navlinks />

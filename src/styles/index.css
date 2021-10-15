@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap');
 
 * {
   margin: 0;
@@ -6,81 +6,30 @@
   box-sizing: border-box;
 }
 @font-face {
-  font-family: "GlacialIndifference";
-  src: url("../fonts/glacial-indifference/GlacialIndifference-Regular.otf");
+  font-family: 'GlacialIndifference';
+  src: url('../fonts/glacial-indifference/GlacialIndifference-Regular.otf');
 }
 @font-face {
-  font-family: "GlacialIndifference";
-  src: url("../fonts/glacial-indifference/GlacialIndifference-Italic.otf");
+  font-family: 'GlacialIndifference';
+  src: url('../fonts/glacial-indifference/GlacialIndifference-Italic.otf');
   font-style: italic;
 }
 @font-face {
-  font-family: "GlacialIndifference";
-  src: url("../fonts/glacial-indifference/GlacialIndifference-Bold.otf");
+  font-family: 'GlacialIndifference';
+  src: url('../fonts/glacial-indifference/GlacialIndifference-Bold.otf');
   font-weight: bold;
 }
-:root {
+body {
   --color-primary: #8c52ff;
   --color-primary-light: hsl(260, 100%, 66%, 0.79);
   --color-primary-search: hsl(260, 100%, 66%, 0.33);
   --color-primary-sep: hsl(260, 100%, 66%, 0.5);
-  --color-btn-highlight:hsl(260, 100%, 66%,0.22);;
+  --color-btn-highlight: hsl(260, 100%, 66%, 0.22);
   --color-btn-rev: #cb6ce6;
   --color-background-grey: #fbfdfe;
   /* topography */
 
-  font-family: "GlacialIndifference", sans-serif;
+  font-family: 'GlacialIndifference', sans-serif;
   font-size: 16px;
   font-weight: normal;
 }
-.main-wrap {
-  /* window init */
-  width: 100vw;
-  height: 100vh;
-}
-
-/* <Loader> */
-.load-wrap {
-  /* init */
-  width: 100%;
-  height: 100%;
-  /* center content */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-/* spinner */
-.loader {
-  /* center spinner and message */
-  display: grid;
-  grid-template-columns: 100%;
-  justify-items: center;
-  /* space between them */
-  row-gap: 0.5rem;
-}
-
-/* loader-styles - copied from: https://dev.to/afif/i-made-100-css-loaders-for-your-next-project-4eje#the-bars*/
-
-.loader::before {
-  /* init */
-  content: "";
-  width: 1rem;
-  height: 1rem;
-  /* circling */
-  border-radius: 50%;
-  /* spinner fill and nib size*/
-  border: 0.2rem solid;
-  border-color: lightblue;
-  /* nib fill */
-  border-right-color: hsl(14deg, 48%, 53%);
-  animation: s2 1s infinite linear;
-}
-
-@keyframes s2 {
-  to {
-    transform: rotate(1turn);
-  }
-}
-/* <Loader/> */

@@ -9,7 +9,7 @@ import { chocolateLogo } from './customComponents/constants';
 import Council from './customComponents/Council';
 import { Err } from './customComponents/err';
 import Home from './customComponents/Home';
-import LandingPage from './customComponents/LandingPage';
+import LandingPage from './customComponents/landingPageRe';
 // custom components - Default export if it can contain many. Export for specific like loading
 import { Loading } from './customComponents/loading';
 import { Menu } from './customComponents/Menu';
@@ -19,11 +19,14 @@ import SignUp from './customComponents/SignUp';
 import { AppContextProvider, useApp } from './customComponents/state';
 import WallOfShame from './customComponents/WallOfShame';
 // styles
-import './styles/index.scss';
+import './styles/index.css';
 // substrate imports
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { DeveloperConsole } from './substrate-lib/components';
 
+export const message = (/** @type {import('@polkadot/types/types').AnyJson} */ err, fof = false) => (
+  <Err four={fof} this_error={err} />
+);
 function Main() {
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const { state, dispatch } = useApp();
@@ -34,10 +37,6 @@ function Main() {
 
   /** @param {string} text */
   const loader = (text, greet = false) => <Loading message={text} img={chocolateLogo} {...{ greet }} />;
-
-  const message = (/** @type {import('@polkadot/types/types').AnyJson} */ err, fof = false) => (
-    <Err four={fof} this_error={err} />
-  );
 
   if (apiState === 'ERROR') return message(apiError);
   if (apiState !== 'READY') return loader('Connecting to Substrate');
@@ -87,13 +86,7 @@ function Main() {
 }
 
 export function App() {
-  return (
-    <SubstrateContextProvider>
-      <AppContextProvider>
-        <Main />
-      </AppContextProvider>
-    </SubstrateContextProvider>
-  );
+  return <Main />;
 }
 
 export default function RenderMe() {
@@ -103,18 +96,22 @@ export default function RenderMe() {
   );
   return (
     // Wrapping in app and substrate context preserves state. There is only the issue of routing completely resetting on refresh
-    <Router>
-      <Switch>
-        <Route exact path='/'>
-          <LandingPage />
-        </Route>
-        <Route path='/app'>
-          <App />
-        </Route>
-        <Redirect exact from='/substrate-front-end-template' to='/' />
-        <Route path='*'>{message('404! Not found', true)}</Route>
-      </Switch>
-    </Router>
+    <SubstrateContextProvider>
+      <AppContextProvider>
+        <Router>
+          <Switch>
+            <Redirect exact from='/substrate-front-end-template' to='/' />
+            <Route path='/'>
+              <LandingPage />
+            </Route>
+            <Route path='/app'>
+              <App />
+            </Route>
+            <Route path='*'>{message('404! Not found', true)}</Route>
+          </Switch>
+        </Router>
+      </AppContextProvider>
+    </SubstrateContextProvider>
   );
 }
 // to-do: decorator: refactor for button triggered load accounts

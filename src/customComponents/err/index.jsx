@@ -1,6 +1,6 @@
 import React from 'react';
 import { Message } from 'semantic-ui-react';
-import '../../styles/err.scss';
+import './err.css';
 /**
  *@type {React.FC<{this_error:any; four:boolean;}>}
  */

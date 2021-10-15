@@ -1,5 +1,11 @@
+import { message } from 'chocolate/App';
+import { Route, Switch } from 'react-router';
 import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
+import About from '../About';
 import MenuBar from "../menuBar";
+import ProjectsRe from '../ProjectsRe';
+import Team from '../Team';
+import './landing.css';
 function LandingContent() {
   return (
     <main className='main-content-wrap'>
@@ -16,9 +22,25 @@ function LandingContent() {
 
 function Main() {
   return (
-    <div>
+    <div className='root-wrap'>
       <MenuBar />
-      <LandingContent/>
+      <Switch>
+        <Route exact path='/'>
+          <LandingContent/>
+        </Route>
+        <Route path='/about'>
+          <About></About>
+        </Route>
+        <Route path='/projects'>
+          <ProjectsRe></ProjectsRe>
+        </Route>
+        <Route path='/team'>
+          <Team></Team>
+        </Route>
+        <Route path='*'>
+          {message('404! Not found', true)}
+        </Route>
+      </Switch>
     </div>
   );
 }

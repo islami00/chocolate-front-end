@@ -1,0 +1,12 @@
+.root-wrap {
+  width: 1366px;
+  height: 768px;
+}
+.main-content-wrap{
+    display: flex;
+}
+.landing{
+    display: flex;
+    flex-direction: column;
+    
+}

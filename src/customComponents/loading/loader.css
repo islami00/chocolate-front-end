@@ -24,7 +24,7 @@
 
 .loader::before {
   /* init */
-  content: '';
+  content: "";
   width: 1rem;
   height: 1rem;
   /* circling */
