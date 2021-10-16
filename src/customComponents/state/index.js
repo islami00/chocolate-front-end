@@ -47,7 +47,7 @@ function reducer(state, action) {
  * @typedef {{state: AppState;dispatch : React.Dispatch<action>}} AppCTX
  * @type {React.Context<AppCTX>}
  *  */
-// @ts-expect-error
+// @ts-expect-error Typing createContext is tedious in js. _ Move to ts then!
 const AppContext = React.createContext();
 
 /** @type {React.FC} */

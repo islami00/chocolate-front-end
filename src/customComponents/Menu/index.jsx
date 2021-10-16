@@ -8,23 +8,28 @@ import menu from '../../styles/menu.module.scss';
 import '../../styles/menu.scss';
 // util imports
 import { chocolateLogo } from '../constants';
+import { storageKey } from '../loading';
 import { useApp } from '../state';
 
 function Menu(props) {
   const { children } = props;
-  const { state } = useApp();
-  const urlIfy = link => (link === 'Home' ? '/' : `/${kebabCase(link)}`);
+  const { state, dispatch } = useApp();
+  const urlIfy = (link, root = '') =>
+    link === 'Home' ? `/${root}` : `/${root}${root !== '' && '/'}${kebabCase(link)}`;
 
   const menuLinks = ['Projects', 'Review', 'Council', 'Wall of Shame'];
-  // transform for easy editing of individual links
+  // transform for easy editing of individual links - note: this is the menu for the app component
   const menuEls = menuLinks.map(linkText => (
     <li className={menu.nav_li} key={linkText}>
-      <NavLink className='link nav_link' exact to={urlIfy(linkText)}>
+      <NavLink className='link nav_link' exact to={urlIfy(linkText, 'app')}>
         {linkText}
       </NavLink>
     </li>
   ));
-
+  const handleSignOut = function () {
+    window.localStorage.setItem(storageKey, 'unset');
+    dispatch({ type: 'USER_DATA', payload: { accountType: 'unset' } });
+  };
   return (
     <header className={menu.header}>
       <Link to='/'>
@@ -39,11 +44,16 @@ function Menu(props) {
       {/* AccountSelector/userModal, or sign-up btn */}
       <section style={{ display: 'flex', alignItems: 'center' }}>
         {state.userData.accountType === 'unset' ? (
-          <Button as={Link} exact to='/sign-up' color='blue'>
+          <Button as={Link} to='/app/sign-up' color='blue'>
             Sign up
           </Button>
         ) : (
-          children
+          <>
+            {children}
+            <Button as={Link} to='/app/sign-up' color='blue' onClick={() => handleSignOut()}>
+              Sign out
+            </Button>
+          </>
         )}
       </section>
     </header>

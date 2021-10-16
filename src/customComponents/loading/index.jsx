@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import '../../styles/loader.scss';
+import './loader.css';
 import { useApp } from '../state';
 
 const storageKey = 'ChocAccountType';

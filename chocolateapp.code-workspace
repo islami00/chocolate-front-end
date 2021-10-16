@@ -1,0 +1,51 @@
+{
+  "folders": [
+    {
+      "path": "../chocolate-front-end"
+    },
+    // {
+    //   "path": "../chocolate-web-app"
+    // }
+    {
+      "path": "../githubtest"
+    }
+  ],
+  "settings": {
+    "npm-intellisense.recursivePackageJsonLookup": true,
+    "prettier.endOfLine": "lf",
+    "npm.packageManager": "npm",
+
+    // These are all my auto-save configs
+    "editor.formatOnSave": true,
+    // turn it off for JS and JSX, we will do this via eslint
+    "[javascript]": {
+      "editor.formatOnSave": false,
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[javascriptreact]": {
+      "editor.formatOnSave": false,
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescript]": {
+      "editor.formatOnSave": false,
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescriptreact]": {
+      "editor.formatOnSave": false,
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    // show eslint icon at bottom toolbar
+    "eslint.alwaysShowStatus": true,
+    // tell the ESLint plugin to run on save
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.organizeImports": true
+    },
+
+    "js/ts.implicitProjectConfig.checkJs": true,
+    "liveServer.settings.multiRootWorkspaceName": "githubtest"
+  },
+  "extensions": {
+    "recommendations": ["sysoev.language-stylus", "jpoissonnier.vscode-styled-components", "humao.rest-client"]
+  }
+}

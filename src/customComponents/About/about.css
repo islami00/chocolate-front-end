@@ -1,0 +1,16 @@
+.mission {
+  display: inline;
+  font-size: 24px;
+  padding: 0;
+  margin:0;
+}
+.about-wrap {
+  display: flex;
+    align-content: center;
+    justify-content: center;
+}
+.about-wrap > img {
+  width: 30px;
+  margin-left: 5px;
+  height: 30px;
+}

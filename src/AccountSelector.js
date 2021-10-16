@@ -34,7 +34,7 @@ function Main() {
     // find the userName from existing list
     /** @type {NonNullable<typeof keyringOptions[number]>} */
     const userName = keyringOptions.find(thisOpt => thisOpt.value === address);
-    dispatch({ type: 'USER_DATA', payload: { accountAddress: address, name: userName.text } });
+    dispatch({ type: 'USER_DATA', payload: { accountAddress: address, name: userName?.text } });
   };
 
   return (
@@ -53,7 +53,6 @@ function Main() {
       <Dropdown
         search
         selection
-        clearable
         placeholder='Select an account'
         options={keyringOptions ?? undefined}
         onChange={(_, dropdown) => {
@@ -142,5 +141,5 @@ const BalanceAnnotation = function (props) {
  */
 export default function AccountSelector(props) {
   const { api, keyring } = useSubstrate();
-  return keyring && keyring.getPairs && api?.query ? <Main {...props} /> : null;
+  return keyring && keyring.getPairs ? <Main {...props} /> : null;
 }

@@ -1,4 +1,4 @@
-import { AbstractArray } from "@polkadot/types/codec/AbstractArray";
+import { AbstractArray } from '@polkadot/types/codec/AbstractArray';
 
 /**
  * @description This checks Arrays,Strings, Maps,Sets for empty state and returns true. It returns false If not empty or Constructor not supported
@@ -7,9 +7,7 @@ import { AbstractArray } from "@polkadot/types/codec/AbstractArray";
  *
  */
 const isEmpty = type => {
-  
   switch (type) {
-  
     case type instanceof Array || type instanceof String:
       if (!type.length) return true;
 
@@ -18,8 +16,7 @@ const isEmpty = type => {
       if (!type.size) return true;
       break;
     case type instanceof AbstractArray:
-      
-      return type.isEmpty
+      return type.isEmpty;
     default:
       return false;
   }

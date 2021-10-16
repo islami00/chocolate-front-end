@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+@font-face {
+  font-family: 'GlacialIndifference';
+  src: url('../fonts/glacial-indifference/GlacialIndifference-Regular.otf');
+}
+@font-face {
+  font-family: 'GlacialIndifference';
+  src: url('../fonts/glacial-indifference/GlacialIndifference-Italic.otf');
+  font-style: italic;
+}
+@font-face {
+  font-family: 'GlacialIndifference';
+  src: url('../fonts/glacial-indifference/GlacialIndifference-Bold.otf');
+  font-weight: bold;
+}
+body {
+  /* colors */
+  --color-primary: #8c52ff;
+  --color-primary-light: hsl(260, 100%, 66%, 0.79);
+  --color-primary-search: hsl(260, 100%, 66%, 0.33);
+  --color-primary-sep: hsl(260, 100%, 66%, 0.5);
+  --color-btn-highlight: hsl(260, 100%, 66%, 0.22);
+  --color-btn-rev: #cb6ce6;
+  --color-background-grey: #fbfdfe;
+  /* whitespace */
+  --spacing:4px;
+  --choco-round: 6px;
+  /* topography */
+
+  font-family: 'GlacialIndifference', sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  letter-spacing: var(--spacing);
+}

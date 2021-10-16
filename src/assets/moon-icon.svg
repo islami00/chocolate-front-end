@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="5.8129mm" height="6.8799mm" version="1.1" viewBox="0 0 5.8129 6.8799" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <defs>
+  <clipPath id="clipPath1081">
+   <path d="m0 0h1562.5v1593.8h-1562.5z"/>
+  </clipPath>
+  <clipPath id="clipPath1087">
+   <path d="m0 0h1562.5v1562.5h-1562.5z"/>
+  </clipPath>
+  <clipPath id="clipPath1093">
+   <path d="m30.242 76.472 55.75-20.43 27.956 76.289-55.75 20.43z"/>
+  </clipPath>
+  <clipPath id="clipPath1099">
+   <path d="m30.242 76.472 55.75-20.43 27.956 76.289-55.75 20.43z"/>
+  </clipPath>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="translate(-183.08 -141.72)">
+  <g transform="matrix(.084667 0 0 .084667 179.54 136.64)">
+   <g clip-path="url(#clipPath1081)">
+    <g clip-path="url(#clipPath1087)">
+     <g clip-path="url(#clipPath1093)">
+      <g clip-path="url(#clipPath1099)">
+       <g transform="matrix(.27023 -.099026 .10027 .27363 30.338 76.438)">
+        <path d="m196.7 266.8h0.39999c-17.2 7.4-36.1 11.5-56.1 11.5-77.5 0-140.5-62.3-140.5-138.9 0-76.7 63-138.9 140.5-138.9 23.1 0 44.8 5.5 64 15.3-2.8-0.2-5.5-0.3-8.3-0.3-68.9 0-124.8 56.3-124.8 125.7 8e-6 69.3 56 125.6 124.8 125.6z" fill="#8c52ff" fill-rule="evenodd"/>
+        <path d="m205.3 15.3c-20.1-10.2-41.7-15.3-64.3-15.3-77.7 0-141 62.5-141 139.4 0 76.9 63.3 139.4 141 139.4 19.6 0 38.5-3.9 56.3-11.6 0.2-0.1 0.30001-0.29999 0.30001-0.6 0-0.20002-0.30001-0.4-0.5-0.4h-0.4c-68.6 0-124.3-56.1-124.3-125.1 0-69 55.8-125.2 124.3-125.2 2.7 0 5.5 0.1 8.3 0.3 0.19999 0 0.39999-0.1 0.5-0.4 0.09999-0.19998-2e-5 -0.39998-0.20002-0.49998zm-8.6-0.3c-69.1 0-125.3 56.6-125.3 126.1 0 68.9 55.1 125 123.3 126.1-17 7-35.1 10.5-53.7 10.5-77.2 0-140-62.1-140-138.4-1.53e-5 -76.2 62.8-138.3 140-138.3 21.6 0 42.4 4.8 61.7 14.1-2-0.1-4-0.1-6-0.1z" fill="#141414"/>
+       </g>
+      </g>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>
