@@ -18,9 +18,7 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
 
   useEffect(() => {
     if (run) {
-      let doRun = async () => {
-        return loadAccounts(state, dispatch);
-      };
+      const doRun = async () => loadAccounts(state, dispatch);
 
       doRun().then(() => {
         alert(keyringState);
@@ -36,17 +34,16 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
     content = (
       <>
         <p>Your wallet is not connected, do connect</p>
-        <button onClick={() => setRun(true)}>Connect wallet</button>
+        <button type='button' onClick={() => setRun(true)}>
+          Connect wallet
+        </button>
       </>
     );
   } else {
-    content = (
-      <AccountSelector/>
-    );
-    return content;
+    content = <AccountSelector />;
   }
 
-  return <div>{content}</div>;
+  return <div className='modal modal_drop modal_drop--right'>{content}</div>;
 };
 
 /**
@@ -63,20 +60,35 @@ const HandleWallet = function () {
   }, [connected]);
 
   if (connected || keyringState === 'READY') {
-    return <WalletModal connected></WalletModal>;
-  } else {
-    return <WalletModal></WalletModal>;
+    return <WalletModal connected />;
   }
+  return <WalletModal />;
 };
 
 function Navlinks() {
   return (
     <nav className='nav-links'>
-      <ul className='nav-links_ul'>
-        <li className='nav-link'><Link to='/about'>About</Link></li>
-        <li className='nav-link'><Link to='/team'>Team</Link></li>
-        <li className='nav-link'><Link to='/projects'>Projects</Link></li>
-        <li className='nav-link'><Link to='/choc'>CHOC Token</Link></li>
+      <ul className='nav-links-ul'>
+        <li>
+          <Link className='nav-link' to='/about'>
+            About
+          </Link>
+        </li>
+        <li>
+          <Link className='nav-link' to='/team'>
+            Team
+          </Link>
+        </li>
+        <li>
+          <Link className='nav-link' to='/projects'>
+            Projects
+          </Link>
+        </li>
+        <li>
+          <Link className='nav-link' to='/choc'>
+            CHOC Token
+          </Link>
+        </li>
       </ul>
     </nav>
   );
@@ -96,14 +108,13 @@ function Wallet() {
     setOpen(prev => !prev);
     if (!open) {
       return setModal(<HandleWallet />);
-    } else {
-      return setModal(<></>);
     }
+    return setModal(<></>);
   };
   // clean returns
   return (
     <section className='wallet'>
-      <button className='wallet_btn' onClick={handleModal}>
+      <button type='button' className='wallet_btn' onClick={handleModal}>
         <img src={WalletPurple} alt='Wallet' className='wallet-icon' />
       </button>
       {/* Position absolute, start at leftmost part */}
@@ -113,7 +124,7 @@ function Wallet() {
 }
 function Menu() {
   return (
-    <header>
+    <header className='top-nav'>
       <Navlinks />
       <Wallet />
     </header>

@@ -1,5 +1,5 @@
 {
-  "extends": ["react-app", "wesbos"],
+  "extends": ["react-app", "wesbos","wesbos/typescript"],
   "rules": {
     "no-console": 0,
     "prettier/prettier": [
