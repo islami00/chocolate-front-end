@@ -13,9 +13,9 @@
     "generate:meta": "ts-node -P tsconfig.defs.json node_modules/@polkadot/typegen/scripts/polkadot-types-from-chain.cjs --package chocolate/interfaces --endpoint ./chocolate.json --output ./src/interfaces",
     "test": "CI=true react-app-rewired test --env=jsdom",
     "eject": "react-app-rewired eject",
-    "lint": "eslint src/**/*{.js,.jsx}",
+    "lint": "eslint src/**/*{.js,.jsx,.ts,.tsx}",
     "lint:ci": "eslint src/**/*{.js,.jsx} --max-warnings=0",
-    "lint:fix": "eslint --fix src/**/*{.js,.jsx}",
+    "lint:fix": "eslint --fix src/**/*{.js,.jsx,.ts,.tsx}",
     "deploy": "gh-pages -d build -m '[ci skip] Updates'"
   },
   "dependencies": {

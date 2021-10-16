@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import ChocolateRedBig from "../../assets/chocolate-red-big.svg";
+import React, { useEffect, useState } from 'react';
+import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
 /**
  *
  * @param {React.FormEvent<HTMLFormElement>} e
@@ -33,7 +33,7 @@ const DisplayResults: React.FC<{ data: object[] | [] }> = function (props) {
       </>
     );
   } else {
-    content = data.map((each) => <DataSummaryDisplay data={each} />);
+    content = data.map(each => <DataSummaryDisplay data={each} />);
   }
   return <div>{content}</div>;
 };
@@ -44,8 +44,8 @@ const DisplayResults: React.FC<{ data: object[] | [] }> = function (props) {
  * @returns {object[]}
  */
 const calcResults = function (data: object[], value: string) {
-  const filtered = data.filter((data) => {
-    const reg = new RegExp(`(${value})`, "g");
+  const filtered = data.filter(data => {
+    const reg = new RegExp(`(${value})`, 'g');
     // return data?.field.match(reg);
   });
 
@@ -57,7 +57,7 @@ const calcResults = function (data: object[], value: string) {
 const SearchBar: React.FC<{ projects: object[] }> = function (props) {
   // data state is handled externally
   const { projects } = props;
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
   const [results, setResults] = useState<object[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -75,7 +75,7 @@ const SearchBar: React.FC<{ projects: object[] }> = function (props) {
           placeholder='Search for a project'
           aria-label='Search for a project'
           value={value}
-          onChange={(e) => {
+          onChange={e => {
             setValue(e.target.value);
             setIsSearching(true);
           }}
