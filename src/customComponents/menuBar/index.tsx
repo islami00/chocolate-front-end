@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
 import './index.css';
-
+import './wallet.css';
 /**
  * @description - A modal that either shows wallet info - account
  * selected and balances - rankpoints and regular, or it shows connect depending on wallet connection.

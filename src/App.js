@@ -1,32 +1,23 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // regular imports
+// substrate imports
+import { AnyJson } from '@polkadot/types/types';
 import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
-// stock components
-import AccountSelector from './AccountSelector';
 // utility imports
 import { chocolateLogo } from './customComponents/constants';
-import Council from './customComponents/Council';
 import { Err } from './customComponents/err';
-import Home from './customComponents/Home';
 import LandingPage from './customComponents/landingPageRe';
 // custom components - Default export if it can contain many. Export for specific like loading
 import { Loading } from './customComponents/loading';
-import { Menu } from './customComponents/Menu';
-import Projects from './customComponents/Projects';
-import Review from './customComponents/Review';
-import SignUp from './customComponents/SignUp';
 import { AppContextProvider, useApp } from './customComponents/state';
-import WallOfShame from './customComponents/WallOfShame';
 // styles
 import './styles/index.css';
-// substrate imports
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { DeveloperConsole } from './substrate-lib/components';
 
-export const message = (/** @type {import('@polkadot/types/types').AnyJson} */ err, fof = false) => (
-  <Err four={fof} this_error={err} />
-);
+export const message = (/** @type {AnyJson} */ err, fof = false) => <Err four={fof} this_error={err} />;
 function Main() {
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const { state, dispatch } = useApp();
@@ -51,36 +42,7 @@ function Main() {
   // To-do: complete user flow
   return (
     <div>
-      <Menu>
-        {/* Load accounts here on render */}
-        <AccountSelector />
-      </Menu>
-      <DeveloperConsole />
-      <Switch>
-        {userData.accountType === 'unset' && <Redirect exact from='/app' to='/app/sign-up/unset' />}
-        <Route exact path='/app'>
-          <Home />
-        </Route>
-        <Route path='/app/review'>
-          <Review />
-        </Route>
-        <Route path='/app/projects'>
-          <Projects />
-        </Route>
-        <Route path='/app/council'>
-          <Council />
-        </Route>
-        <Route path='/app/wall-of-shame'>
-          <WallOfShame />
-        </Route>
-        <Route exact path='/app/sign-up'>
-          <SignUp />
-        </Route>
-        <Route exact path='/app/sign-up/:id'>
-          <SignUp />
-        </Route>
-        <Route path='*'>{message('404! Not found', true)}</Route>
-      </Switch>
+      <h1>What once was only an app</h1>
     </div>
   );
 }
@@ -90,7 +52,6 @@ export function App() {
 }
 
 export default function RenderMe() {
-  console.log(document.location.pathname, { loc1: document.location }, document.location);
   const message = (/** @type {import('@polkadot/types/types').AnyJson} */ err, fof = false) => (
     <Err four={fof} this_error={err} />
   );
@@ -103,6 +64,7 @@ export default function RenderMe() {
             <Redirect exact from='/substrate-front-end-template' to='/' />
             <Route path='/'>
               <LandingPage />
+              <DeveloperConsole />
             </Route>
             <Route path='/app'>
               <App />

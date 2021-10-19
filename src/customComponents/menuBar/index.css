@@ -1,0 +1,45 @@
+/*<Nav>*/
+.top-nav {
+  /* init */
+  display: flex;
+  /* alignmnet */
+  justify-content: flex-end;
+  /* content buffing */
+  padding: 10px 0 10px 0;
+  /* topography */
+  letter-spacing: var(--spacing);
+}
+.nav-links {
+  /* specific wxh */
+  width: fit-content;
+  height: fit-content;
+  /* center in nav as child of flex container */
+  align-self: center;
+}
+.nav-links-ul > li {
+  /* resets */
+  list-style-type: none;
+  /* crucial for btn */
+  display: inline;
+}
+.nav-link {
+  /* init */
+  text-decoration: none;
+  color: black;
+  /* buffing */
+  padding: 5px;
+  /* spacing */
+  margin-right: 1em;
+  transition: all 0.2s linear;
+  /* topography */
+  font-size: 19.6px;
+}
+.nav-link:hover,
+.nav-link:focus {
+  /* reset-semantic */
+  color: black;
+  /* highlight & smooth choc round */
+  background-color: var(--color-btn-highlight);
+  border-radius: 6px;
+}
+/*</Nav>*/
