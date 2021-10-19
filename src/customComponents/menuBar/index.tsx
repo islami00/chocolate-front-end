@@ -57,7 +57,7 @@ const HandleWallet = function () {
   const [connected, setConnected] = useState(false);
   useEffect(() => {
     if (keyringState === 'READY') setConnected(true);
-  }, [connected]);
+  }, [connected, keyringState]);
 
   if (connected || keyringState === 'READY') {
     return <WalletModal connected />;
@@ -80,7 +80,7 @@ function Navlinks() {
           </Link>
         </li>
         <li>
-          <Link className='nav-link' to='/projects'>
+          <Link className='nav-link' to='/gallery'>
             Projects
           </Link>
         </li>

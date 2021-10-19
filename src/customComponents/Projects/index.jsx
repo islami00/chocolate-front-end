@@ -50,16 +50,13 @@ export const getProjects = async function (projects) {
 
     // @ts-expect-error AnyJson is an array type in this case.
     const [[rawId], rawProject] = [id.toHuman(), project.unwrapOrDefault()];
-
-    if (rawProject.isEmpty || !rawProject.proposalStatus.status.isAccepted) {
-      console.log('run', [rawProject.toHuman()]);
+    if (rawProject.isEmpty) {
       return null;
     }
     const Id = rawId;
     /** @type {Chocolate["Project"]} */
     // @ts-expect-error
     const secondReturnable = rawProject.toHuman();
-    console.log('returned', secondReturnable);
     // mutate socials and project names
     const {
       metaData: { projectName },

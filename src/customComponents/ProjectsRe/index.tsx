@@ -16,9 +16,17 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
  * @type {React.FC<{data:ProjectWithIndex}}
  */
 const DataSummaryDisplay: React.FC<{ data: ProjectWithIndex }> = function (props) {
+  const { data } = props;
+  const { project } = data;
+  const { metaData, proposalStatus } = project;
+  const { projectName } = metaData;
+  const { status } = proposalStatus;
+  // turn project into a class and allow it to average out rating from reviews.
   return (
-    <article>
-      <p>This is a display instance of data</p>
+    <article className={`project-view project-view--${status}`}>
+      <img src={ChocolateRedBig} alt='Project Logo' width='16px' height='16px' />
+      <p>{projectName}</p>
+      <p>status: {status}</p>
     </article>
   );
 };
@@ -29,6 +37,7 @@ const DataSummaryDisplay: React.FC<{ data: ProjectWithIndex }> = function (props
  */
 const DisplayResults: React.FC<{ data: ProjectWithIndex[]; found: boolean }> = function (props) {
   const { data, found } = props;
+  // take project name, image, status.
   let content;
   if (!found) {
     content = (
@@ -102,7 +111,7 @@ const SearchBar: React.FC<{ projects: ProjectWithIndex[] }> = function (props) {
  */
 const ProjectsRe: React.FC = function () {
   const [projects, setProjects] = useState<ProjectWithIndex[]>([]);
-  const { api, keyring } = useSubstrate();
+  const { api, keyring, apiState } = useSubstrate();
   /**  use this to switch between deps for project - demo.  I.e use ret or ret2 - fallbacks */
   const isDemo = true;
 
@@ -111,19 +120,20 @@ const ProjectsRe: React.FC = function () {
     let isMounted = true;
     async function run() {
       const ret = await getProjects(api.query.chocolateModule.projects.entries());
-      const ret2 = await getMockProjects(keyring.getPairs());
+      // remove this when done with dev as it implies a req of connecting wallet to load projects
+      const ret2 = isDemo && (await getMockProjects(keyring.getPairs()));
       const set = !ret.length ? ret2 : ret;
       if (isMounted) {
         setProjects(set);
       }
     }
     if (isDemo) {
-      if (api && api.query && keyring) run();
-    } else if (api && api.query) run();
+      if (apiState === 'READY' && keyring) run();
+    } else if (apiState === 'READY') run();
     return () => {
       isMounted = false;
     };
-  }, [api, isDemo, keyring]);
+  }, [api, isDemo, keyring, apiState]);
   return (
     <main>
       <section>
