@@ -41,7 +41,7 @@ const MutateSocials = function (soc) {
  * @param {Promise<[StorageKey<[ProjectID]>, Option<ProjectAl>][]>} projects
  * @returns {Promise<ProjectWithIndex[]>}
  */
-const getProjects = async function (projects) {
+export const getProjects = async function (projects) {
   // projects are properly passed here
   const usable = await projects;
 
@@ -78,7 +78,7 @@ const getProjects = async function (projects) {
  * @description  Generates mock projects from keyring, leaving one account for purviewing
  * @param {KeyringPair[]} pairs
  */
-const getMockProjects = async function (pairs) {
+export const getMockProjects = async function (pairs) {
   // 2 accepted projects, two verified projects, one rejected project.
   const projects = pairs.map((each, index, arr) => {
     if (index === arr.length - 1) return;

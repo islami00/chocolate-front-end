@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "C:\\Users\\Islam\\Documents\\choco\\chocolate-front-end",
+    "baseUrl": "./",
     "paths": {
       "chocolate/*": ["./src/*"],
       "@polkadot/api/augment": ["./src/interfaces/augment-api.ts"],

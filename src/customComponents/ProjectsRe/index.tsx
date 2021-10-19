@@ -1,5 +1,8 @@
+import { useSubstrate } from 'chocolate/substrate-lib';
+import { ProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
 import React, { useEffect, useState } from 'react';
 import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
+import { getMockProjects, getProjects } from '../Projects';
 /**
  *
  * @param {React.FormEvent<HTMLFormElement>} e
@@ -7,11 +10,12 @@ import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
 };
+// to-do: Make data types generic.
 /**
  *  @description A placeholder for project view. Replace as needed
- * @type {React.FC<{data:object}}
+ * @type {React.FC<{data:ProjectWithIndex}}
  */
-const DataSummaryDisplay: React.FC<{ data: object }> = function (props) {
+const DataSummaryDisplay: React.FC<{ data: ProjectWithIndex }> = function (props) {
   return (
     <article>
       <p>This is a display instance of data</p>
@@ -21,12 +25,12 @@ const DataSummaryDisplay: React.FC<{ data: object }> = function (props) {
 
 /**
  * @description - A placeholder for projects view. Replace as needed
- * @type {React.FC<{data:object[]| []}>}
+ * @type {React.FC<{data:ProjectWithIndex[]; found: boolean;}>}
  */
-const DisplayResults: React.FC<{ data: object[] | [] }> = function (props) {
-  const { data } = props;
+const DisplayResults: React.FC<{ data: ProjectWithIndex[]; found: boolean }> = function (props) {
+  const { data, found } = props;
   let content;
-  if (data.length === 0) {
+  if (!found) {
     content = (
       <>
         <p className='result_text'>Sorry, no results were found</p>
@@ -39,30 +43,33 @@ const DisplayResults: React.FC<{ data: object[] | [] }> = function (props) {
 };
 /**
  * @description - Filters data by the search field and returns a copy for now, it returns the same data
- * @param {object[]} data
+ * @param {ProjectWithIndex[]} data
  * @param {string} value
- * @returns {object[]}
+ * @returns {[ProjectWithIndex[],boolean]}
  */
-const calcResults = function (data: object[], value: string) {
-  const filtered = data.filter(data => {
-    const reg = new RegExp(`(${value})`, 'g');
-    // return data?.field.match(reg);
+const calcResults = function (data: ProjectWithIndex[], value: string): [ProjectWithIndex[], boolean] {
+  const filtered = data.filter(each => {
+    const reg = new RegExp(`(${value})`, 'gi');
+    return reg.exec(each.project.metaData.projectName); /* returns null otherwise */
   });
-
-  return filtered;
+  let found = true;
+  if (filtered.length === 0) found = false;
+  return [filtered, found];
 };
 /**
- * @type {React.FC<{projects:object[]}>}
+ * @type {React.FC<{projects:ProjectWithIndex[]}>}
  */
-const SearchBar: React.FC<{ projects: object[] }> = function (props) {
+const SearchBar: React.FC<{ projects: ProjectWithIndex[] }> = function (props) {
   // data state is handled externally
   const { projects } = props;
   const [value, setValue] = useState('');
-  const [results, setResults] = useState<object[]>([]);
+  const [found, setFound] = useState(false);
+  const [results, setResults] = useState<ProjectWithIndex[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
-    const newResults = calcResults(projects, value);
+    const [newResults, isFound] = calcResults(projects, value);
+    setFound(isFound);
     setResults(newResults);
   }, [projects, value]);
 
@@ -77,13 +84,13 @@ const SearchBar: React.FC<{ projects: object[] }> = function (props) {
           value={value}
           onChange={e => {
             setValue(e.target.value);
-            setIsSearching(true);
+            if (!isSearching) setIsSearching(true);
           }}
           onBlur={() => {
             setIsSearching(false);
           }}
         />
-        {isSearching && <DisplayResults data={results} />}
+        {isSearching && <DisplayResults data={results} found={found} />}
       </div>
     </form>
   );
@@ -93,8 +100,30 @@ const SearchBar: React.FC<{ projects: object[] }> = function (props) {
  *
  * @description Redo of the projects page
  */
-const ProjectsRe = function () {
-  const [projects, setProjects] = useState<object[]>([]);
+const ProjectsRe: React.FC = function () {
+  const [projects, setProjects] = useState<ProjectWithIndex[]>([]);
+  const { api, keyring } = useSubstrate();
+  /**  use this to switch between deps for project - demo.  I.e use ret or ret2 - fallbacks */
+  const isDemo = true;
+
+  useEffect(() => {
+    // prevent race conditions by only updating state when component is mounted
+    let isMounted = true;
+    async function run() {
+      const ret = await getProjects(api.query.chocolateModule.projects.entries());
+      const ret2 = await getMockProjects(keyring.getPairs());
+      const set = !ret.length ? ret2 : ret;
+      if (isMounted) {
+        setProjects(set);
+      }
+    }
+    if (isDemo) {
+      if (api && api.query && keyring) run();
+    } else if (api && api.query) run();
+    return () => {
+      isMounted = false;
+    };
+  }, [api, isDemo, keyring]);
   return (
     <main>
       <section>
@@ -105,13 +134,19 @@ const ProjectsRe = function () {
       <section>
         <section>
           <h2>For Users</h2>
-          <button className='btn btn_large btn--rev'>Submit a review</button>
+          <button type='button' className='btn btn_large btn--rev'>
+            Submit a review
+          </button>
         </section>
         <section>
           <h2>For Projects</h2>
           <div>
-            <button className='btn btn_large btn--light'>Claim a project</button>
-            <button className='btn btn_large btn_large'>Create a project</button>
+            <button type='button' className='btn btn_large btn--light btn--disabled-tbd'>
+              Claim a project
+            </button>
+            <button type='button' className='btn btn_large btn--disabled-tbd'>
+              Create a project
+            </button>
           </div>
         </section>
       </section>
