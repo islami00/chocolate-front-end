@@ -1,8 +1,7 @@
-import { useSubstrate } from 'chocolate/substrate-lib';
 import { ProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
 import React, { useEffect, useState } from 'react';
 import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
-import { getMockProjects, getProjects } from '../Projects';
+import { useProjects } from './hooks';
 /**
  *
  * @param {React.FormEvent<HTMLFormElement>} e
@@ -84,9 +83,9 @@ const SearchBar: React.FC<{ projects: ProjectWithIndex[] }> = function (props) {
 
   return (
     <form role='search' onSubmit={handleSubmit}>
-      <div className='search-wrap'>
+      <div className='searchbar'>
         <input
-          className='search-bar'
+          className='searchbar__input'
           type='search'
           placeholder='Search for a project'
           aria-label='Search for a project'
@@ -105,60 +104,15 @@ const SearchBar: React.FC<{ projects: ProjectWithIndex[] }> = function (props) {
   );
 };
 
-/**
- *
- * @description Redo of the projects page
- */
+/** @description Redo of the projects page */
 const ProjectsRe: React.FC = function () {
-  const [projects, setProjects] = useState<ProjectWithIndex[]>([]);
-  const { api, keyring, apiState } = useSubstrate();
-  /**  use this to switch between deps for project - demo.  I.e use ret or ret2 - fallbacks */
-  const isDemo = true;
-
-  useEffect(() => {
-    // prevent race conditions by only updating state when component is mounted
-    let isMounted = true;
-    async function run() {
-      const ret = await getProjects(api.query.chocolateModule.projects.entries());
-      // remove this when done with dev as it implies a req of connecting wallet to load projects
-      const ret2 = isDemo && (await getMockProjects(keyring.getPairs()));
-      const set = !ret.length ? ret2 : ret;
-      if (isMounted) {
-        setProjects(set);
-      }
-    }
-    if (isDemo) {
-      if (apiState === 'READY' && keyring) run();
-    } else if (apiState === 'READY') run();
-    return () => {
-      isMounted = false;
-    };
-  }, [api, isDemo, keyring, apiState]);
+  const { projects } = useProjects();
   return (
     <main>
       <section>
-        <img src={ChocolateRedBig} alt='Medium sized chocolate bar' width='120px' height='120px' />
+        <img className='top_img' src={ChocolateRedBig} alt='Medium sized chocolate bar' width='120px' height='120px' />
         <p className='tagline'>Ending scam &amp; spam in crypto once and for all.</p>
         <SearchBar projects={projects} />
-      </section>
-      <section>
-        <section>
-          <h2>For Users</h2>
-          <button type='button' className='btn btn_large btn--rev'>
-            Submit a review
-          </button>
-        </section>
-        <section>
-          <h2>For Projects</h2>
-          <div>
-            <button type='button' className='btn btn_large btn--light btn--disabled-tbd'>
-              Claim a project
-            </button>
-            <button type='button' className='btn btn_large btn--disabled-tbd'>
-              Create a project
-            </button>
-          </div>
-        </section>
       </section>
     </main>
   );
