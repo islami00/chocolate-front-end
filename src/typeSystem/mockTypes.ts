@@ -24,12 +24,14 @@ export interface NewProject {
 }
 
 // store on ipfs fully
+export interface ReviewContent{
+  reviewText: string;
+  rating: AnyNumber;
+}
+// store on-chain for extrinsics
 export interface NewReview {
   proposalStatus: ProposalStatus;
   userID: string;
-  content: { 
-        reviewText: string;
-        rating: AnyNumber;
-    }
+  content: ReviewContent;
   projectID: AnyNumber;
 }
