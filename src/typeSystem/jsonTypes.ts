@@ -67,6 +67,7 @@ export interface Social {
   _enum: Partial<SocialEnum>;
 }
 export interface SocialEnum {
+  [x: string]: string;
   Twitter: string;
   Facebook: string;
   Instagram: string;

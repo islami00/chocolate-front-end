@@ -11,9 +11,15 @@
 }
 .nav-links {
   /* specific wxh */
-  width: fit-content;
+  width: 100%;
   height: fit-content;
   /* center in nav as child of flex container */
+  align-self: center;
+  /* children */
+  display: flex;
+  
+}
+.nav-links-ul{
   align-self: center;
 }
 .nav-links-ul > li {
@@ -41,5 +47,8 @@
   /* highlight & smooth choc round */
   background-color: var(--color-btn-highlight);
   border-radius: 6px;
+}
+.nav-link__home {
+  margin-right: auto;
 }
 /*</Nav>*/

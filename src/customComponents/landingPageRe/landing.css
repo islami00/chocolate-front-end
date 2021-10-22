@@ -1,13 +1,9 @@
-
-
 .root-wrap {
   /* sandbox --static */
-  width: 1366px;
-  height: 768px;
+  width: 100vw;
+  height: 100vh;
   /* set on body for all */
   box-sizing: border-box;
   /* buff content in --static */
   padding-right: 57px;
 }
-
-

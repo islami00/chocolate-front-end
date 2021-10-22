@@ -18,6 +18,9 @@ import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { DeveloperConsole } from './substrate-lib/components';
 
 export const message = (/** @type {AnyJson} */ err, fof = false) => <Err four={fof} this_error={err} />;
+export const loader = (/** @type {string} */ text, greet = false) => (
+  <Loading message={text} img={chocolateLogo} {...{ greet }} />
+);
 function Main() {
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const { state, dispatch } = useApp();
@@ -25,9 +28,6 @@ function Main() {
 
   const accountPair =
     userData.accountAddress && keyringState === 'READY' && keyring && keyring.getPair(userData.accountAddress);
-
-  /** @param {string} text */
-  const loader = (text, greet = false) => <Loading message={text} img={chocolateLogo} {...{ greet }} />;
 
   if (apiState === 'ERROR') return message(apiError);
   if (apiState !== 'READY') return loader('Connecting to Substrate');
@@ -52,9 +52,6 @@ export function App() {
 }
 
 export default function RenderMe() {
-  const message = (/** @type {import('@polkadot/types/types').AnyJson} */ err, fof = false) => (
-    <Err four={fof} this_error={err} />
-  );
   return (
     // Wrapping in app and substrate context preserves state. There is only the issue of routing completely resetting on refresh
     <SubstrateContextProvider>
@@ -76,5 +73,3 @@ export default function RenderMe() {
     </SubstrateContextProvider>
   );
 }
-// to-do: decorator: refactor for button triggered load accounts
-// to-do: decorator: static landing page route before load app - check index.js
