@@ -8,6 +8,7 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "get:meta": "ts-node -P tsconfig.defs.json getJson.ts",
+    "make:meta": "ts-node -P tsconfig.defs.json ./src/typeSystem/mockTypes.ts",
     "build-types": "npm run generate:defs && npm run generate:meta",
     "generate:defs": "ts-node -P tsconfig.defs.json node_modules/@polkadot/typegen/scripts/polkadot-types-from-defs.cjs --package chocolate/interfaces --input ./src/interfaces",
     "generate:meta": "ts-node -P tsconfig.defs.json node_modules/@polkadot/typegen/scripts/polkadot-types-from-chain.cjs --package chocolate/interfaces --endpoint ./chocolate.json --output ./src/interfaces",
