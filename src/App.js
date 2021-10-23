@@ -50,11 +50,15 @@ function Main() {
 export function App() {
   return <Main />;
 }
+let nodeConfig;
+if (process.env.NODE_ENV === 'development') {
+  nodeConfig = JSON.parse(process.env.REACT_APP_NODE_CONFIG);
+}
 
 export default function RenderMe() {
   return (
     // Wrapping in app and substrate context preserves state. There is only the issue of routing completely resetting on refresh
-    <SubstrateContextProvider>
+    <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_LOCAL : undefined}>
       <AppContextProvider>
         <Router>
           <Switch>
