@@ -1,0 +1,20 @@
+/* <Wallet> */
+.wallet {
+  /* for modal*/
+  position: relative;
+}
+.wallet_btn {
+  /* resets */
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+.modal_drop {
+  position: absolute;
+  /* ideas for limiting modal: scale relative to parent */
+  width: max-content;
+}
+.modal_drop--right {
+  right: 0;
+}
+/* </Wallet> */

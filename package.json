@@ -8,6 +8,7 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "get:meta": "ts-node -P tsconfig.defs.json getJson.ts",
+    "make:meta": "ts-node -P tsconfig.defs.json ./src/typeSystem/mockTypes.ts",
     "build-types": "npm run generate:defs && npm run generate:meta",
     "generate:defs": "ts-node -P tsconfig.defs.json node_modules/@polkadot/typegen/scripts/polkadot-types-from-defs.cjs --package chocolate/interfaces --input ./src/interfaces",
     "generate:meta": "ts-node -P tsconfig.defs.json node_modules/@polkadot/typegen/scripts/polkadot-types-from-chain.cjs --package chocolate/interfaces --endpoint ./chocolate.json --output ./src/interfaces",
@@ -16,7 +17,8 @@
     "lint": "eslint src/**/*{.js,.jsx,.ts,.tsx}",
     "lint:ci": "eslint src/**/*{.js,.jsx} --max-warnings=0",
     "lint:fix": "eslint --fix src/**/*{.js,.jsx,.ts,.tsx}",
-    "deploy": "gh-pages -d build -m '[ci skip] Updates'"
+    "deploy": "gh-pages -d build -m '[ci skip] Updates'",
+    "fire:deploy": "npm run build && firebase deploy"
   },
   "dependencies": {
     "@polkadot/api": "^5.3.2",
@@ -30,12 +32,14 @@
     "@polkadot/ui-settings": "^0.84.3",
     "@polkadot/util": "^7.1.1",
     "@polkadot/util-crypto": "^7.1.1",
+    "lodash": "^4.17.14",
     "node-sass": "^6.0.1",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.5",
     "react": "^16.14.0",
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^16.14.0",
+    "react-query": "^3.27.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
     "semantic-ui-css": "^2.4.1",
@@ -73,8 +77,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "semistandard"
+      "react-app"
     ],
     "plugins": [
       "only-warn"
@@ -96,9 +99,9 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://substrate-developer-hub.github.io/substrate-front-end-template",
+  "homepage": "https://chocolate-demo.web.app/",
   "bugs": {
-    "url": "https://github.com/substrate-developer-hub/substrate-front-end-template/issues"
+    "url": "https://github.com/chocolatenetwork/chocolate-front-end/issues"
   },
   "keywords": [
     "substrate",

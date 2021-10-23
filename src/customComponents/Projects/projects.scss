@@ -40,3 +40,10 @@
   // horizontal grid alignment
   justify-self: right;
 }
+
+.rate{
+ display: none;
+}
+.rate_choc{
+  transition: opacity 0.3s linear;
+}

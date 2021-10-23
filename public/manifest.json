@@ -1,15 +1,15 @@
 {
-  "short_name": "Substrate Front End",
-  "name": "Substrate Front End Template",
+  "short_name": "Chocolate Demo",
+  "name": "Chocolate Demo",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "chcolate-red-small.ico",
       "sizes": "64x64 48x48 32x32 16x16",
       "type": "image/x-icon"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#ffffff",
+  "background_color": "#edf2fc"
 }

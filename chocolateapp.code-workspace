@@ -3,12 +3,15 @@
     {
       "path": "../chocolate-front-end"
     },
-    // {
-    //   "path": "../chocolate-web-app"
-    // }
     {
-      "path": "../githubtest"
-    }
+      "path": "../chocolate-web-app"
+    },
+    // {
+    //   "path": "H:\\programming\\Documents\\chocolate-front-end\\src\\customComponents"
+    // },
+    // {
+    //   "path": "../githubtest"
+    // },
   ],
   "settings": {
     "npm-intellisense.recursivePackageJsonLookup": true,
@@ -42,8 +45,7 @@
       "source.organizeImports": true
     },
 
-    "js/ts.implicitProjectConfig.checkJs": true,
-    "liveServer.settings.multiRootWorkspaceName": "githubtest"
+    "js/ts.implicitProjectConfig.checkJs": true
   },
   "extensions": {
     "recommendations": ["sysoev.language-stylus", "jpoissonnier.vscode-styled-components", "humao.rest-client"]

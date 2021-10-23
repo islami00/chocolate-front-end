@@ -1,10 +1,13 @@
-import { useAccounts, useSubstrate } from 'chocolate/substrate-lib/SubstrateContext';
+import {
+  useAccounts,
+  useSubstrate
+} from 'chocolate/substrate-lib/SubstrateContext';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
 import './index.css';
-
+import './wallet.css';
 /**
  * @description - A modal that either shows wallet info - account
  * selected and balances - rankpoints and regular, or it shows connect depending on wallet connection.
@@ -29,7 +32,8 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
   let content;
   // do the keyring stuff here too.
   if (keyringState === 'LOADING') content = <p>Loading... </p>;
-  else if (keyringState === 'ERROR') content = <p>Something went wrong, please refresh the page</p>;
+  else if (keyringState === 'ERROR')
+    content = <p>Something went wrong, please refresh the page</p>;
   else if (!connected) {
     content = (
       <>
@@ -57,7 +61,7 @@ const HandleWallet = function () {
   const [connected, setConnected] = useState(false);
   useEffect(() => {
     if (keyringState === 'READY') setConnected(true);
-  }, [connected]);
+  }, [connected, keyringState]);
 
   if (connected || keyringState === 'READY') {
     return <WalletModal connected />;
@@ -68,6 +72,9 @@ const HandleWallet = function () {
 function Navlinks() {
   return (
     <nav className='nav-links'>
+      <Link to='/' className='nav-link nav-link__home'>
+        Chocolate
+      </Link>
       <ul className='nav-links-ul'>
         <li>
           <Link className='nav-link' to='/about'>
@@ -80,7 +87,7 @@ function Navlinks() {
           </Link>
         </li>
         <li>
-          <Link className='nav-link' to='/projects'>
+          <Link className='nav-link' to='/gallery'>
             Projects
           </Link>
         </li>

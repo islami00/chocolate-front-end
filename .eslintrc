@@ -1,5 +1,5 @@
 {
-  "extends": ["react-app", "wesbos","wesbos/typescript"],
+  "extends": ["react-app", "wesbos"],
   "rules": {
     "no-console": 0,
     "prettier/prettier": [
@@ -30,7 +30,12 @@
     "@typescript-eslint/no-use-before-define": 1,
     "react/prop-types": 0,
     "no-unused-expressions": ["warn", { "allowShortCircuit": true, "allowTernary": true }]
-
   },
+  "overrides": [
+    {
+      "files": ["src/**/*.ts", "src/**/*.tsx"],
+      "extends": ["react-app","wesbos/typescript"]
+    }
+  ],
   "plugins": ["eslint-plugin-only-warn"]
 }
