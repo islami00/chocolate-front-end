@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 // icons
 import { Button, Icon } from 'semantic-ui-react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
+import Pensive from '../../assets/pensive-face-emoji.svg';
 import { ProjectWithIndex } from '../../typeSystem/jsonTypes';
 // styles
 import './projects.scss';
@@ -143,7 +144,7 @@ export const ProjectsView: React.FC<{
   }
   if (shame) {
     header = 'Wall of Shame';
-    desc = ':face_Down_emoji:';
+    desc = <img src={Pensive} alt='Pensive face emoji' />;
     const malicious = data.filter(
       each =>
         each.project.proposalStatus.status === 'Rejected' &&

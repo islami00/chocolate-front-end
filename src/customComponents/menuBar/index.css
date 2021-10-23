@@ -51,4 +51,7 @@
 .nav-link__home {
   margin-right: auto;
 }
+.nav-link__home:hover, .nav-link__home:focus{
+  background-color: transparent;
+}
 /*</Nav>*/

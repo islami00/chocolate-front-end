@@ -58,27 +58,48 @@ const revTemp: ReviewContent = {
 const nnumberOfP = 8;
 
 const mockRevs: [number, string][] = [
-  [5, 'This is a legitimate project, I participated in their crowdloan and received rewards and my token back.'],
-  [5, 'Needless to say we are extremely satisfied with the results. It fits our needs perfectly.'],
+  [
+    5,
+    'This is a legitimate project, I participated in their crowdloan and received rewards and my token back.',
+  ],
+  [
+    5,
+    'Needless to say we are extremely satisfied with the results. It fits our needs perfectly.',
+  ],
   [4, "It's really wonderful. Definitely worth the investment."],
-  [3, 'The project is still growing, developers are friendly and take advice as given.'],
+  [
+    3,
+    'The project is still growing, developers are friendly and take advice as given.',
+  ],
 ];
 // takes the reviews and outputs their hashes. Do - LAter
 function OutputReviewJSONForUse(where: number) {
-  mkdir(path.resolve(__dirname, 'test', 'projects', `review${where}`), { recursive: true }).then(() => {
-    [...Array(4)].forEach((_, i) => {
+  mkdir(path.resolve(__dirname, 'test', 'projects', `review${where}`), {
+    recursive: true,
+  }).then(() => {
+    for (let i = 0; i < mockRevs.length; i+=1) {
       const choose = randomInt(mockRevs.length);
       const [rat, t] = mockRevs[choose];
       revTemp.rating = rat;
       revTemp.reviewText = t;
       const rev = JSON.stringify(revTemp);
-      writeFile(path.resolve(__dirname, 'test', 'projects', `review${where}`, `review${i + 1}.json`), rev, {
-        encoding: 'utf-8',
-        flag: 'w',
-      })
+      writeFile(
+        path.resolve(
+          __dirname,
+          'test',
+          'projects',
+          `review${where}`,
+          `review${i + 1}.json`
+        ),
+        rev,
+        {
+          encoding: 'utf-8',
+          flag: 'w',
+        }
+      )
         .then(() => console.log('done review', i))
         .catch(err => console.log(err));
-    });
+    }
   });
 }
 function MakeAcceptedProjects() {
@@ -99,10 +120,14 @@ export function OutputProjectJSONForUse() {
 
         metaTemp.projectLogo = `https://avatars.dicebear.com/api/initials/p${num}.svg`;
         const pr = JSON.stringify(metaTemp);
-        writeFile(path.resolve(__dirname, 'test', 'projects', `project${num}.json`), pr, {
-          encoding: 'utf-8',
-          flag: 'w',
-        })
+        writeFile(
+          path.resolve(__dirname, 'test', 'projects', `project${num}.json`),
+          pr,
+          {
+            encoding: 'utf-8',
+            flag: 'w',
+          }
+        )
           .then(() => console.log('done', i))
           .catch(err => {
             throw new Error(err);
