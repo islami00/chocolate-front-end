@@ -3,7 +3,6 @@
 // substrate imports
 import { AnyJson } from '@polkadot/types/types';
 import React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
 // utility imports
 import { chocolateLogo } from './customComponents/constants';
@@ -60,19 +59,8 @@ export default function RenderMe() {
     // Wrapping in app and substrate context preserves state. There is only the issue of routing completely resetting on refresh
     <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_LOCAL : undefined}>
       <AppContextProvider>
-        <Router>
-          <Switch>
-            <Redirect exact from='/substrate-front-end-template' to='/' />
-            <Route path='/'>
-              <LandingPage />
-              <DeveloperConsole />
-            </Route>
-            <Route path='/app'>
-              <App />
-            </Route>
-            <Route path='*'>{message('404! Not found', true)}</Route>
-          </Switch>
-        </Router>
+        <LandingPage />
+        <DeveloperConsole />
       </AppContextProvider>
     </SubstrateContextProvider>
   );
