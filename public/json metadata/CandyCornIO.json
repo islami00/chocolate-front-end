@@ -1,0 +1,31 @@
+{
+  "dna": "46619b8c43e8b145408b7ccc0350e4e22bc60824",
+  "name": "#1",
+  "description": "Petite Planets",
+  "image": "ipfs://NewUriToReplace/1.png",
+  "edition": 1,
+  "date": 1635049130655,
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "NOR_BG_9"
+    },
+    {
+      "trait_type": "Atmosphere",
+      "value": "ADD_Emerald"
+    },
+    {
+      "trait_type": "Ocean",
+      "value": "NOR_Turquoise"
+    },
+    {
+      "trait_type": "Planet",
+      "value": "Cephalopod"
+    },
+    {
+      "trait_type": "Satellites",
+      "value": "Asteroids"
+    }
+  ],
+  "compiler": "HashLips Art Engine"
+}
