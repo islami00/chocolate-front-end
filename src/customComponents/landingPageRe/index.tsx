@@ -1,6 +1,7 @@
 import { loader, message } from 'chocolate/App';
 import { useSubstrate } from 'chocolate/substrate-lib';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import {
   BrowserRouter as Router,
   Redirect,
@@ -30,7 +31,6 @@ function Main(): JSX.Element {
         <Router>
           <MenuBar />
           <Switch>
-            <Redirect exact from='/substrate-front-end-template' to='/' />
             <Route exact path='/'>
               <ProjectsRe />
             </Route>
@@ -51,6 +51,7 @@ function Main(): JSX.Element {
             </Route>
             <Route path='*'>{message('404! Not found', true)}</Route>
           </Switch>
+          <ReactQueryDevtools initialIsOpen={false} />
         </Router>
       </QueryClientProvider>
     </div>

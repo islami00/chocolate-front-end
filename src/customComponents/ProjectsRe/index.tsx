@@ -35,15 +35,9 @@ const DataSummaryDisplay: React.FC<{ data: ProjectWithIndex }> = function (
   const { projectName } = metaData;
   const { status } = proposalStatus;
   // turn project into a class and allow it to average out rating from reviews.
-  const ref = useRef<HTMLAnchorElement>();
-  const ref2 = useRef<HTMLElement>();
-  const redirect = () => {
-    if (ref.current) ref.current.click();
-  };
-  if (ref2.current) ref2.current.onclick = redirect;
+
   return (
     <section
-      ref={ref2}
       role='group'
       className={`search-result result search-result--${status}`}>
       <img
@@ -53,7 +47,7 @@ const DataSummaryDisplay: React.FC<{ data: ProjectWithIndex }> = function (
         height='16px'
       />
 
-      <Link ref={ref} className='search-result__link' to={`/project/${Id}`}>
+      <Link className='search-result__link' to={`/project/${Id}`}>
         {projectName}
       </Link>
       <p>status: {status}</p>

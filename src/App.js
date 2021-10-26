@@ -49,9 +49,11 @@ function Main() {
 export function App() {
   return <Main />;
 }
+/** @type {Record<"PROVIDER_LOCAL"| "PROVIDER_PLAYGROUND" | "PROVIDER_PHONE",string> | undefined} */
 let nodeConfig;
 if (process.env.NODE_ENV === 'development') {
-  nodeConfig = JSON.parse(process.env.REACT_APP_NODE_CONFIG);
+  // Use config when not running local node.
+  if (process.env.REACT_APP_NODE_CONFIG) nodeConfig = JSON.parse(process.env.REACT_APP_NODE_CONFIG);
 }
 
 export default function RenderMe() {
