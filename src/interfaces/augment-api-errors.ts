@@ -99,39 +99,20 @@ declare module '@polkadot/api/types/errors' {
     };
     chocolateModule: {
       /**
-       * Another project has the same name
+       * The reviewer has already placed a review on this project with following id
        **/
-      DuplicateName: AugmentedError<ApiType>;
-      /**
-       * Duplicate project socials
-       **/
-      DuplicateProjectSocials: AugmentedError<ApiType>;
-      /**
-       * The name given cannot be parsed
-       **/
-      InvalidName: AugmentedError<ApiType>;
-      /**
-       * The origin dispatched from does not match the owner of the project
-       **/
-      InvalidOwner: AugmentedError<ApiType>;
-      /**
-       * Insufficient founder socials! Must be >=2
-       **/
-      LessFounderSocials: AugmentedError<ApiType>;
-      /**
-       * A project must have at least two means of contact including email
-       **/
-      LessProjectSocials: AugmentedError<ApiType>;
-      /**
-       * The project must have at least one email in metadata
-       **/
-      NoEmail: AugmentedError<ApiType>;
-      /**
-       * Error names should be descriptive.
-       **/
+      DuplicateReview: AugmentedError<ApiType>;
       NoneValue: AugmentedError<ApiType>;
       /**
-       * Errors should have helpful documentation associated with them.
+       * The project does not exist
+       **/
+      NoProjectWithId: AugmentedError<ApiType>;
+      /**
+       * Project owners cannot review their projects
+       **/
+      OwnerReviewedProject: AugmentedError<ApiType>;
+      /**
+       * The index exceeds max usize.
        **/
       StorageOverflow: AugmentedError<ApiType>;
       /**

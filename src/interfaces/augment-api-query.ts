@@ -14,7 +14,7 @@ import type { SeatHolder, Voter } from '@polkadot/types/interfaces/staking';
 import type { AccountInfo, ConsumedWeight, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo, Phase } from '@polkadot/types/interfaces/system';
 import type { TreasuryProposal } from '@polkadot/types/interfaces/treasury';
 import type { Multiplier } from '@polkadot/types/interfaces/txpayment';
-import type { ListOfNames, ProjectAl, ProjectID, ReviewAl, ReviewID } from 'chocolate/interfaces/chocolateModule';
+import type { ProjectAl, ProjectID, ReviewAl, ReviewID } from 'chocolate/interfaces/chocolateModule';
 import type { User } from 'chocolate/interfaces/usersModule';
 import type { ApiTypes } from '@polkadot/api/types';
 
@@ -77,19 +77,17 @@ declare module '@polkadot/api/types/storage' {
     };
     chocolateModule: {
       /**
-       * Storage value for project index. Increment as we go
+       * Storage value for project index. Increment as we go.
+       * Analogous to length of project map
        **/
       projectIndex: AugmentedQuery<ApiType, () => Observable<Option<ProjectID>>, []> & QueryableStorageEntry<ApiType, []>;
-      /**
-       * Storage value for project names. Keep sorted.
-       **/
-      projectNames: AugmentedQuery<ApiType, () => Observable<Option<ListOfNames>>, []> & QueryableStorageEntry<ApiType, []>;
       /**
        * Storage map from the project index - id to the projects. getters are for json rpc.
        **/
       projects: AugmentedQuery<ApiType, (arg: ProjectID | AnyNumber | Uint8Array) => Observable<Option<ProjectAl>>, [ProjectID]> & QueryableStorageEntry<ApiType, [ProjectID]>;
       /**
-       * Storage value for reviews index. Increment as we go
+       * Storage value for reviews index. Increment as we go.
+       * Analogous to length of review map
        **/
       reviewIndex: AugmentedQuery<ApiType, () => Observable<Option<ReviewID>>, []> & QueryableStorageEntry<ApiType, []>;
       /**
