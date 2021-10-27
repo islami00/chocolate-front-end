@@ -3,13 +3,8 @@ import { ProjectAl } from 'chocolate/interfaces';
 import { useParams } from 'react-router-dom';
 import { filter } from './majorUtils';
 import useProject from './useProject';
+import useProjectMeta from './useProjectMeta';
 import useReviews from './useReviews';
-
-async function populateMetadata(cid: string, mock = false) {
-  if (mock) {
-    // fetch metadata from mocks
-  }
-}
 
 const ProjectProfile: React.FC<{ data: ProjectAl; id: string }> = function (
   props
@@ -17,7 +12,7 @@ const ProjectProfile: React.FC<{ data: ProjectAl; id: string }> = function (
   const { data, id } = props;
   // race!
   const { data: reviews, isLoading: lrev } = useReviews(data, id);
-
+  const { data: projectMeta, isLoading: lprm } = useProjectMeta(data, id);
   return <h1>Finally, some data fetching, loading? {lrev ? 'Yes' : 'No'} </h1>;
 };
 const Main: React.FC = function () {

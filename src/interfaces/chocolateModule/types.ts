@@ -14,15 +14,12 @@ export interface BalanceOf extends Balance {}
 export interface ListOfNames extends Vec<Text> {}
 
 /** @name MetaData */
-export interface MetaData extends Struct {
-  readonly projectName: Text;
-  readonly projectSocials: ProjectSocials;
-  readonly founderSocials: Vec<Social>;
-}
+export interface MetaData extends Text {}
 
 /** @name Project */
 export interface Project extends Struct {
   readonly ownerID: AccountId;
+  readonly reviewers: Option<Vec<AccountId>>;
   readonly reviews: Option<Vec<ReviewID>>;
   readonly badge: Option<bool>;
   readonly metaData: MetaData;
@@ -34,9 +31,6 @@ export interface ProjectAl extends Project {}
 
 /** @name ProjectID */
 export interface ProjectID extends u32 {}
-
-/** @name ProjectSocials */
-export interface ProjectSocials extends Vec<Social> {}
 
 /** @name ProposalStatus */
 export interface ProposalStatus extends Struct {
@@ -57,7 +51,7 @@ export interface Reason extends Enum {
 export interface Review extends Struct {
   readonly proposalStatus: ProposalStatus;
   readonly userID: AccountId;
-  readonly reviewText: Text;
+  readonly content: Text;
   readonly projectID: ProjectID;
 }
 
@@ -66,21 +60,6 @@ export interface ReviewAl extends Review {}
 
 /** @name ReviewID */
 export interface ReviewID extends u64 {}
-
-/** @name Social */
-export interface Social extends Enum {
-  readonly isTwitter: boolean;
-  readonly asTwitter: Text;
-  readonly isFacebook: boolean;
-  readonly asFacebook: Text;
-  readonly isInstagram: boolean;
-  readonly asInstagram: Text;
-  readonly isRiot: boolean;
-  readonly asRiot: Text;
-  readonly isEmail: boolean;
-  readonly asEmail: Text;
-  readonly isNone: boolean;
-}
 
 /** @name Status */
 export interface Status extends Enum {
