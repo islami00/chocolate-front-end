@@ -55,21 +55,24 @@ const revTemp: ReviewContent = {
   reviewText: '',
 };
 
-const nnumberOfP = 8;
+const nnumberOfP = 5;
 
 const mockRevs: [number, string][] = [
   [
     5,
-    'This is a legitimate project, I participated in their crowdloan and received rewards and my token back.',
+    'This is a legitimate project, I participated in their crowdloan via their website. Received my tokens and crowdloan supporter NFT promptly after the parachain auctions. Thank you!!!',
   ],
   [
     5,
-    'Needless to say we are extremely satisfied with the results. It fits our needs perfectly.',
+    "I contributed to this network's 'Treasury Funding' launch event and filled my bags with their token. The chocolate trust badge made it super easy to verify the token smart contract on CoinGecko with and I received my early bird bonus - no issues whatsoever.",
   ],
-  [4, "It's really wonderful. Definitely worth the investment."],
+  [
+    4,
+    "I've bought, minted and sold a few NFTs on this marketplace and my experience has been largely positive. Fees are cheaper than on the bigger exchanges and their integration with chocolate verification makes me feel safe using it.",
+  ],
   [
     3,
-    'The project is still growing, developers are friendly and take advice as given.',
+    "The project is still growing and their technology is really promising :-) I've been staking their native token for a few months via their native app and the yields. are. epic.",
   ],
 ];
 // takes the reviews and outputs their hashes. Do - LAter
@@ -77,7 +80,7 @@ function OutputReviewJSONForUse(where: number) {
   mkdir(path.resolve(__dirname, 'test', 'projects', `review${where}`), {
     recursive: true,
   }).then(() => {
-    for (let i = 0; i < mockRevs.length; i+=1) {
+    for (let i = 0; i < mockRevs.length; i += 1) {
       const choose = randomInt(mockRevs.length);
       const [rat, t] = mockRevs[choose];
       revTemp.rating = rat;
