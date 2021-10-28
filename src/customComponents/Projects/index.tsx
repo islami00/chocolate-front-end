@@ -1,5 +1,6 @@
 // type imports
 import Identicon from '@polkadot/react-identicon';
+import { AnyNumber } from '@polkadot/types/types';
 // default imports
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -7,13 +8,13 @@ import { Link } from 'react-router-dom';
 import { Button, Icon } from 'semantic-ui-react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
 import Pensive from '../../assets/pensive-face-emoji.svg';
-import { ChainProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
 // styles
 import './projects.scss';
 
-/** @type {React.FC<{rating:import('@polkadot/types/types').AnyNumber; fixed:boolean;}>} */
+/** @description rating component, optionally interactive */
 const Rating: React.FC<{
-  rating: import('@polkadot/types/types').AnyNumber;
+  rating: AnyNumber;
   fixed: boolean;
 }> = function (props) {
   // expect rating to 2dp
@@ -30,20 +31,22 @@ const Rating: React.FC<{
         [...Array(5)].map((_, i) => {
           const currentRating = i + 1;
           return (
-            <label>
+            <label key={`choc_bar${currentRating}`}>
               <input
                 className='rate'
                 type='radio'
                 name='Rating'
                 id=''
                 value={currentRating}
-                onClick={!fixed && (() => setRated(currentRating))}
+                onClick={!fixed ? () => setRated(currentRating) : undefined}
               />
               <img
                 src={ChocolateRedSmall}
                 alt='Rating'
-                onMouseEnter={!fixed && (() => setHover(currentRating))}
-                onMouseLeave={!fixed && (() => setHover(0))}
+                onMouseEnter={
+                  !fixed ? () => setHover(currentRating) : undefined
+                }
+                onMouseLeave={!fixed ? () => setHover(0) : undefined}
                 className='rate_choc'
                 style={{
                   opacity: `${currentRating <= (hover || rated) ? 1 : 0.5}`,
@@ -56,15 +59,12 @@ const Rating: React.FC<{
     </form>
   );
 };
-/**
- * @description Houses a single project
- * @type {React.FC<{data: ChainProjectWithIndex}>} - Give proper types later
- */
-const ProjectView: React.FC<{ data: ChainProjectWithIndex }> = function (props) {
+/** @description Houses a single project */
+const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   const { data } = props;
   const { Id, project } = data;
   const { ownerID, proposalStatus, metaData } = project;
-  const { projectName: name } = metaData;
+  const { name } = metaData;
   const { status } = proposalStatus;
   let rateBar = <></>;
   let toProject = <></>;
@@ -73,7 +73,7 @@ const ProjectView: React.FC<{ data: ChainProjectWithIndex }> = function (props) 
     toProject = (
       <Button
         as={Link}
-        to={`/projects/${Id.toString()}`}
+        to={`/project/${Id.toString()}`}
         color='brown'
         icon
         labelPosition='right'
@@ -103,10 +103,10 @@ const ProjectView: React.FC<{ data: ChainProjectWithIndex }> = function (props) 
 
 /**
  * @description Houses the projects
- * @type  {React.FC<{data : ChainProjectWithIndex[]; gallery?:boolean;shame?:boolean}>}
+ * @type  {React.FC<{data : NewProjectWithIndex[]; gallery?:boolean;shame?:boolean}>}
  */
 export const ProjectsView: React.FC<{
-  data: ChainProjectWithIndex[];
+  data: NewProjectWithIndex[];
   gallery?: boolean;
   shame?: boolean;
 }> = function (props) {
@@ -117,8 +117,8 @@ export const ProjectsView: React.FC<{
   let render;
   let header;
   let desc;
-  /** @param {ChainProjectWithIndex} project */
-  const toProject = (project: ChainProjectWithIndex) => (
+  /** @param {NewProjectWithIndex} project */
+  const toProject = (project: NewProjectWithIndex) => (
     <ProjectView data={project} key={project.Id.toString()} />
   );
   if (gallery) {

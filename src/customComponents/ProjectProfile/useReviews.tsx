@@ -6,10 +6,11 @@ import { populateReviews } from './majorUtils';
 
 export default function useReviews(
   data: Project,
-  id: string
+  id: string,
+  ownerId: string
 ): UseQueryResult<ReviewContent[]> {
   const queryKey = ['reviews', id];
   const { api } = useSubstrate();
   const revs = data.reviews.unwrapOrDefault();
-  return useQuery(queryKey, () => populateReviews(revs, api, id, true));
+  return useQuery(queryKey, () => populateReviews(revs, api, ownerId));
 }

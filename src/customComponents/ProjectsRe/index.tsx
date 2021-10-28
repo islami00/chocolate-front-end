@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { ChainProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
+import { NewProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
@@ -11,14 +11,12 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 };
 /** @description - Filters data by the search field and returns a copy for now, it returns the same data */
 const calcResults = function (
-  data: ChainProjectWithIndex[],
+  data: NewProjectWithIndex[],
   value: string
-): [ChainProjectWithIndex[], boolean] {
+): [NewProjectWithIndex[], boolean] {
   const filtered = data.filter(each => {
     const reg = new RegExp(`(${value})`, 'gi');
-    return reg.exec(
-      each.project.metaData.projectName
-    ); /* returns null otherwise */
+    return reg.exec(each.project.metaData.name); /* returns null otherwise */
   });
   let found = true;
   if (filtered.length === 0) found = false;
@@ -26,13 +24,13 @@ const calcResults = function (
 };
 // to-do: Make data types generic.
 /** @description A placeholder for project view. Replace as needed */
-const DataSummaryDisplay: React.FC<{ data: ChainProjectWithIndex }> = function (
+const DataSummaryDisplay: React.FC<{ data: NewProjectWithIndex }> = function (
   props
 ) {
   const { data } = props;
   const { Id, project } = data;
   const { metaData, proposalStatus } = project;
-  const { projectName } = metaData;
+  const { name, icon } = metaData;
   const { status } = proposalStatus;
   // turn project into a class and allow it to average out rating from reviews.
 
@@ -40,15 +38,10 @@ const DataSummaryDisplay: React.FC<{ data: ChainProjectWithIndex }> = function (
     <section
       role='group'
       className={`search-result result search-result--${status}`}>
-      <img
-        src={ChocolateRedBig}
-        alt='Project Logo'
-        width='16px'
-        height='16px'
-      />
+      <img src={icon} alt='Project Logo' width='16px' height='16px' />
 
-      <Link className='search-result__link' to={`/project/${Id}`}>
-        {projectName}
+      <Link className='search-result__link' to={`/project/${Id.toString()}`}>
+        {name}
       </Link>
       <p>status: {status}</p>
     </section>
@@ -56,36 +49,40 @@ const DataSummaryDisplay: React.FC<{ data: ChainProjectWithIndex }> = function (
 };
 
 /** @description - A placeholder for projects view. Replace as needed */
-const DisplayResults: React.FC<{ data: ChainProjectWithIndex[]; found: boolean }> =
-  function (props) {
-    const { data, found } = props;
-    // take project name, image, status.
-    let content: JSX.Element | JSX.Element[];
-    if (!found) {
-      content = (
-        <>
-          <p className='result'>Sorry, no results were found</p>
-        </>
-      );
-    } else {
-      // paginate for memory.
-      content = data.map(each => (
-        <DataSummaryDisplay key={JSON.stringify(each)} data={each} />
-      ));
-    }
-    return (
-      <article className='ui results transition visible search-results'>
-        {content}
-      </article>
+const DisplayResults: React.FC<{
+  data: NewProjectWithIndex[];
+  found: boolean;
+}> = function (props) {
+  const { data, found } = props;
+  // take project name, image, status.
+  let content: JSX.Element | JSX.Element[];
+  if (!found) {
+    content = (
+      <>
+        <p className='result'>Sorry, no results were found</p>
+      </>
     );
-  };
+  } else {
+    // paginate for memory.
+    content = data.map(each => (
+      <DataSummaryDisplay key={JSON.stringify(each)} data={each} />
+    ));
+  }
+  return (
+    <article className='ui results transition visible search-results'>
+      {content}
+    </article>
+  );
+};
 
-const SearchBar: React.FC<{ projects: ChainProjectWithIndex[] }> = function (props) {
+const SearchBar: React.FC<{ projects: NewProjectWithIndex[] }> = function (
+  props
+) {
   // data state is handled externally
   const { projects } = props;
   const [value, setValue] = useState('');
   const [found, setFound] = useState(false);
-  const [results, setResults] = useState<ChainProjectWithIndex[]>([]);
+  const [results, setResults] = useState<NewProjectWithIndex[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const timeOutRef = useRef<NodeJS.Timeout>();
 
@@ -126,6 +123,7 @@ const SearchBar: React.FC<{ projects: ChainProjectWithIndex[] }> = function (pro
       {isSearching && <DisplayResults data={results} found={found} />}
     </form>
   );
+  
 };
 
 /** @description Redo of the projects page */
@@ -145,6 +143,24 @@ const ProjectsRe: React.FC = function () {
           Ending scam &amp; spam in crypto once and for all.
         </p>
         {isFetched && <SearchBar projects={data} />}
+      </section>
+      <section className='ui container'>
+        <div className='ui button group'>
+          <Link className='ui button choc-pink' to='/gallery'>
+            Find a project
+          </Link>
+          <Link className='ui button choc-pink' to='/wall-of-shame'>
+            Wall of shame
+          </Link>
+        </div>
+        <div className='ui button group'>
+          <button type='button' className='ui button disabled'>
+            Create a project
+          </button>
+          <button type='button' className='ui button disabled'>
+            Claim a project
+          </button>
+        </div>
       </section>
     </main>
   );

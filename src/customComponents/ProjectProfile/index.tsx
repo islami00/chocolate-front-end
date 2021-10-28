@@ -1,6 +1,7 @@
 import { message } from 'chocolate/App';
 import { ProjectAl } from 'chocolate/interfaces';
 import { useParams } from 'react-router-dom';
+import { useApp } from '../state';
 import { filter } from './majorUtils';
 import useProject from './useProject';
 import useProjectMeta from './useProjectMeta';
@@ -10,8 +11,15 @@ const ProjectProfile: React.FC<{ data: ProjectAl; id: string }> = function (
   props
 ) {
   const { data, id } = props;
+  const { state } = useApp();
+  const { userData } = state;
+  const { accountAddress: addr } = userData;
+  let canReview = true;
+  if (data.ownerID.eq(addr)) canReview = false;
   // race!
-  const { data: reviews, isLoading: lrev } = useReviews(data, id);
+
+  const { data: reviews, isLoading: lrev } = useReviews(data, id, addr);
+
   const { data: projectMeta, isLoading: lprm } = useProjectMeta(data, id);
   return <h1>Finally, some data fetching, loading? {lrev ? 'Yes' : 'No'} </h1>;
 };
@@ -26,8 +34,8 @@ const Main: React.FC = function () {
     if (re === 0)
       return (
         <p>
-          This project has been rejected from the chocolate ecosystem due to{' '}
-          {data.proposalStatus.reason.toHuman()}
+          This project has been rejected from the chocolate ecosystem due to
+          being {data.proposalStatus.reason.toString()}
         </p>
       );
     if (re === 1) return <p>This project is currently proposed</p>;

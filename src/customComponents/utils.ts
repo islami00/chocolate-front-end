@@ -2,6 +2,13 @@
 // Utility - by call order in app
 // prettier-ignore
 import { AbstractArray } from '@polkadot/types/codec/AbstractArray';
+import { ReviewID } from 'chocolate/interfaces';
+const sortReviewIDs =  function(a:ReviewID,b:ReviewID){
+      const sb  = a.sub(b);
+      if (sb.isNeg()) return -1
+      if(sb.isZero()) return 0
+      return 1
+}
 const toPinataFetch = function(link:string){
   return `https://gateway.pinata.cloud/ipfs/${link}`
 }
@@ -101,5 +108,6 @@ function sendTrace(trace: string, browser: string, ...extras: string[]) {
   console.log(browser);
 }
 type errType = { status: boolean; content: string[] };
-export { fetchData,isEmpty, sendTrace, sleep, errorHandled, toPinataFetch };
+export { fetchData, isEmpty, sendTrace, sleep, errorHandled, toPinataFetch, sortReviewIDs as sortAnyNum };
 export type { errType };
+
