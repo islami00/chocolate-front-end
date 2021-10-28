@@ -27,7 +27,7 @@ export interface ChainProjectWithIndex {
 }
 export interface NewProjectWithIndex {
   Id: AnyNumber;
-  project: NewProjectWithIndex;
+  project: NewProject;
 }
 export type ChainMetaData = string;
 
