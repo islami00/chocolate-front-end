@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { Button, Icon } from 'semantic-ui-react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
 import Pensive from '../../assets/pensive-face-emoji.svg';
-import { ProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { ChainProjectWithIndex } from '../../typeSystem/jsonTypes';
 // styles
 import './projects.scss';
 
@@ -58,9 +58,9 @@ const Rating: React.FC<{
 };
 /**
  * @description Houses a single project
- * @type {React.FC<{data: ProjectWithIndex}>} - Give proper types later
+ * @type {React.FC<{data: ChainProjectWithIndex}>} - Give proper types later
  */
-const ProjectView: React.FC<{ data: ProjectWithIndex }> = function (props) {
+const ProjectView: React.FC<{ data: ChainProjectWithIndex }> = function (props) {
   const { data } = props;
   const { Id, project } = data;
   const { ownerID, proposalStatus, metaData } = project;
@@ -103,10 +103,10 @@ const ProjectView: React.FC<{ data: ProjectWithIndex }> = function (props) {
 
 /**
  * @description Houses the projects
- * @type  {React.FC<{data : ProjectWithIndex[]; gallery?:boolean;shame?:boolean}>}
+ * @type  {React.FC<{data : ChainProjectWithIndex[]; gallery?:boolean;shame?:boolean}>}
  */
 export const ProjectsView: React.FC<{
-  data: ProjectWithIndex[];
+  data: ChainProjectWithIndex[];
   gallery?: boolean;
   shame?: boolean;
 }> = function (props) {
@@ -117,8 +117,8 @@ export const ProjectsView: React.FC<{
   let render;
   let header;
   let desc;
-  /** @param {ProjectWithIndex} project */
-  const toProject = (project: ProjectWithIndex) => (
+  /** @param {ChainProjectWithIndex} project */
+  const toProject = (project: ChainProjectWithIndex) => (
     <ProjectView data={project} key={project.Id.toString()} />
   );
   if (gallery) {

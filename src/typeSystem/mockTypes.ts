@@ -10,44 +10,23 @@ import { randomInt } from 'crypto';
 // 2 proposed
 import { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
-import { ProposalStatus } from './jsonTypes';
+import type { NewMetaData, ReviewContent } from './jsonTypes';
 // store on ipfs
-export interface NewMetaData {
-  projectName: string;
-  website: string;
-  whitepaper: string;
-  projectLogo: string;
-}
+export type {
+  NewMetaData,
+  NewProject,
+  NewReview,
+  ReviewContent
+} from './jsonTypes';
 // this links to a mapping from id to review
 type ReviewId = AnyNumber;
 
-// The immediate members are stored on-chain
-export interface NewProject {
-  ownerID: string;
-  reviews: ReviewId[];
-  badge: boolean;
-  metaData: NewMetaData;
-  proposalStatus: ProposalStatus;
-}
-
-// store on ipfs fully
-export interface ReviewContent {
-  reviewText: string;
-  rating: AnyNumber;
-}
-// store on-chain for extrinsics
-export interface NewReview {
-  proposalStatus: ProposalStatus;
-  userID: string;
-  content: ReviewContent;
-  projectID: AnyNumber;
-}
-
 const metaTemp: NewMetaData = {
-  projectName: '',
-  website: '',
-  whitepaper: '',
-  projectLogo: '',
+  name: '',
+  Link: '',
+  description: '',
+  icon: '',
+  date: new Date().getTime(),
 };
 
 const revTemp: ReviewContent = {
@@ -117,11 +96,9 @@ export function OutputProjectJSONForUse() {
     .then(() => {
       for (let i = 0; i < nnumberOfP; i += 1) {
         const num = i + 1;
-        metaTemp.projectName = `Project-${num}`;
-        metaTemp.website = '#';
-        metaTemp.whitepaper = '#';
-
-        metaTemp.projectLogo = `https://avatars.dicebear.com/api/initials/p${num}.svg`;
+        metaTemp.name = `Project-${num}`;
+        metaTemp.Link = '#';
+        metaTemp.icon = `https://avatars.dicebear.com/api/initials/p${num}.svg`;
         const pr = JSON.stringify(metaTemp);
         writeFile(
           path.resolve(__dirname, 'test', 'projects', `project${num}.json`),

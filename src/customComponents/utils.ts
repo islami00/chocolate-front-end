@@ -2,12 +2,13 @@
 // Utility - by call order in app
 // prettier-ignore
 import { AbstractArray } from '@polkadot/types/codec/AbstractArray';
-
+const toPinataFetch = function(link:string){
+  return `https://gateway.pinata.cloud/ipfs/${link}`
+}
 /**
  * @description This checks Arrays,Strings, Maps,Sets for empty state and returns true. It returns false If not empty or Constructor not supported
  * @param {*} type
  * @returns {boolean}
- *
  */
 const isEmpty = type => {
   switch (type) {
@@ -100,5 +101,5 @@ function sendTrace(trace: string, browser: string, ...extras: string[]) {
   console.log(browser);
 }
 type errType = { status: boolean; content: string[] };
-export { fetchData,isEmpty, sendTrace, sleep, errorHandled };
+export { fetchData,isEmpty, sendTrace, sleep, errorHandled, toPinataFetch };
 export type { errType };
