@@ -5,39 +5,38 @@ import { AnyNumber } from '@polkadot/types/types';
 
 export interface Chocolate {
   User: User;
-  ReviewAl: Review;
-  ProjectAl: Project;
+  ReviewAl: ChainReview;
+  ProjectAl: ChainProject;
   ListOfNames: string[];
   TextAl: string;
-  Project: Project;
+  Project: ChainProject;
   ProjectID: AnyNumber;
   ReviewID: AnyNumber;
   ProposalStatus: ProposalStatus;
   Status: Status['_enum'];
   Reason: Reason['_enum'];
-  MetaData: MetaData;
-  ProjectSocials: Social['_enum'][];
-  Social: Social['_enum'];
-  Review: Review;
+  MetaData: ChainMetaData;
+  Review: ChainReview;
   Balance: AnyNumber;
   BalanceOf: AnyNumber;
-  ProjectWithIndex: ProjectWithIndex;
+  ChainProjectWithIndex: ChainProjectWithIndex;
 }
-export interface ProjectWithIndex {
+export interface ChainProjectWithIndex {
   Id: AnyNumber;
-  project: Project;
+  project: ChainProject;
 }
-export interface MetaData {
-  projectName: string;
-  projectSocials: Social['_enum'][];
-  founderSocials: Social['_enum'][];
+export interface NewProjectWithIndex {
+  Id: AnyNumber;
+  project: NewProject;
 }
+export type ChainMetaData = string;
 
-export interface Project {
+export interface ChainProject {
   ownerID: string;
+  reviewers?: string[];
   reviews?: AnyNumber[];
   badge?: boolean;
-  metaData: MetaData;
+  metaData: ChainMetaData;
   proposalStatus: ProposalStatus;
 }
 
@@ -57,25 +56,36 @@ export interface ReasonEnum {
   PassedRequirements: null;
 }
 
-export interface Review {
+export interface ChainReview {
   proposalStatus: ProposalStatus;
   userID: string;
-  reviewText: string;
+  content: string;
   projectID: AnyNumber;
 }
 
-export interface Social {
-  _enum: Partial<SocialEnum>;
+export interface NewMetaData {
+  /** If doesn't exist polyfill */
+  Link?: string;
+  name: string;
+  description: string;
+  /** If doesn't exist icon exists */
+  image?: string;
+  icon?: string;
+  date: number;
 }
-export interface SocialEnum {
-  [x: string]: string;
-  Twitter: string;
-  Facebook: string;
-  Instagram: string;
-  Riot: string;
-  Email: string;
-  None: null;
+
+export type NewProject = Omit<ChainProject, 'metaData'> & {
+  metaData: NewMetaData;
+};
+
+// store on ipfs fully
+export interface ReviewContent {
+  reviewText: string;
+  rating: AnyNumber;
 }
+export type NewReview = Omit<ChainReview, 'content'> & {
+  content: ReviewContent;
+};
 
 export interface Status {
   _enum: 'Proposed' | 'Accepted' | 'Rejected';

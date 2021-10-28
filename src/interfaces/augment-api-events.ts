@@ -9,6 +9,7 @@ import type { MemberCount, ProposalIndex } from '@polkadot/types/interfaces/coll
 import type { AuthorityList } from '@polkadot/types/interfaces/grandpa';
 import type { AccountId, AssetId, Balance, BalanceOf, Hash } from '@polkadot/types/interfaces/runtime';
 import type { DispatchError, DispatchInfo, DispatchResult } from '@polkadot/types/interfaces/system';
+import type { ProjectID } from 'chocolate/interfaces/chocolateModule';
 import type { ApiTypes } from '@polkadot/api/types';
 
 declare module '@polkadot/api/types/events' {
@@ -143,9 +144,13 @@ declare module '@polkadot/api/types/events' {
        **/
       Minted: AugmentedEvent<ApiType, [BalanceOf]>;
       /**
-       * parameters. [owner,name]
+       * parameters. [owner,cid]
        **/
-      ProjectCreated: AugmentedEvent<ApiType, [Bytes]>;
+      ProjectCreated: AugmentedEvent<ApiType, [AccountId, Bytes]>;
+      /**
+       * parameters. [owner,project_id]
+       **/
+      ReviewCreated: AugmentedEvent<ApiType, [AccountId, ProjectID]>;
       /**
        * Event documentation should end with an array that provides descriptive names for event
        * parameters. [something, who]

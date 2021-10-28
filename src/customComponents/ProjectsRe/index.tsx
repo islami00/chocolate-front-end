@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { ProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
+import { ChainProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
@@ -11,9 +11,9 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 };
 /** @description - Filters data by the search field and returns a copy for now, it returns the same data */
 const calcResults = function (
-  data: ProjectWithIndex[],
+  data: ChainProjectWithIndex[],
   value: string
-): [ProjectWithIndex[], boolean] {
+): [ChainProjectWithIndex[], boolean] {
   const filtered = data.filter(each => {
     const reg = new RegExp(`(${value})`, 'gi');
     return reg.exec(
@@ -26,7 +26,7 @@ const calcResults = function (
 };
 // to-do: Make data types generic.
 /** @description A placeholder for project view. Replace as needed */
-const DataSummaryDisplay: React.FC<{ data: ProjectWithIndex }> = function (
+const DataSummaryDisplay: React.FC<{ data: ChainProjectWithIndex }> = function (
   props
 ) {
   const { data } = props;
@@ -56,7 +56,7 @@ const DataSummaryDisplay: React.FC<{ data: ProjectWithIndex }> = function (
 };
 
 /** @description - A placeholder for projects view. Replace as needed */
-const DisplayResults: React.FC<{ data: ProjectWithIndex[]; found: boolean }> =
+const DisplayResults: React.FC<{ data: ChainProjectWithIndex[]; found: boolean }> =
   function (props) {
     const { data, found } = props;
     // take project name, image, status.
@@ -80,12 +80,12 @@ const DisplayResults: React.FC<{ data: ProjectWithIndex[]; found: boolean }> =
     );
   };
 
-const SearchBar: React.FC<{ projects: ProjectWithIndex[] }> = function (props) {
+const SearchBar: React.FC<{ projects: ChainProjectWithIndex[] }> = function (props) {
   // data state is handled externally
   const { projects } = props;
   const [value, setValue] = useState('');
   const [found, setFound] = useState(false);
-  const [results, setResults] = useState<ProjectWithIndex[]>([]);
+  const [results, setResults] = useState<ChainProjectWithIndex[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const timeOutRef = useRef<NodeJS.Timeout>();
 
