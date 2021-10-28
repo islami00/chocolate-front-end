@@ -34,6 +34,7 @@ const getProjects = async function (
     );
     if (error) throw error;
     const realMeta: NewMetaData = (await meta.json()) as NewMetaData;
+    realMeta.icon = `https://avatars.dicebear.com/api/initials/${realMeta.name}.svg`;
     const newRet = { ...secondReturnable, metaData: realMeta };
     const ret: NewProjectWithIndex = { Id, project: newRet };
     return ret;
@@ -42,15 +43,22 @@ const getProjects = async function (
   const cleanProjects = mut.filter(each => each !== null && each !== undefined);
   return cleanProjects;
 };
+/** @description  Get all projects as usable jsons and sort by id */
 const useProjects = function (): UseQueryResult<
   NewProjectWithIndex[],
   unknown
 > {
   const { api } = useSubstrate();
-  // refactor to useQuery 'chain', 'projects' and useQuery 'ipfs' , 'metadata'
-  // then include utility function to consolidate both types. but we good for now
+  // To-do: refactor to useQuery 'chain', 'projects' and useQuery 'ipfs' , 'metadata'
+  // then include utility function to consolidate both types. but we good for now. Collects both
   async function fetchProjects() {
     const ret = await getProjects(api.query.chocolateModule.projects.entries());
+    ret.sort((pr1, pr2) => {
+      let x = 1;
+      if (pr1.Id < pr2.Id) x = -1;
+      else if (pr1.Id === pr2.Id) x = 0;
+      return x;
+    });
     return ret;
   }
   return useQuery('projects', fetchProjects);

@@ -68,7 +68,7 @@ export interface NewMetaData {
   Link?: string;
   name: string;
   description: string;
-  /** If doesn't exist icon exists */
+  /** @deprecated, use icon instead, only the first struct makes use of this, the rest use icon */
   image?: string;
   icon?: string;
   date: number;
