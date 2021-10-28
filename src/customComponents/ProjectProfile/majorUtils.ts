@@ -27,11 +27,12 @@ const ipfsConfig = {
 async function populateReviews(
   referral: Vec<ReviewID>,
   api: ApiPromise,
-  userId: string
+  userId: string,
+  debug = false
 ): Promise<ReviewContent[]> {
   // setup time stamps for easier sort
   referral.sort(sortAnyNum);
-  console.log('After sort', referral);
+  if (debug) console.log('After sort', referral);
   const chainRes = referral.map(async element => {
     const optReview = await api.query.chocolateModule.reviews(element);
     const review = optReview.unwrapOr(0);
@@ -41,19 +42,22 @@ async function populateReviews(
   });
   const result = await Promise.all(chainRes);
   const contents = result.map(async (element, i, arr) => {
-    console.log('ITer', i, arr, element);
+    if (debug) console.log('ITer', i, arr, element);
     const [res, err] = await errorHandled(fetch(toPinataFetch(element)));
     if (err) throw err;
     const rev = (await res.json()) as ReviewContent;
-    console.log('returned', rev);
+    if (debug) console.log('returned', rev);
     return rev;
   });
   return Promise.all(contents);
   // use the referral array here.
 }
 /** works */
-async function populateMetadata(cid: string): Promise<NewMetaData> {
-  console.log('got metadata cid', cid);
+async function populateMetadata(
+  cid: string,
+  debug = false
+): Promise<NewMetaData> {
+  if (debug) console.log('got metadata cid', cid);
   // fetch meta from cid.
   const [res, err] = await errorHandled(fetch(toPinataFetch(cid)));
   if (err) throw err;
