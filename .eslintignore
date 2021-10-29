@@ -4,3 +4,4 @@ src/*.js
 !src/customComponents/**/*.js
 !src/App.js
 !src/AccountSelector.js
+src/interfaces

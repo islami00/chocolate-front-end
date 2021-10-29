@@ -123,7 +123,6 @@ const SearchBar: React.FC<{ projects: NewProjectWithIndex[] }> = function (
       {isSearching && <DisplayResults data={results} found={found} />}
     </form>
   );
-  
 };
 
 /** @description Redo of the projects page */

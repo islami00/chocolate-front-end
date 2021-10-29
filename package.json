@@ -15,7 +15,7 @@
     "test": "CI=true react-app-rewired test --env=jsdom",
     "eject": "react-app-rewired eject",
     "lint": "eslint src/**/*{.js,.jsx,.ts,.tsx}",
-    "lint:ci": "eslint src/**/*{.js,.jsx} --max-warnings=0",
+    "lint:ci": "eslint src/**/*{.js,.jsx,.ts,.tsx} --max-warnings=0",
     "lint:fix": "eslint --fix src/**/*{.js,.jsx,.ts,.tsx}",
     "deploy": "gh-pages -d build -m '[ci skip] Updates'",
     "fire:deploy": "npm run build && firebase deploy"

@@ -1,5 +1,5 @@
 // defined the various classes
-// 
+//
 
 import { AnyNumber } from '@polkadot/types/types';
 import { NewProject } from './mockTypes';
@@ -20,8 +20,6 @@ class JSONProject {
     const x: AnyNumber = 0;
     return x;
   }
-
- 
 }
 
 export default {};

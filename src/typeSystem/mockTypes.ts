@@ -16,7 +16,7 @@ export type {
   NewMetaData,
   NewProject,
   NewReview,
-  ReviewContent
+  ReviewContent,
 } from './jsonTypes';
 // this links to a mapping from id to review
 type ReviewId = AnyNumber;
