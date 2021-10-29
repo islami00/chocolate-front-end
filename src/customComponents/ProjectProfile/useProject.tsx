@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import { VoidFn } from '@polkadot/api/types';
 import { Option } from '@polkadot/types';
-import { ProjectAl } from 'chocolate/interfaces';
-import { useSubstrate } from 'chocolate/substrate-lib';
 import { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import { ProjectAl } from '../../interfaces';
+import { useSubstrate } from '../../substrate-lib';
 /**
  * @description enable only when websocket is needed
  * Note: To be called only inside useProject(). Can be generalised for all api subs

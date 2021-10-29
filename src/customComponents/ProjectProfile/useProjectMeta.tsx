@@ -1,6 +1,6 @@
-import { ProjectAl } from 'chocolate/interfaces';
-import { NewMetaData } from 'chocolate/typeSystem/jsonTypes';
 import { useQuery, UseQueryResult } from 'react-query';
+import { ProjectAl } from '../../interfaces';
+import { NewMetaData } from '../../typeSystem/jsonTypes';
 import { populateMetadata } from './majorUtils';
 
 export default function useProjectMeta(

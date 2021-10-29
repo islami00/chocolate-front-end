@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { NewProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
+import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
 import { useProjects } from './hooks';
 import './project.css';
 
@@ -85,6 +85,7 @@ const SearchBar: React.FC<{ projects: NewProjectWithIndex[] }> = function (
   const [found, setFound] = useState(false);
   const [results, setResults] = useState<NewProjectWithIndex[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  // eslint-disable-next-line no-undef
   const timeOutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {

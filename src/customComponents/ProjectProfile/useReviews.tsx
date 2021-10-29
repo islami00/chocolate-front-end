@@ -1,7 +1,7 @@
-import { Project } from 'chocolate/interfaces';
-import { useSubstrate } from 'chocolate/substrate-lib';
-import { NewReview } from 'chocolate/typeSystem/mockTypes';
 import { useQuery, UseQueryResult } from 'react-query';
+import { Project } from '../../interfaces';
+import { useSubstrate } from '../../substrate-lib';
+import { NewReview } from '../../typeSystem/mockTypes';
 import { populateReviews } from './majorUtils';
 
 export default function useReviews(

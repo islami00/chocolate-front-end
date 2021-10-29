@@ -91,7 +91,7 @@ function MakeRejectedProjects() {}
 function MakeProposedProjects() {}
 
 // store projects on ipfs so we can use its hashes when we have setup backend - DO-later
-export function OutputProjectJSONForUse() {
+export function OutputProjectJSONForUse(): void {
   mkdir(path.resolve(__dirname, 'test', 'projects'), { recursive: true })
     .then(() => {
       for (let i = 0; i < nnumberOfP; i += 1) {

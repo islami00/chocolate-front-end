@@ -1,7 +1,10 @@
-import { message } from 'chocolate/App';
-import { ProjectAl } from 'chocolate/interfaces';
+/* eslint-disable react/prop-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import { useParams } from 'react-router-dom';
+import { ProjectAl } from '../../interfaces';
 import { useApp } from '../state';
+import { message } from '../utilities/message';
 import { filter } from './majorUtils';
 import useAverage from './useAverage';
 import useProject from './useProject';
@@ -40,6 +43,7 @@ const ProjectProfile: React.FC<{ data: ProjectAl; id: string }> = function (
     </h1>
   );
 };
+
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useProject(id);

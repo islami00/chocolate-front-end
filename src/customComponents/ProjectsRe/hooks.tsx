@@ -1,9 +1,9 @@
 import { Option, StorageKey } from '@polkadot/types';
-import { ProjectAl, ProjectID } from 'chocolate/interfaces';
-import { useSubstrate } from 'chocolate/substrate-lib';
-import { Chocolate, NewProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
-import { NewMetaData } from 'chocolate/typeSystem/mockTypes';
 import { useQuery, UseQueryResult } from 'react-query';
+import { ProjectAl, ProjectID } from '../../interfaces';
+import { useSubstrate } from '../../substrate-lib';
+import { Chocolate, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { NewMetaData } from '../../typeSystem/mockTypes';
 import { errorHandled, toPinataFetch } from '../utils';
 
 /**

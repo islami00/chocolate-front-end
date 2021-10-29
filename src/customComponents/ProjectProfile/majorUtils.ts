@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiPromise } from '@polkadot/api';
 import { Vec } from '@polkadot/types';
-import { ProjectAl, ReviewID } from 'chocolate/interfaces';
-import { ReviewContent } from 'chocolate/typeSystem/mockTypes';
+import { ProjectAl, ReviewID } from '../../interfaces';
+import { ReviewContent } from '../../typeSystem/mockTypes';
 import {
   ChainReview,
   NewMetaData,
@@ -22,6 +20,7 @@ function filter(project: ProjectAl): 0 | 1 | 2 | void {
   }
 }
 // for use with ipfs cat
+// eslint-disable-next-line no-unused-vars
 const ipfsConfig = {
   protocol: 'http',
   host: '127.0.0.1',

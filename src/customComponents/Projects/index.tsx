@@ -1,8 +1,9 @@
+/* eslint-disable react/prop-types */
 // type imports
 import Identicon from '@polkadot/react-identicon';
 import { AnyNumber } from '@polkadot/types/types';
 // default imports
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 // icons
 import { Button, Icon } from 'semantic-ui-react';
@@ -23,6 +24,7 @@ const Rating: React.FC<{
   const [hover, setHover] = useState(0);
   useEffect(() => {
     if (fixed) setRated(Number(rating));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <form onSubmit={(e) => e.preventDefault()}>

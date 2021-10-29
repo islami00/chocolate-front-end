@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // regular imports
 // substrate imports
@@ -7,8 +8,8 @@ import 'semantic-ui-css/semantic.min.css';
 // utility imports
 import { chocolateLogo } from './customComponents/constants';
 import { Err } from './customComponents/err';
+// eslint-disable-next-line import/no-unresolved
 import LandingPage from './customComponents/landingPageRe';
-// custom components - Default export if it can contain many. Export for specific like loading
 import { Loading } from './customComponents/loading';
 import { AppContextProvider, useApp } from './customComponents/state';
 // styles

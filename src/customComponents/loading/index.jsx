@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import './loader.css';
 import { useApp } from '../state';
+import './loader.css';
 
 const storageKey = 'ChocAccountType';
 /** @param {"unset"} def */
@@ -19,6 +19,7 @@ const Loading = function (props) {
       const authDeets = fetchStore('unset');
       dispatch({ type: 'USER_DATA', payload: { accountType: authDeets } });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [greet]);
 
   return (

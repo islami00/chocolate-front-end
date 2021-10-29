@@ -5,9 +5,10 @@ import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
  *
  * @description Renders a memberview
  */
-const Member: React.FC<{ name: string; image: string; socials: object }> =
+const Member: React.FC<{ name: string; image: string; socials: any }> =
   function (props) {
-    const { image, name, socials } = props;
+    // eslint-disable-next-line react/prop-types
+    const { image, name } = props;
     return (
       <article>
         <figure>
@@ -21,10 +22,10 @@ const Member: React.FC<{ name: string; image: string; socials: object }> =
   };
 
 const TeamList: React.FC = function () {
-  const [team, setTeam] = useState<object[]>([]);
+  const [team] = useState<any[]>([]);
   // fetch team from git - do this lazily on app instantiation.
   // teamlist.mapeach to img,name,title
-  // @ts-expect-error - fill in members from fetch team
+  //  fill in members from fetch team
   const renderTeam = team.map((member) => <Member {...member} />);
   return <section>{renderTeam}</section>;
 };
@@ -33,7 +34,7 @@ const TeamList: React.FC = function () {
  * @description  The team page
  *
  */
-const Team = function () {
+const Team: React.FC = function () {
   return (
     <article>
       <h1>Meet our Team</h1>

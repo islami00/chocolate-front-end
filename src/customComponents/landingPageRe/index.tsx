@@ -1,19 +1,14 @@
-import { loader, message } from 'chocolate/App';
-import { useSubstrate } from 'chocolate/substrate-lib';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { useSubstrate } from '../../substrate-lib';
 import About from '../About';
 import Gallery from '../Gallery';
 import MenuBar from '../menuBar';
 import ProjectProfile from '../ProjectProfile';
 import ProjectsRe from '../ProjectsRe';
 import Team from '../Team';
+import { loader, message } from '../utilities';
 import WallOfShame from '../WallOfShame';
 import './landing.css';
 

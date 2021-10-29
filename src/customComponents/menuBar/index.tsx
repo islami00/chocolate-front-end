@@ -1,11 +1,11 @@
-import {
-  useAccounts,
-  useSubstrate,
-} from 'chocolate/substrate-lib/SubstrateContext';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
+import {
+  useAccounts,
+  useSubstrate,
+} from '../../substrate-lib/SubstrateContext';
 import './index.css';
 import './wallet.css';
 /**
@@ -21,6 +21,7 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
 
   useEffect(() => {
     if (run) {
+      // eslint-disable-next-line @typescript-eslint/require-await
       const doRun = async () => loadAccounts(state, dispatch);
 
       doRun().then(() => {
@@ -28,6 +29,7 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
         setRun(false);
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [run]);
   let content;
   // do the keyring stuff here too.
@@ -129,7 +131,7 @@ function Wallet() {
     </section>
   );
 }
-function Menu() {
+function Menu(): JSX.Element {
   return (
     <header className="top-nav">
       <Navlinks />

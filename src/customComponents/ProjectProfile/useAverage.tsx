@@ -1,11 +1,12 @@
-import { ProjectAl } from 'chocolate/interfaces';
-import { JSONProject } from 'chocolate/typeSystem/appTypes';
+import { useEffect, useState } from 'react';
+import { ProjectAl } from '../../interfaces';
+import { JSONProject } from '../../typeSystem/appTypes';
 import {
   ChainProject,
   NewMetaData,
-  NewReview,
-} from 'chocolate/typeSystem/jsonTypes';
-import { useEffect, useState } from 'react';
+  // eslint-disable-next-line prettier/prettier
+  NewReview
+} from '../../typeSystem/jsonTypes';
 
 const useAverage = (
   data: ProjectAl,
