@@ -22,12 +22,9 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
   useEffect(() => {
     if (run) {
       // eslint-disable-next-line @typescript-eslint/require-await
-      const doRun = async () => loadAccounts(state, dispatch);
-
-      doRun().then(() => {
-        alert(keyringState);
-        setRun(false);
-      });
+      const doRun = () => {loadAccounts(state, dispatch);}
+     doRun()
+     return ()=> setRun(false) 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [run]);
