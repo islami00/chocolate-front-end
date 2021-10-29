@@ -5,7 +5,11 @@ import { ApiPromise } from '@polkadot/api';
 import { Vec } from '@polkadot/types';
 import { ProjectAl, ReviewID } from 'chocolate/interfaces';
 import { ReviewContent } from 'chocolate/typeSystem/mockTypes';
-import { NewMetaData } from '../../typeSystem/jsonTypes';
+import {
+  ChainReview,
+  NewMetaData,
+  NewReview
+} from '../../typeSystem/jsonTypes';
 import { errorHandled, sortAnyNum, toPinataFetch } from '../utils';
 
 function filter(project: ProjectAl): 0 | 1 | 2 | void {
@@ -29,26 +33,31 @@ async function populateReviews(
   api: ApiPromise,
   userId: string,
   debug = false
-): Promise<ReviewContent[]> {
+): Promise<NewReview[]> {
   // setup time stamps for easier sort
   referral.sort(sortAnyNum);
   if (debug) console.log('After sort', referral);
-  const chainRes = referral.map(async element => {
+  const chainRes = referral.map(async (element) => {
     const optReview = await api.query.chocolateModule.reviews(element);
     const review = optReview.unwrapOr(0);
     if (review === 0) throw new Error('Review does not exist');
-    if (review.proposalStatus.status.isAccepted) return review.content.toJSON();
-    if (review.userID.eq(userId)) return review.content.toJSON();
+    if (review.proposalStatus.status.isAccepted) return review;
+    if (review.userID.eq(userId)) return review;
   });
   const result = await Promise.all(chainRes);
   const contents = result.map(async (element, i, arr) => {
     if (debug) console.log('ITer', i, arr, element);
-    const [res, err] = await errorHandled(fetch(toPinataFetch(element)));
+    const [res, err] = await errorHandled(
+      fetch(toPinataFetch(element.content.toJSON()))
+    );
     if (err) throw err;
     const rev = (await res.json()) as ReviewContent;
     if (debug) console.log('returned', rev);
-    return rev;
+    const personified = element.toHuman() as unknown as ChainReview;
+    const properRev = { ...personified, content: rev };
+    return properRev;
   });
+
   return Promise.all(contents);
   // use the referral array here.
 }

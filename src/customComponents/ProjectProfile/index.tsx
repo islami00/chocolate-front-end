@@ -1,11 +1,9 @@
 import { message } from 'chocolate/App';
 import { ProjectAl } from 'chocolate/interfaces';
-import { JSONProject } from 'chocolate/typeSystem/appTypes';
-import { ChainProject } from 'chocolate/typeSystem/jsonTypes';
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApp } from '../state';
 import { filter } from './majorUtils';
+import useAverage from './useAverage';
 import useProject from './useProject';
 import useProjectMeta from './useProjectMeta';
 import useReviews from './useReviews';
@@ -17,7 +15,6 @@ const ProjectProfile: React.FC<{ data: ProjectAl; id: string }> = function (
   const { state } = useApp();
   const { userData } = state;
   const { accountAddress: addr } = userData;
-  const [avRate, setAvRate] = useState('0.0');
   let canReview = true;
   if (data.ownerID.eq(addr)) canReview = false;
   // race!
@@ -34,16 +31,7 @@ const ProjectProfile: React.FC<{ data: ProjectAl; id: string }> = function (
     isFetched: fproj,
   } = useProjectMeta(data, id);
   // get average ranking
-  useEffect(() => {
-    if (frev && fproj) {
-      const nPr: ChainProject = data.toHuman() as unknown as ChainProject;
-      const useThis = { ...nPr, metaData: projectMeta };
-      const pr = new JSONProject(useThis, reviews);
-      setAvRate(pr.rankAverage.toPrecision(2));
-    }
-    return () => {};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frev, fproj]);
+  const [avRate] = useAverage(data, projectMeta, frev, fproj, reviews);
   // structure data here. Button component and the like
   return (
     <h1>
