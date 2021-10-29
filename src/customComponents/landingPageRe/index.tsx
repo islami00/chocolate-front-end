@@ -26,30 +26,30 @@ function Main(): JSX.Element {
   if (apiState === 'ERROR') return message(apiError);
   if (apiState !== 'READY') return loader('Connecting to Substrate');
   return (
-    <div className='root-wrap'>
+    <div className="root-wrap">
       <QueryClientProvider contextSharing client={client}>
         <Router>
           <MenuBar />
           <Switch>
-            <Route exact path='/'>
+            <Route exact path="/">
               <ProjectsRe />
             </Route>
-            <Route path='/gallery'>
+            <Route path="/gallery">
               <Gallery />
             </Route>
-            <Route path='/wall-of-shame'>
+            <Route path="/wall-of-shame">
               <WallOfShame />
             </Route>
-            <Route path='/project/:id'>
+            <Route path="/project/:id">
               <ProjectProfile />
             </Route>
-            <Route path='/about'>
+            <Route path="/about">
               <About />
             </Route>
-            <Route path='/team'>
+            <Route path="/team">
               <Team />
             </Route>
-            <Route path='*'>{message('404! Not found', true)}</Route>
+            <Route path="*">{message('404! Not found', true)}</Route>
           </Switch>
           <ReactQueryDevtools initialIsOpen={false} />
         </Router>

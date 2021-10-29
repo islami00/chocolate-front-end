@@ -17,7 +17,7 @@ const getProjects = async function (
   if (!(projects instanceof Promise)) throw new Error('Passed in wrong values');
   const usable = await projects;
 
-  const mutatedProjects = usable?.map(async each => {
+  const mutatedProjects = usable?.map(async (each) => {
     const [id, project] = each;
 
     // @ts-expect-error AnyJson is an array type in this case.
@@ -40,7 +40,9 @@ const getProjects = async function (
     return ret;
   });
   const mut = await Promise.all(mutatedProjects);
-  const cleanProjects = mut.filter(each => each !== null && each !== undefined);
+  const cleanProjects = mut.filter(
+    (each) => each !== null && each !== undefined
+  );
   return cleanProjects;
 };
 /** @description  Get all projects as usable jsons and sort by id */

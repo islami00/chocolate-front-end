@@ -14,7 +14,7 @@ const calcResults = function (
   data: NewProjectWithIndex[],
   value: string
 ): [NewProjectWithIndex[], boolean] {
-  const filtered = data.filter(each => {
+  const filtered = data.filter((each) => {
     const reg = new RegExp(`(${value})`, 'gi');
     return reg.exec(each.project.metaData.name); /* returns null otherwise */
   });
@@ -36,11 +36,12 @@ const DataSummaryDisplay: React.FC<{ data: NewProjectWithIndex }> = function (
 
   return (
     <section
-      role='group'
-      className={`search-result result search-result--${status}`}>
-      <img src={icon} alt='Project Logo' width='16px' height='16px' />
+      role="group"
+      className={`search-result result search-result--${status}`}
+    >
+      <img src={icon} alt="Project Logo" width="16px" height="16px" />
 
-      <Link className='search-result__link' to={`/project/${Id.toString()}`}>
+      <Link className="search-result__link" to={`/project/${Id.toString()}`}>
         {name}
       </Link>
       <p>status: {status}</p>
@@ -59,17 +60,17 @@ const DisplayResults: React.FC<{
   if (!found) {
     content = (
       <>
-        <p className='result'>Sorry, no results were found</p>
+        <p className="result">Sorry, no results were found</p>
       </>
     );
   } else {
     // paginate for memory.
-    content = data.map(each => (
+    content = data.map((each) => (
       <DataSummaryDisplay key={JSON.stringify(each)} data={each} />
     ));
   }
   return (
-    <article className='ui results transition visible search-results'>
+    <article className="ui results transition visible search-results">
       {content}
     </article>
   );
@@ -102,19 +103,20 @@ const SearchBar: React.FC<{ projects: NewProjectWithIndex[] }> = function (
   }
   return (
     <form
-      role='search'
-      className='ui search'
+      role="search"
+      className="ui search"
       onBlur={blurHandler}
       onFocus={focusHandler}
-      onSubmit={handleSubmit}>
-      <div className='searchbar'>
+      onSubmit={handleSubmit}
+    >
+      <div className="searchbar">
         <input
-          className='searchbar__input'
-          type='search'
-          placeholder='Search for a project'
-          aria-label='Search for a project'
+          className="searchbar__input"
+          type="search"
+          placeholder="Search for a project"
+          aria-label="Search for a project"
           value={value}
-          onChange={e => {
+          onChange={(e) => {
             setValue(e.target.value);
             if (!isSearching) setIsSearching(true);
           }}
@@ -129,34 +131,34 @@ const SearchBar: React.FC<{ projects: NewProjectWithIndex[] }> = function (
 const ProjectsRe: React.FC = function () {
   const { data, isFetched } = useProjects();
   return (
-    <main className='land'>
-      <section className='land__content'>
+    <main className="land">
+      <section className="land__content">
         <img
-          className='top_img'
+          className="top_img"
           src={ChocolateRedBig}
-          alt='Medium sized chocolate bar'
-          width='120px'
-          height='120px'
+          alt="Medium sized chocolate bar"
+          width="120px"
+          height="120px"
         />
-        <p className='tagline'>
+        <p className="tagline">
           Ending scam &amp; spam in crypto once and for all.
         </p>
         {isFetched && <SearchBar projects={data} />}
       </section>
-      <section className='ui container'>
-        <div className='ui button group'>
-          <Link className='ui button choc-pink' to='/gallery'>
+      <section className="ui container">
+        <div className="ui button group">
+          <Link className="ui button choc-pink" to="/gallery">
             Find a project
           </Link>
-          <Link className='ui button choc-pink' to='/wall-of-shame'>
+          <Link className="ui button choc-pink" to="/wall-of-shame">
             Wall of shame
           </Link>
         </div>
-        <div className='ui button group'>
-          <button type='button' className='ui button disabled'>
+        <div className="ui button group">
+          <button type="button" className="ui button disabled">
             Create a project
           </button>
-          <button type='button' className='ui button disabled'>
+          <button type="button" className="ui button disabled">
             Claim a project
           </button>
         </div>

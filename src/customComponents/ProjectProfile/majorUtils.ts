@@ -8,7 +8,7 @@ import { ReviewContent } from 'chocolate/typeSystem/mockTypes';
 import {
   ChainReview,
   NewMetaData,
-  NewReview
+  NewReview,
 } from '../../typeSystem/jsonTypes';
 import { errorHandled, sortAnyNum, toPinataFetch } from '../utils';
 

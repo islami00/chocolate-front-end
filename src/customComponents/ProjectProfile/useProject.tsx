@@ -26,7 +26,7 @@ const useWs = (id: string, debug = false) => {
   useEffect(() => {
     let unsub: undefined | VoidFn;
     const un = subscribeToWs();
-    un.then(unsubscribe => {
+    un.then((unsubscribe) => {
       unsub = unsubscribe;
       if (debug) console.count('Passed unsub, meaning subscribed!');
     });
@@ -48,7 +48,7 @@ export default function useProject(
   const getStaticProject = async () => {
     const staticProject = await api.query.chocolateModule
       .projects(id)
-      .then(opt => opt.unwrapOr<0>(0));
+      .then((opt) => opt.unwrapOr<0>(0));
     if (debug) console.count('Got static project');
     return staticProject;
   };

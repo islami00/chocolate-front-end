@@ -80,7 +80,7 @@ function OutputReviewJSONForUse(where: number) {
         }
       )
         .then(() => console.log('done review', i))
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     }
   });
 }
@@ -109,13 +109,13 @@ export function OutputProjectJSONForUse() {
           }
         )
           .then(() => console.log('done', i))
-          .catch(err => {
+          .catch((err) => {
             throw new Error(err);
           });
         OutputReviewJSONForUse(num);
       }
     })
-    .catch(er => {
+    .catch((er) => {
       throw new Error(er);
     });
 }

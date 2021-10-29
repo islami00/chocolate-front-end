@@ -3,7 +3,7 @@ import { JSONProject } from 'chocolate/typeSystem/appTypes';
 import {
   ChainProject,
   NewMetaData,
-  NewReview
+  NewReview,
 } from 'chocolate/typeSystem/jsonTypes';
 import { useEffect, useState } from 'react';
 

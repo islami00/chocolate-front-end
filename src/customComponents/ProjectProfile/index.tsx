@@ -43,7 +43,7 @@ const ProjectProfile: React.FC<{ data: ProjectAl; id: string }> = function (
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useProject(id);
-  if (isLoading) return <i className='ui loader' />;
+  if (isLoading) return <i className="ui loader" />;
   const four = message('Error, project not found', true);
   if (data === 0) return four;
   const re = filter(data);
