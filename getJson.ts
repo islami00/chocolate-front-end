@@ -1,8 +1,8 @@
 import { writeFile } from 'fs/promises';
 import fetch from 'node-fetch';
 import path from 'path';
-
-const rpcEndpoint = 'http://192.168.8.185:9933';
+process.env
+const rpcEndpoint = 'http://127.0.0.1:9933';
 const headersList = {
   Accept: '*/*',
   'User-Agent': 'Thunder Client (https://www.thunderclient.io)',

@@ -1,15 +1,15 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // regular imports
 // substrate imports
 import { AnyJson } from '@polkadot/types/types';
 import React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
 // utility imports
 import { chocolateLogo } from './customComponents/constants';
 import { Err } from './customComponents/err';
+// eslint-disable-next-line import/no-unresolved
 import LandingPage from './customComponents/landingPageRe';
-// custom components - Default export if it can contain many. Export for specific like loading
 import { Loading } from './customComponents/loading';
 import { AppContextProvider, useApp } from './customComponents/state';
 // styles
@@ -50,25 +50,20 @@ function Main() {
 export function App() {
   return <Main />;
 }
+/** @type {Record<"PROVIDER_LOCAL"| "PROVIDER_PLAYGROUND" | "PROVIDER_PHONE",string> | undefined} */
+let nodeConfig;
+if (process.env.NODE_ENV === 'development') {
+  // Use config when not running local node.
+  if (process.env.REACT_APP_NODE_CONFIG) nodeConfig = JSON.parse(process.env.REACT_APP_NODE_CONFIG);
+}
 
 export default function RenderMe() {
   return (
     // Wrapping in app and substrate context preserves state. There is only the issue of routing completely resetting on refresh
-    <SubstrateContextProvider>
+    <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_LOCAL : undefined}>
       <AppContextProvider>
-        <Router>
-          <Switch>
-            <Redirect exact from='/substrate-front-end-template' to='/' />
-            <Route path='/'>
-              <LandingPage />
-              <DeveloperConsole />
-            </Route>
-            <Route path='/app'>
-              <App />
-            </Route>
-            <Route path='*'>{message('404! Not found', true)}</Route>
-          </Switch>
-        </Router>
+        <LandingPage />
+        <DeveloperConsole />
       </AppContextProvider>
     </SubstrateContextProvider>
   );

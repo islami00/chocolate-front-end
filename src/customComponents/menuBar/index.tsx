@@ -1,11 +1,11 @@
-import {
-  useAccounts,
-  useSubstrate
-} from 'chocolate/substrate-lib/SubstrateContext';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
+import {
+  useAccounts,
+  useSubstrate,
+} from '../../substrate-lib/SubstrateContext';
 import './index.css';
 import './wallet.css';
 /**
@@ -21,13 +21,14 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
 
   useEffect(() => {
     if (run) {
-      const doRun = async () => loadAccounts(state, dispatch);
-
-      doRun().then(() => {
-        alert(keyringState);
-        setRun(false);
-      });
+      // eslint-disable-next-line @typescript-eslint/require-await
+      const doRun = () => {
+        loadAccounts(state, dispatch);
+      };
+      doRun();
+      return () => setRun(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [run]);
   let content;
   // do the keyring stuff here too.
@@ -38,7 +39,7 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
     content = (
       <>
         <p>Your wallet is not connected, do connect</p>
-        <button type='button' onClick={() => setRun(true)}>
+        <button type="button" onClick={() => setRun(true)}>
           Connect wallet
         </button>
       </>
@@ -47,7 +48,7 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
     content = <AccountSelector />;
   }
 
-  return <div className='modal modal_drop modal_drop--right'>{content}</div>;
+  return <div className="modal modal_drop modal_drop--right">{content}</div>;
 };
 
 /**
@@ -71,28 +72,28 @@ const HandleWallet = function () {
 
 function Navlinks() {
   return (
-    <nav className='nav-links'>
-      <Link to='/' className='nav-link nav-link__home'>
+    <nav className="nav-links">
+      <Link to="/" className="nav-link nav-link__home">
         Chocolate
       </Link>
-      <ul className='nav-links-ul'>
+      <ul className="nav-links-ul">
         <li>
-          <Link className='nav-link' to='/about'>
+          <Link className="nav-link" to="/about">
             About
           </Link>
         </li>
         <li>
-          <Link className='nav-link' to='/team'>
+          <Link className="nav-link" to="/team">
             Team
           </Link>
         </li>
         <li>
-          <Link className='nav-link' to='/gallery'>
+          <Link className="nav-link" to="/gallery">
             Projects
           </Link>
         </li>
         <li>
-          <Link className='nav-link' to='/choc'>
+          <Link className="nav-link" to="/choc">
             CHOC Token
           </Link>
         </li>
@@ -112,7 +113,7 @@ function Wallet() {
   const Modal = () => modal;
   // manage modal state
   const handleModal = () => {
-    setOpen(prev => !prev);
+    setOpen((prev) => !prev);
     if (!open) {
       return setModal(<HandleWallet />);
     }
@@ -120,18 +121,18 @@ function Wallet() {
   };
   // clean returns
   return (
-    <section className='wallet'>
-      <button type='button' className='wallet_btn' onClick={handleModal}>
-        <img src={WalletPurple} alt='Wallet' className='wallet-icon' />
+    <section className="wallet">
+      <button type="button" className="wallet_btn" onClick={handleModal}>
+        <img src={WalletPurple} alt="Wallet" className="wallet-icon" />
       </button>
       {/* Position absolute, start at leftmost part */}
       <Modal />
     </section>
   );
 }
-function Menu() {
+function Menu(): JSX.Element {
   return (
-    <header className='top-nav'>
+    <header className="top-nav">
       <Navlinks />
       <Wallet />
     </header>

@@ -2,11 +2,11 @@ import React from 'react';
 import { Message } from 'semantic-ui-react';
 import './err.css';
 /**
- *@type {React.FC<{this_error:any; four:boolean;}>}
+ *@type {React.FC<{thisError:any; four:boolean;}>}
  * @returns {JSX.Element}
  */
 const Err = function (props) {
-  const { this_error, four } = props;
+  const { thisError, four } = props;
   return (
     <section className='err-wrap'>
       <Message
@@ -15,7 +15,7 @@ const Err = function (props) {
         className='err'
         floating
         header={four ? 'Error 404!' : 'Error Connecting to Substrate'}
-        content={`${JSON.stringify(this_error, null, 4)}`}
+        content={`${JSON.stringify(thisError, null, 4)}`}
       />
     </section>
   );

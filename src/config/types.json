@@ -8,6 +8,7 @@
   "TextAl": "Text",
   "Project": {
     "ownerID": "AccountId",
+    "reviewers":"Option<Vec<AccountId>>",
     "reviews": "Option<Vec<ReviewID>>",
     "badge": "Option<bool>",
     "metaData": "MetaData",
@@ -26,26 +27,11 @@
   "Reason": {
     "_enum": { "Other": "Text", "InsufficientMetaData": null, "Malicious": null, "PassedRequirements": null }
   },
-  "MetaData": {
-    "projectName": "Text",
-    "projectSocials": "ProjectSocials",
-    "founderSocials": "Vec<Social>"
-  },
-  "ProjectSocials": "Vec<Social>",
-  "Social": {
-    "_enum": {
-      "Twitter": "Text",
-      "Facebook": "Text",
-      "Instagram": "Text",
-      "Riot": "Text",
-      "Email": "Text",
-      "None": null
-    }
-  },
+  "MetaData": "Text",
   "Review": {
     "proposalStatus": "ProposalStatus",
     "userID": "AccountId",
-    "reviewText": "Text",
+    "content": "Text",
     "projectID": "ProjectID"
   },
   "Balance": "u128",

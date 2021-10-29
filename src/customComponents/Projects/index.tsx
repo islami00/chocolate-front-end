@@ -1,19 +1,21 @@
+/* eslint-disable react/prop-types */
 // type imports
 import Identicon from '@polkadot/react-identicon';
+import { AnyNumber } from '@polkadot/types/types';
 // default imports
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 // icons
 import { Button, Icon } from 'semantic-ui-react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
 import Pensive from '../../assets/pensive-face-emoji.svg';
-import { ProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
 // styles
 import './projects.scss';
 
-/** @type {React.FC<{rating:import('@polkadot/types/types').AnyNumber; fixed:boolean;}>} */
+/** @description rating component, optionally interactive */
 const Rating: React.FC<{
-  rating: import('@polkadot/types/types').AnyNumber;
+  rating: AnyNumber;
   fixed: boolean;
 }> = function (props) {
   // expect rating to 2dp
@@ -22,29 +24,32 @@ const Rating: React.FC<{
   const [hover, setHover] = useState(0);
   useEffect(() => {
     if (fixed) setRated(Number(rating));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <form onSubmit={e => e.preventDefault()}>
+    <form onSubmit={(e) => e.preventDefault()}>
       {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         [...Array(5)].map((_, i) => {
           const currentRating = i + 1;
           return (
-            <label>
+            <label key={`choc_bar${currentRating}`}>
               <input
-                className='rate'
-                type='radio'
-                name='Rating'
-                id=''
+                className="rate"
+                type="radio"
+                name="Rating"
+                id=""
                 value={currentRating}
-                onClick={!fixed && (() => setRated(currentRating))}
+                onClick={!fixed ? () => setRated(currentRating) : undefined}
               />
               <img
                 src={ChocolateRedSmall}
-                alt='Rating'
-                onMouseEnter={!fixed && (() => setHover(currentRating))}
-                onMouseLeave={!fixed && (() => setHover(0))}
-                className='rate_choc'
+                alt="Rating"
+                onMouseEnter={
+                  !fixed ? () => setHover(currentRating) : undefined
+                }
+                onMouseLeave={!fixed ? () => setHover(0) : undefined}
+                className="rate_choc"
                 style={{
                   opacity: `${currentRating <= (hover || rated) ? 1 : 0.5}`,
                 }}
@@ -56,15 +61,12 @@ const Rating: React.FC<{
     </form>
   );
 };
-/**
- * @description Houses a single project
- * @type {React.FC<{data: ProjectWithIndex}>} - Give proper types later
- */
-const ProjectView: React.FC<{ data: ProjectWithIndex }> = function (props) {
+/** @description Houses a single project */
+const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   const { data } = props;
   const { Id, project } = data;
   const { ownerID, proposalStatus, metaData } = project;
-  const { projectName: name } = metaData;
+  const { name } = metaData;
   const { status } = proposalStatus;
   let rateBar = <></>;
   let toProject = <></>;
@@ -73,26 +75,27 @@ const ProjectView: React.FC<{ data: ProjectWithIndex }> = function (props) {
     toProject = (
       <Button
         as={Link}
-        to={`/projects/${Id.toString()}`}
-        color='brown'
+        to={`/project/${Id.toString()}`}
+        color="brown"
         icon
-        labelPosition='right'
-        size='medium'
-        role='link'>
+        labelPosition="right"
+        size="medium"
+        role="link"
+      >
         To Project
-        <Icon name='arrow right' />
+        <Icon name="arrow right" />
       </Button>
     );
   }
   return (
-    <section className='project'>
+    <section className="project">
       <Identicon
         key={`substrate_icon_${ownerID}`}
         value={ownerID.toString()}
         size={48}
-        theme='substrate'
+        theme="substrate"
       />
-      <div className='description'>
+      <div className="description">
         <h2>{name}</h2>
         {rateBar}
       </div>
@@ -101,12 +104,9 @@ const ProjectView: React.FC<{ data: ProjectWithIndex }> = function (props) {
   );
 };
 
-/**
- * @description Houses the projects
- * @type  {React.FC<{data : ProjectWithIndex[]; gallery?:boolean;shame?:boolean}>}
- */
+/** @description Houses the projects */
 export const ProjectsView: React.FC<{
-  data: ProjectWithIndex[];
+  data: NewProjectWithIndex[];
   gallery?: boolean;
   shame?: boolean;
 }> = function (props) {
@@ -117,8 +117,7 @@ export const ProjectsView: React.FC<{
   let render;
   let header;
   let desc;
-  /** @param {ProjectWithIndex} project */
-  const toProject = (project: ProjectWithIndex) => (
+  const toProject = (project: NewProjectWithIndex) => (
     <ProjectView data={project} key={project.Id.toString()} />
   );
   if (gallery) {
@@ -126,10 +125,10 @@ export const ProjectsView: React.FC<{
     desc =
       'This is an exhaustive gallery of the different projects in chocolate currently';
     const accepted = data.filter(
-      each => each.project.proposalStatus.status === 'Accepted'
+      (each) => each.project.proposalStatus.status === 'Accepted'
     );
     const proposed = data.filter(
-      each => each.project.proposalStatus.status === 'Proposed'
+      (each) => each.project.proposalStatus.status === 'Proposed'
     );
     const r1 = accepted.map(toProject);
     const r2 = proposed.map(toProject);
@@ -144,9 +143,9 @@ export const ProjectsView: React.FC<{
   }
   if (shame) {
     header = 'Wall of Shame';
-    desc = <img src={Pensive} alt='Pensive face emoji' />;
+    desc = <img src={Pensive} alt="Pensive face emoji" />;
     const malicious = data.filter(
-      each =>
+      (each) =>
         each.project.proposalStatus.status === 'Rejected' &&
         each.project.proposalStatus.reason === 'malicious'
     );

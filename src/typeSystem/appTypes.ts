@@ -1,8 +1,7 @@
 // defined the various classes
-// 
+//
 
-import { AnyNumber } from '@polkadot/types/types';
-import { NewProject } from './mockTypes';
+import { NewProject, ReviewContent } from './mockTypes';
 
 /**
  * @description this class decorates a plain object with our ideal project type with useful getter functions
@@ -11,17 +10,23 @@ import { NewProject } from './mockTypes';
 class JSONProject {
   project: NewProject;
 
-  constructor(fresh: NewProject) {
+  projectReviews: ReviewContent[];
+
+  constructor(fresh: NewProject, revs: ReviewContent[]) {
     this.project = fresh;
+    this.projectReviews = revs;
   }
 
-  get rankAverage() {
-    const { reviews } = this.project;
-    const x: AnyNumber = 0;
-    return x;
+  get rankAverage(): number {
+    const reviews = this.projectReviews;
+    // simple average
+    const totalRating = reviews.reduce((previous, current) => {
+      const sum = Number(current.rating) + previous;
+      return sum;
+    }, 0);
+    const av = totalRating / reviews.length;
+    return av;
   }
-
- 
 }
 
-export default {};
+export { JSONProject };

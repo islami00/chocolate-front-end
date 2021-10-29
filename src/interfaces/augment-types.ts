@@ -58,7 +58,7 @@ import type { ClassDetails, ClassId, ClassMetadata, DepositBalance, DepositBalan
 import type { Multisig, Timepoint } from '@polkadot/types/interfaces/utility';
 import type { VestingInfo } from '@polkadot/types/interfaces/vesting';
 import type { AccountId32Junction, AccountIndex64Junction, AccountKey20Junction, AssetInstance, BodyId, BodyPart, BodyPartAtLeastProportion, BodyPartFraction, BodyPartMoreThanProportion, DoubleEncodedCall, InboundStatus, Junction, MultiAsset, MultiAssetAbstractFungible, MultiAssetAbstractNonFungible, MultiAssetConcreteFungible, MultiAssetConcreteNonFungible, MultiLocation, NetworkId, OutboundStatus, Outcome, PluralityJunction, QueueConfigData, VersionedMultiAsset, VersionedMultiLocation, VersionedXcm, Xcm, XcmAssetEffects, XcmError, XcmHrmpChannelAccepted, XcmHrmpChannelClosing, XcmHrmpNewChannelOpenRequest, XcmOrder, XcmOrderBuyExecution, XcmOrderDepositAsset, XcmOrderDepositReserveAsset, XcmOrderExchangeAsset, XcmOrderInitiateReserveWithdraw, XcmOrderInitiateTeleport, XcmOrderQueryHolding, XcmOrigin, XcmOriginKind, XcmQueryResponse, XcmRelayedFrom, XcmReserveAssetDeposit, XcmResponse, XcmTeleportAsset, XcmTransact, XcmTransferAsset, XcmTransferReserveAsset, XcmWithdrawAsset, XcmpMessageFormat } from '@polkadot/types/interfaces/xcm';
-import type { ListOfNames, MetaData, Project, ProjectAl, ProjectID, ProjectSocials, ProposalStatus, Reason, Review, ReviewAl, ReviewID, Social, Status, TextAl } from 'chocolate/interfaces/chocolateModule';
+import type { ListOfNames, MetaData, Project, ProjectAl, ProjectID, ProposalStatus, Reason, Review, ReviewAl, ReviewID, Status, TextAl } from 'chocolate/interfaces/chocolateModule';
 import type { User } from 'chocolate/interfaces/usersModule';
 
 declare module '@polkadot/types/types/registry' {
@@ -776,7 +776,6 @@ declare module '@polkadot/types/types/registry' {
     'Option<Project>': Option<Project>;
     'Option<ProjectAl>': Option<ProjectAl>;
     'Option<ProjectID>': Option<ProjectID>;
-    'Option<ProjectSocials>': Option<ProjectSocials>;
     'Option<PropIndex>': Option<PropIndex>;
     'Option<Proposal>': Option<Proposal>;
     'Option<ProposalIndex>': Option<ProposalIndex>;
@@ -934,7 +933,6 @@ declare module '@polkadot/types/types/registry' {
     'Option<Slot>': Option<Slot>;
     'Option<SlotNumber>': Option<SlotNumber>;
     'Option<SlotRange>': Option<SlotRange>;
-    'Option<Social>': Option<Social>;
     'Option<SocietyJudgement>': Option<SocietyJudgement>;
     'Option<SocietyVote>': Option<SocietyVote>;
     'Option<SolutionOrSnapshotSize>': Option<SolutionOrSnapshotSize>;
@@ -1730,7 +1728,6 @@ declare module '@polkadot/types/types/registry' {
     'Vec<Project>': Vec<Project>;
     'Vec<ProjectAl>': Vec<ProjectAl>;
     'Vec<ProjectID>': Vec<ProjectID>;
-    'Vec<ProjectSocials>': Vec<ProjectSocials>;
     'Vec<PropIndex>': Vec<PropIndex>;
     'Vec<Proposal>': Vec<Proposal>;
     'Vec<ProposalIndex>': Vec<ProposalIndex>;
@@ -1888,7 +1885,6 @@ declare module '@polkadot/types/types/registry' {
     'Vec<Slot>': Vec<Slot>;
     'Vec<SlotNumber>': Vec<SlotNumber>;
     'Vec<SlotRange>': Vec<SlotRange>;
-    'Vec<Social>': Vec<Social>;
     'Vec<SocietyJudgement>': Vec<SocietyJudgement>;
     'Vec<SocietyVote>': Vec<SocietyVote>;
     'Vec<SolutionOrSnapshotSize>': Vec<SolutionOrSnapshotSize>;
@@ -2684,7 +2680,6 @@ declare module '@polkadot/types/types/registry' {
     Project: Project;
     ProjectAl: ProjectAl;
     ProjectID: ProjectID;
-    ProjectSocials: ProjectSocials;
     PropIndex: PropIndex;
     Proposal: Proposal;
     ProposalIndex: ProposalIndex;
@@ -2842,7 +2837,6 @@ declare module '@polkadot/types/types/registry' {
     Slot: Slot;
     SlotNumber: SlotNumber;
     SlotRange: SlotRange;
-    Social: Social;
     SocietyJudgement: SocietyJudgement;
     SocietyVote: SocietyVote;
     SolutionOrSnapshotSize: SolutionOrSnapshotSize;

@@ -7,7 +7,7 @@ import { useSubstrate } from './substrate-lib';
 function Main() {
   const { keyring } = useSubstrate();
   const [accountSelected, setAccountSelected] = useState('');
-  const { state, dispatch } = useApp();
+  const { dispatch } = useApp();
   // Get the list of accounts we possess the private key for
   /**
    *  @type {Record<"key" | "value"|"text"|"icon",string>[] | undefined}
@@ -140,6 +140,6 @@ const BalanceAnnotation = function (props) {
  * @param {JSX.IntrinsicAttributes} props
  */
 export default function AccountSelector(props) {
-  const { api, keyring } = useSubstrate();
+  const { keyring } = useSubstrate();
   return keyring && keyring.getPairs ? <Main {...props} /> : null;
 }

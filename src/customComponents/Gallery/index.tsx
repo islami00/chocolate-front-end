@@ -1,7 +1,7 @@
 import { ProjectsView } from '../Projects';
 import { useProjects } from '../ProjectsRe/hooks';
 
-function Main() {
+function Main(): JSX.Element {
   const { data, isFetched } = useProjects();
   return isFetched && <ProjectsView gallery data={data} />;
 }

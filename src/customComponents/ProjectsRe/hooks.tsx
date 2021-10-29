@@ -1,46 +1,23 @@
 import { Option, StorageKey } from '@polkadot/types';
-import { ProjectAl, ProjectID } from 'chocolate/interfaces';
-import { useSubstrate } from 'chocolate/substrate-lib';
-import { Chocolate, ProjectWithIndex } from 'chocolate/typeSystem/jsonTypes';
-import { useQuery } from 'react-query';
-
-const cleanName = function (name: string) {
-  const re = /[A-Z]/;
-  const foundAt = name.search(re);
-  return name.slice(foundAt);
-};
-
-/**
- * @description Cleans the utf-8 bytes on the project and founder socials
- * by removing anything before founder, or before any word before Inc/_Stash
- * Note: The object passed is mutated directly
- * @param {Partial<Chocolate["Social"]>} soc */
-const MutateSocials = function (soc: Partial<Chocolate['Social']>) {
-  const cleanReg =
-    /([\s\S](?=founder))|([^A-Za-z_](?!(gmail|com)))|([\s\S]+?(?=[A-Z][a-z]+)(?!(Inc|Stash)))/g;
-  const keys = Object.keys(soc);
-  for (let i = 0; i < keys.length; i += 1) {
-    const element = keys[i];
-    const social = soc[element];
-    soc[element] = social.replaceAll(cleanReg, '');
-  }
-  return soc;
-};
+import { useQuery, UseQueryResult } from 'react-query';
+import { ProjectAl, ProjectID } from '../../interfaces';
+import { useSubstrate } from '../../substrate-lib';
+import { Chocolate, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { NewMetaData } from '../../typeSystem/mockTypes';
+import { errorHandled, toPinataFetch } from '../utils';
 
 /**
  * OwnerID shoould be changed to projectAddress in input
  * @description gets the projects and filters them by not proposed, and adds exta data e.g subscan links and also dispatches state update
- * @param {Promise<[StorageKey<[ProjectID]>, Option<ProjectAl>][]>} projects
- * @returns {Promise<ProjectWithIndex[]>}
  */
 const getProjects = async function (
   projects: Promise<[StorageKey<[ProjectID]>, Option<ProjectAl>][] | undefined>
-): Promise<ProjectWithIndex[]> {
+): Promise<NewProjectWithIndex[]> {
   // projects are properly passed here
   if (!(projects instanceof Promise)) throw new Error('Passed in wrong values');
   const usable = await projects;
 
-  const mutatedProjects = usable?.map(each => {
+  const mutatedProjects = usable?.map(async (each) => {
     const [id, project] = each;
 
     // @ts-expect-error AnyJson is an array type in this case.
@@ -52,29 +29,38 @@ const getProjects = async function (
     const Id: Chocolate['ProjectID'] = rawId;
     // @ts-expect-error this is te project type returned
     const secondReturnable: Chocolate['Project'] = rawProject.toHuman();
-    // mutate socials and project names
-    const {
-      metaData: { projectName },
-    } = secondReturnable;
-    secondReturnable.metaData.founderSocials.forEach(MutateSocials);
-    secondReturnable.metaData.projectSocials.forEach(MutateSocials);
-
-    secondReturnable.metaData.projectName = cleanName(projectName).replaceAll(
-      '_',
-      ' '
+    const [meta, error] = await errorHandled(
+      fetch(toPinataFetch(secondReturnable.metaData))
     );
-    const ret = { Id, project: secondReturnable };
+    if (error) throw error;
+    const realMeta: NewMetaData = (await meta.json()) as NewMetaData;
+    realMeta.icon = `https://avatars.dicebear.com/api/initials/${realMeta.name}.svg`;
+    const newRet = { ...secondReturnable, metaData: realMeta };
+    const ret: NewProjectWithIndex = { Id, project: newRet };
     return ret;
   });
-  const cleanProjects = mutatedProjects.filter(
-    each => each !== null && each !== undefined
+  const mut = await Promise.all(mutatedProjects);
+  const cleanProjects = mut.filter(
+    (each) => each !== null && each !== undefined
   );
   return cleanProjects;
 };
-const useProjects = function () {
+/** @description  Get all projects as usable jsons and sort by id */
+const useProjects = function (): UseQueryResult<
+  NewProjectWithIndex[],
+  unknown
+> {
   const { api } = useSubstrate();
+  // To-do: refactor to useQuery 'chain', 'projects' and useQuery 'ipfs' , 'metadata'
+  // then include utility function to consolidate both types. but we good for now. Collects both
   async function fetchProjects() {
     const ret = await getProjects(api.query.chocolateModule.projects.entries());
+    ret.sort((pr1, pr2) => {
+      let x = 1;
+      if (pr1.Id < pr2.Id) x = -1;
+      else if (pr1.Id === pr2.Id) x = 0;
+      return x;
+    });
     return ret;
   }
   return useQuery('projects', fetchProjects);

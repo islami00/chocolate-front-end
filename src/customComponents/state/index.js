@@ -1,6 +1,8 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
 import { Struct } from '@polkadot/types';
-import { ReviewAl, User } from 'chocolate/interfaces';
 import React, { useContext, useReducer } from 'react';
+import { ReviewAl, User } from '../../interfaces';
 /**
  * @type {{userData:{
  * name: string;

@@ -6,12 +6,12 @@ import './about.css';
  */
 const About: React.FC = function () {
   return (
-    <main className='about-wrap'>
-      <p className='mission'>
-        “To provide a safe path to onboard the next 1 billion users of crypto &amp; blockchain by eliminating Web 3.0
-        scams.”
+    <main className="about-wrap">
+      <p className="mission">
+        “To provide a safe path to onboard the next 1 billion users of crypto
+        &amp; blockchain by eliminating Web 3.0 scams.”
       </p>
-      <img src={ChocolatePurpleSmall} alt='chocolate!' />
+      <img src={ChocolatePurpleSmall} alt="chocolate!" />
     </main>
   );
 };
