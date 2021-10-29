@@ -101,10 +101,7 @@ const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   );
 };
 
-/**
- * @description Houses the projects
- * @type  {React.FC<{data : NewProjectWithIndex[]; gallery?:boolean;shame?:boolean}>}
- */
+/** @description Houses the projects */
 export const ProjectsView: React.FC<{
   data: NewProjectWithIndex[];
   gallery?: boolean;
@@ -117,7 +114,6 @@ export const ProjectsView: React.FC<{
   let render;
   let header;
   let desc;
-  /** @param {NewProjectWithIndex} project */
   const toProject = (project: NewProjectWithIndex) => (
     <ProjectView data={project} key={project.Id.toString()} />
   );
