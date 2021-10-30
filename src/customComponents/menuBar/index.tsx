@@ -4,7 +4,7 @@ import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
 import {
   useAccounts,
-  useSubstrate
+  useSubstrate,
 } from '../../substrate-lib/SubstrateContext';
 import './index.css';
 import './wallet.css';

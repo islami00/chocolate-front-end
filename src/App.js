@@ -7,12 +7,12 @@ import 'semantic-ui-css/semantic.min.css';
 // eslint-disable-next-line import/no-unresolved
 import LandingPage from './customComponents/landingPageRe';
 import { AppContextProvider, useApp } from './customComponents/state';
+// eslint-disable-next-line import/no-unresolved
 import { loader, message } from './customComponents/utilities';
 // styles
 import './styles/index.css';
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { DeveloperConsole } from './substrate-lib/components';
-
 
 function Main() {
   const { apiState, keyring, keyringState, apiError } = useSubstrate();

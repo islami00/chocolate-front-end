@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useSubstrate } from '../../substrate-lib';
 import About from '../About';
 import Gallery from '../Gallery';

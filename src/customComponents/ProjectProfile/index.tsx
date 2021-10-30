@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-import { NewReview } from 'chocolate/typeSystem/jsonTypes';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Card, Header, Image, Modal } from 'semantic-ui-react';
+import { NewReview } from '../../typeSystem/jsonTypes';
 import { Rating } from '../Projects';
 import { useApp } from '../state';
 import { message } from '../utilities/message';
