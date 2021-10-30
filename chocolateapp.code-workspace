@@ -7,11 +7,11 @@
       "path": "../chocolate-web-app"
     },
     // {
-    //   "path": "H:\\programming\\Documents\\chocolate-front-end\\src\\customComponents"
+    //   "path": "H:\\chocolate\\profile-merge\\src"
     // },
-    // {
-    //   "path": "../githubtest"
-    // },
+    {
+      "path": "../githubtest"
+    },
   ],
   "settings": {
     "npm-intellisense.recursivePackageJsonLookup": true,
@@ -48,6 +48,10 @@
     "js/ts.implicitProjectConfig.checkJs": true
   },
   "extensions": {
-    "recommendations": ["sysoev.language-stylus", "jpoissonnier.vscode-styled-components", "humao.rest-client"]
+    "recommendations": [ "dbaeumer.vscode-eslint",
+    "ms-vsliveshare.vsliveshare",
+    "ms-vsliveshare.vsliveshare-audio",
+    "esbenp.prettier-vscode",
+    "christian-kohler.npm-intellisense"]
   }
 }
