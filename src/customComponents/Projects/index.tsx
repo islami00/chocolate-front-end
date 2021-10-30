@@ -14,7 +14,7 @@ import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
 import './projects.scss';
 
 /** @description rating component, optionally interactive */
-const Rating: React.FC<{
+export const Rating: React.FC<{
   rating: AnyNumber;
   fixed: boolean;
 }> = function (props) {

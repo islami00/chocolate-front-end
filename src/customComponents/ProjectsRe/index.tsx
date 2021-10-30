@@ -146,20 +146,20 @@ const ProjectsRe: React.FC = function () {
         </p>
         {isFetched && <SearchBar projects={data} />}
       </section>
-      <section className="ui container">
-        <div className="ui button group">
-          <Link className="ui button choc-pink" to="/gallery">
+      <section className="link_buttons">
+        <div className="ui button purple group">
+          <Link className="ui button purple choc-pink" to="/gallery">
             Find a project
           </Link>
-          <Link className="ui button choc-pink" to="/wall-of-shame">
+          <Link className="ui button purple choc-pink" to="/wall-of-shame">
             Wall of shame
           </Link>
         </div>
-        <div className="ui button group">
-          <button type="button" className="ui button disabled">
+        <div className="ui button purple disabled group">
+          <button type="button" className="ui button purple disabled">
             Create a project
           </button>
-          <button type="button" className="ui button disabled">
+          <button type="button" className="ui button purple disabled">
             Claim a project
           </button>
         </div>

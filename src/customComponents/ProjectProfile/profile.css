@@ -1,0 +1,158 @@
+ body{
+    font-family:'Montserrat', sans-serif ;
+    background-image: none; 
+    padding: 15px; 
+}
+.topnav{
+    float: right;
+    margin-top: 1em;
+}
+.about_tab{
+    text-decoration: none;
+    color: black;
+    margin-right: 1em;
+}
+.team_tab{
+    text-decoration: none;
+    color: black;
+    margin-right: 1em;
+}
+.projects_tab{
+    text-decoration: none;
+    color: black;
+    margin-right: 1em;
+}
+.token_tab{
+    text-decoration: none;
+    color: black;
+    margin-right: 1em;
+}
+
+.searchbar{
+    width: 100%;
+    max-width: 300px;
+    display: inline-flex;
+    width: 50em;
+    margin-top: 2em;
+    padding-left: 1.7em;
+}
+.searchbar__input{
+    flex-grow: 1;
+    padding: 10px;
+    outline: none;
+    border: 1px solid blueviolet;
+    border-radius: 5px 0 0 5px;
+    background:rgb(241, 234, 247) ;
+    transition: background 0.25s, box-shadow 0.25s;
+}
+.searchbar__input:focus{
+    background: white;
+    box-shadow: 0 0 2px rgb(174, 122, 223); 
+}
+.searchbar__input::placeholder{
+    color: rgb(174, 122, 223);
+}
+.searchbar__button{
+    width: 40px;
+    color: white;
+    outline: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius:0 5px 5px 0 ;
+    cursor: pointer;
+    user-select: none;
+}
+.searchbar__button:active{
+    box-shadow: inset 0 0 30px rgba(0, 0 , 0 , 0.25);
+}
+.choc_img{
+    margin-top: 1.5em;
+    height: 3.5em;
+    width: 3.5em;
+    float: left;
+}
+
+.reviewer_name{
+    display: block;
+    height: 5em;
+    width: auto;
+}
+.rating{
+    font-family:'Montserrat', sans-serif ;
+    font-size: 20px;
+}
+ .wh_top{
+    background-color: rgb(213, 172, 252);
+    padding: 0.3em;
+    border: none;
+    border-radius: 5px;
+    text-align: left;
+
+} 
+.About{
+    font-size: 20px;
+}
+.about_reviewer{
+    max-width: 500px;
+    background-color:  rgb(240, 225, 255) ;
+    padding: 1em;
+    overflow-y: auto;
+    border-radius: 5px;
+    height: 4em;
+    width: 40em;
+    position: relative;
+}
+.review_header{
+    /* padding-top: 3em; */
+    text-align: left;
+}
+.box_indiv{
+    display: flex;
+    overflow-x: auto;
+}
+.box_indiv > *{
+    background-color: rgb(240, 225, 255) ;
+    width: 600px;
+    height: max-content;
+    min-width: 450px;
+    border-radius: 10px;
+    padding: 10px;
+}
+.box_indiv > :nth-of-type(n + 2){
+    margin-left: 1em;
+}
+
+.head-profile{
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.head-profile > .right{
+    justify-self: flex-end;
+    margin-left: auto;
+}
+.head-profile > .left{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.profile-wrap{
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    grid-template-columns: 100%;
+    row-gap: 1vh;
+}
+.card-head{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.card-right{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
