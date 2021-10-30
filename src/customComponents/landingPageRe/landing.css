@@ -5,5 +5,8 @@
   /* set on body for all */
   box-sizing: border-box;
   /* buff content in --static */
-  padding-right: 57px;
+  padding: 15px;
+}
+.background{
+  background-image: url(../../assets/blob-scene-haikei.svg);
 }

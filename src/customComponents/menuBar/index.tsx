@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, matchPath, useLocation } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
 import {
   useAccounts,
-  useSubstrate,
+  useSubstrate
 } from '../../substrate-lib/SubstrateContext';
 import './index.css';
 import './wallet.css';
@@ -130,13 +130,20 @@ function Wallet() {
     </section>
   );
 }
-function Menu(): JSX.Element {
+const Menu: React.FC<{
+  setBack: React.Dispatch<React.SetStateAction<boolean>>;
+}> = function (props): JSX.Element {
+  const { setBack } = props;
+  const location = useLocation();
+  const match = matchPath(location.pathname, { path: '/', exact: true });
+  if (match) setBack(true);
+  if (!match) setBack(false);
   return (
     <header className="top-nav">
       <Navlinks />
       <Wallet />
     </header>
   );
-}
+};
 
 export default Menu;

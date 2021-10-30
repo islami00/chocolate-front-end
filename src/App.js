@@ -2,25 +2,18 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // regular imports
 // substrate imports
-import { AnyJson } from '@polkadot/types/types';
 import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
-// utility imports
-import { chocolateLogo } from './customComponents/constants';
-import { Err } from './customComponents/err';
 // eslint-disable-next-line import/no-unresolved
 import LandingPage from './customComponents/landingPageRe';
-import { Loading } from './customComponents/loading';
 import { AppContextProvider, useApp } from './customComponents/state';
+import { loader, message } from './customComponents/utilities';
 // styles
 import './styles/index.css';
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { DeveloperConsole } from './substrate-lib/components';
 
-export const message = (/** @type {AnyJson} */ err, fof = false) => <Err four={fof} this_error={err} />;
-export const loader = (/** @type {string} */ text, greet = false) => (
-  <Loading message={text} img={chocolateLogo} {...{ greet }} />
-);
+
 function Main() {
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const { state, dispatch } = useApp();

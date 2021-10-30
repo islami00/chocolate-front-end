@@ -8,6 +8,7 @@ export type PrProf = React.FC<{
 export type ProfileSum = React.FC<{
   data: NewMetaData;
   isFetched: boolean;
+  isLoading: boolean;
   ave: string;
 }>;
 export type SumRev = React.FC<{ isLoading: boolean; disabled: boolean }>;

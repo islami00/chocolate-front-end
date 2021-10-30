@@ -1,6 +1,11 @@
+import { useState } from 'react';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch
+} from 'react-router-dom';
 import { useSubstrate } from '../../substrate-lib';
 import About from '../About';
 import Gallery from '../Gallery';
@@ -17,14 +22,15 @@ const client = new QueryClient({ queryCache });
 
 function Main(): JSX.Element {
   const { apiState, apiError } = useSubstrate();
+  const [back, setBack] = useState(false);
 
   if (apiState === 'ERROR') return message(apiError);
   if (apiState !== 'READY') return loader('Connecting to Substrate');
   return (
-    <div className="root-wrap">
+    <div className={`root-wrap ${back ? 'background' : ''}`}>
       <QueryClientProvider contextSharing client={client}>
         <Router>
-          <MenuBar />
+          <MenuBar setBack={setBack} />
           <Switch>
             <Route exact path="/">
               <ProjectsRe />

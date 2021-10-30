@@ -6,7 +6,7 @@ import { AnyNumber } from '@polkadot/types/types';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 // icons
-import { Button, Icon } from 'semantic-ui-react';
+import { Button, Icon, Label } from 'semantic-ui-react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
 import Pensive from '../../assets/pensive-face-emoji.svg';
 import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
@@ -25,7 +25,7 @@ export const Rating: React.FC<{
   useEffect(() => {
     if (fixed) setRated(Number(rating));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [rating]);
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       {
@@ -58,6 +58,9 @@ export const Rating: React.FC<{
           );
         })
       }
+      <Label pointing="left" color="purple">
+        {rated.toPrecision(2)}
+      </Label>
     </form>
   );
 };

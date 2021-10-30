@@ -130,7 +130,7 @@ const SearchBar: React.FC<{ projects: NewProjectWithIndex[] }> = function (
 
 /** @description Redo of the projects page */
 const ProjectsRe: React.FC = function () {
-  const { data, isFetched } = useProjects();
+  const { data, isFetched, isError, isLoading } = useProjects();
   return (
     <main className="land">
       <section className="land__content">
@@ -144,7 +144,7 @@ const ProjectsRe: React.FC = function () {
         <p className="tagline">
           Ending scam &amp; spam in crypto once and for all.
         </p>
-        {isFetched && <SearchBar projects={data} />}
+        {isFetched && !isError && !isLoading && <SearchBar projects={data} />}
       </section>
       <section className="link_buttons">
         <div className="ui button purple group">
