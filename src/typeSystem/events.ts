@@ -35,4 +35,3 @@ const res3 = {
 };
 
 export { res1, res2, res3 };
-

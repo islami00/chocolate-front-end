@@ -6,7 +6,7 @@ import { PinServerRes } from '../../typeSystem/appTypes';
 import {
   ChainReview,
   NewMetaData,
-  NewReview
+  NewReview,
 } from '../../typeSystem/jsonTypes';
 import { ReviewContent } from '../../typeSystem/mockTypes';
 import { errorHandled, sortAnyNum, toPinataFetch } from '../utils';
