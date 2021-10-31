@@ -4,18 +4,15 @@ import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
 import {
   useAccounts,
-  useSubstrate,
+  useSubstrate
 } from '../../substrate-lib/SubstrateContext';
 import './index.css';
 import './wallet.css';
-/**
- * @description - A modal that either shows wallet info - account
- * selected and balances - rankpoints and regular, or it shows connect depending on wallet connection.
- */
-const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
-  const { connected } = props;
-  const { keyringState } = useSubstrate();
-  const [run, setRun] = useState(false);
+
+export const useLoadAccounts = (
+  run: boolean,
+  setRun: React.Dispatch<React.SetStateAction<boolean>>
+): void => {
   const { dispatch, loadAccounts } = useAccounts();
   const state = useSubstrate();
 
@@ -30,6 +27,16 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [run]);
+};
+/**
+ * @description - A modal that either shows wallet info - account
+ * selected and balances - rankpoints and regular, or it shows connect depending on wallet connection.
+ */
+const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
+  const { connected } = props;
+  const { keyringState } = useSubstrate();
+  const [run, setRun] = useState(false);
+  useLoadAccounts(run, setRun);
   let content;
   // do the keyring stuff here too.
   if (keyringState === 'LOADING') content = <p>Loading... </p>;

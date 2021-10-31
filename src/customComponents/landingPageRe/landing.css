@@ -6,6 +6,8 @@
   box-sizing: border-box;
   /* buff content in --static */
   padding: 15px;
+  /* fix */
+  letter-spacing: normal;
 }
 .background{
   background-image: url(../../assets/blob-scene-haikei.svg);

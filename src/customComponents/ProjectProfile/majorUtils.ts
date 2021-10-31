@@ -2,12 +2,13 @@
 import { ApiPromise } from '@polkadot/api';
 import { Vec } from '@polkadot/types';
 import { ProjectAl, ReviewID } from '../../interfaces';
-import { ReviewContent } from '../../typeSystem/mockTypes';
+import { PinServerRes } from '../../typeSystem/appTypes';
 import {
   ChainReview,
   NewMetaData,
-  NewReview,
+  NewReview
 } from '../../typeSystem/jsonTypes';
+import { ReviewContent } from '../../typeSystem/mockTypes';
 import { errorHandled, sortAnyNum, toPinataFetch } from '../utils';
 
 function filter(project: ProjectAl): 0 | 1 | 2 | void {
@@ -42,9 +43,12 @@ async function populateReviews(
     if (review === 0) throw new Error('Review does not exist');
     if (review.proposalStatus.status.isAccepted) return review;
     if (review.userID.eq(userId)) return review;
+    // fall through case comes here, this can be undefined in the case wherein the userId is proposed
   });
   const result = await Promise.all(chainRes);
-  const contents = result.map(async (element, i, arr) => {
+  // patch
+  const resulting = result.filter((each) => !!each);
+  const contents = resulting.map(async (element, i, arr) => {
     if (debug) console.log('ITer', i, arr, element);
     const [res, err] = await errorHandled(
       fetch(toPinataFetch(element.content.toJSON()))
@@ -73,4 +77,21 @@ async function populateMetadata(
   metaData.icon = `https://avatars.dicebear.com/api/initials/${metaData.name}.svg`;
   return metaData;
 }
-export { filter, populateReviews, populateMetadata };
+type GetCidReturns = { cid: string };
+const getCid = async function (
+  reviewText: string,
+  rating: number
+): Promise<GetCidReturns> {
+  const cacheable: ReviewContent = { rating, reviewText };
+  const endpoint = 'http://127.0.0.1:5001/chocolate-demo/us-central1/api/pin';
+  const headers = {
+    method: 'POST',
+    body: JSON.stringify(cacheable),
+  };
+  const [cid, err] = await errorHandled(fetch(endpoint, headers));
+  if (err) throw err;
+  const ccid = (await cid.json()) as PinServerRes;
+  const returnable = ccid?.success;
+  return { cid: returnable };
+};
+export { filter, populateReviews, populateMetadata, getCid };

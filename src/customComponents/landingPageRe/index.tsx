@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useSubstrate } from '../../substrate-lib';
 import About from '../About';
@@ -48,7 +47,6 @@ function Main(): JSX.Element {
             </Route>
             <Route path="*">{message('404! Not found', true)}</Route>
           </Switch>
-          <ReactQueryDevtools initialIsOpen={false} />
         </Router>
       </QueryClientProvider>
     </div>

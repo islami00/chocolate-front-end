@@ -15,23 +15,29 @@ import './projects.scss';
 
 /** @description rating component, optionally interactive */
 export const Rating: React.FC<{
-  rating: AnyNumber;
+  rating?: AnyNumber;
   fixed: boolean;
+  setOuterRate?: React.Dispatch<React.SetStateAction<number>>;
 }> = function (props) {
   // expect rating to 2dp
-  const { rating, fixed } = props;
+  const { rating, fixed, setOuterRate } = props;
   const [rated, setRated] = useState(0);
   const [hover, setHover] = useState(0);
   useEffect(() => {
     if (fixed) setRated(Number(rating));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rating]);
+  useEffect(() => {
+    console.count('Used setOuterRate effect');
+    if (!fixed) setOuterRate(rated);
+  }, [fixed, rated, setOuterRate]);
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <section className="review-wrap">
       {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        [...Array(5)].map((_, i) => {
+        [...Array(5)].map((undef, i) => {
           const currentRating = i + 1;
+
           return (
             <label key={`choc_bar${currentRating}`}>
               <input
@@ -61,7 +67,7 @@ export const Rating: React.FC<{
       <Label pointing="left" color="purple">
         {rated.toPrecision(2)}
       </Label>
-    </form>
+    </section>
   );
 };
 /** @description Houses a single project */

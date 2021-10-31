@@ -1,6 +1,7 @@
 // defined the various classes
 //
 
+import { AnyJson } from '@polkadot/types/types';
 import { NewProject, ReviewContent } from './mockTypes';
 
 /**
@@ -28,5 +29,9 @@ class JSONProject {
     return av;
   }
 }
-
+type PinServerRes = {
+  error?: AnyJson;
+  success?: string;
+};
+export type { PinServerRes };
 export { JSONProject };

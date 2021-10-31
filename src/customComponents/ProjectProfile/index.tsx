@@ -1,16 +1,36 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-import { useState } from 'react';
+import { AddressOrPair } from '@polkadot/api/types';
+import { EventRecord } from '@polkadot/types/interfaces';
+import { useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { Button, Card, Header, Image, Modal } from 'semantic-ui-react';
-import { NewReview } from '../../typeSystem/jsonTypes';
+import {
+  Button,
+  Card,
+  Container,
+  Form,
+  Header,
+  Image,
+  Label,
+  List,
+  Loader,
+  Message,
+  Modal
+} from 'semantic-ui-react';
+import AccountSelector from '../../AccountSelector';
+import { useSubstrate } from '../../substrate-lib';
+import { TxButton } from '../../substrate-lib/components';
+import { NewMetaData, NewReview } from '../../typeSystem/jsonTypes';
+import { useLoadAccounts } from '../menuBar';
 import { Rating } from '../Projects';
 import { useApp } from '../state';
 import { message } from '../utilities/message';
+import useCid from './hooks';
 import { filter } from './majorUtils';
 import './profile.css';
-import { ProfileSum, PrProf, RevReel, SumRev } from './types';
+import { ProfileSum, PrProf, RevReel, SubRev, SumRev } from './types';
 import useAverage from './useAverage';
 import useProject from './useProject';
 import useProjectMeta from './useProjectMeta';
@@ -52,15 +72,221 @@ const ProjectProfileSummary: ProfileSum = function (props) {
           >
             Whitepaper
           </Button>
-        </div>{' '}
+        </div>
       </section>
     </article>
   );
 };
-const SubmitReview: SumRev = function () {
-  const [open, setOpen] = useState(false);
+/** Send the actual review to chain along with cid */
+const useReviewSend = function (
+  txData: { id: string; cid: string },
+  account: AddressOrPair
+) {
+  const { id, cid } = txData;
+  const { api } = useSubstrate();
+  const [fee, setFee] = useState('..loading fee..');
+  const getPaymentInfo = async function () {
+    const paymentInfo = await api.tx.chocolateModule
+      .createReview(cid, id)
+      .paymentInfo(account);
+    const retFee = paymentInfo.partialFee.toHuman();
+    setFee(retFee);
+  };
+  if (account) getPaymentInfo();
+  return { data: fee };
+};
+/** this is a faux event view, update this when events are understood better */
+const EventView: React.FC<{ event: EventRecord[] }> = function (props) {
+  const { event } = props;
+  const view = event?.map((record) => {
+    const { event: localEvent, phase } = record;
+    const types = localEvent.typeDef;
+    const text = [<> </>];
+    text.push(
+      <p key={JSON.stringify(localEvent.section)}>
+        {`\t${localEvent.section}:${localEvent.method}:: (phase=${phase
+          .toHuman()
+          .toString()})`}
+      </p>
+    );
+    text.push(
+      <p key={JSON.stringify(localEvent.meta)}>{`\t\t${String(
+        localEvent.meta.docs.toHuman()
+      )}`}</p>
+    );
+
+    localEvent.data.forEach((data, index) => {
+      text.push(
+        <p>{`\t\t\t${types[index].type}: ${String(data.toHuman())}`} </p>
+      );
+    });
+    return <List.Item>{text}</List.Item>;
+  });
+
+  return <List divided>{view}</List>;
+};
+
+const FinalNotif: React.FC<{
+  completed: boolean;
+  error: boolean;
+  status: string;
+}> = function (props) {
+  const { status, completed, error } = props;
+  const msgProps = { positive: undefined, error: undefined };
+  let copiable = '';
+  let view = '';
+  if (completed) {
+    const start = status.search(/[\S]+$/);
+    copiable = status.substr(start);
+    view = status.substr(0, start);
+    msgProps.positive = completed;
+  }
+  if (error) {
+    msgProps.error = error;
+    copiable = status;
+    view = 'Error';
+  }
+  return <Message fluid header={view} content={copiable} {...msgProps} />;
+};
+/** Submit review data as transaction */
+const SubmitReviewTx: React.FC<{
+  id: string;
+  cid: string;
+}> = (props) => {
+  const [status, setStatus] = useState('');
+  const { id, cid } = props;
+  const { state } = useApp();
+  const { userData } = state;
+  const [run, setRun] = useState(false);
+  const [event, setEvents] = useState<EventRecord[]>();
+  const [completed, setCompleted] = useState<boolean>(undefined);
+  const [error, setError] = useState<boolean>(undefined);
+
+  const { keyringState, keyring, api } = useSubstrate();
+  useLoadAccounts(run, setRun);
+  const { data: txFee } = useReviewSend({ id, cid }, userData.accountAddress);
+  useEffect(() => {
+    console.log(event);
+    if (/finalized/i.exec(status)) setCompleted(true);
+    else if (/failed/i.exec(status)) setError(true);
+  }, [event, status]);
+  if (!userData.accountAddress && !keyring)
+    return (
+      <div>
+        <p>Please connect your wallet to proceed</p>
+        <Button loading={run || undefined} onClick={() => setRun(true)} primary>
+          Connect wallet
+        </Button>
+      </div>
+    );
+  const accountPair =
+    userData.accountAddress &&
+    keyringState === 'READY' &&
+    keyring &&
+    keyring.getPair(userData.accountAddress);
   return (
-    <div>
+    <div className="spaced">
+      <Container className="spaced" fluid>
+        <Header>Account Paying</Header>
+        <AccountSelector />
+        <p>Note: a fee of {txFee} will be applied</p>
+      </Container>
+      <TxButton
+        color="purple"
+        disabled={!cid && !accountPair ? true : undefined}
+        accountPair={accountPair.meta ? accountPair : undefined}
+        label="Submit"
+        type="SIGNED-TX"
+        setEvent={setEvents}
+        setStatus={setStatus}
+        attrs={{
+          palletRpc: 'chocolateModule',
+          callable: 'createReview',
+          inputParams: [cid, id],
+          paramFields: [true, true],
+        }}
+      />
+      <details placeholder="Events">
+        {event?.length > 0 && <EventView event={event} />}
+      </details>
+      {status && !completed && !error && <Loader content={status} />}
+      {(completed || error) && (
+        <FinalNotif
+          status={status}
+          completed={completed ? true : undefined}
+          error={error ? true : undefined}
+        />
+      )}
+    </div>
+  );
+};
+
+const SubmitReviewForm: SubRev = function (props) {
+  const { id } = useParams<{ id: string }>();
+  const [submitted, setSubmitted] = useState(false);
+  // form data
+  const initForm = { id, cid: '' };
+  const [rate, setRate] = useState(0);
+  const [submittedReview, setSubmittedReview] = useState(initForm);
+  // get cache
+  const [review, setReview] = useState('');
+  const queryKey = ['project', 'meta', id];
+  const qClient = useQueryClient();
+  const cachedProj = qClient.getQueryCache().find<NewMetaData>(queryKey);
+  const proj = cachedProj.state.data;
+  // setup the query, then refetch when data is in place
+  const { data, isLoading } = useCid(submitted, review, rate);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitted(true);
+  };
+  // setup conditional renders
+  let content;
+  // set the submitted review once fetched and submitted
+  useEffect(() => {
+    if (submitted && !isLoading) setSubmittedReview({ id, cid: data.cid });
+  }, [submitted, isLoading, id]);
+  if (submitted && !isLoading) {
+    content = <SubmitReviewTx {...submittedReview} />;
+  } else {
+    content = (
+      <Form onSubmit={handleSubmit}>
+        {/* refactor to select */}
+        <Form.Input fluid label="Project" value={proj.name} />
+        <Form.TextArea
+          label="Body"
+          required
+          value={review}
+          onChange={(e, { name, value }) => setReview(value.toString())}
+          placeholder="Write your review here"
+        />
+        <Rating fixed={false} setOuterRate={setRate} />
+        <Form.Button
+          content="submit"
+          fluid
+          color="purple"
+          loading={isLoading || undefined}
+        />
+      </Form>
+    );
+  }
+
+  return <div>{content}</div>;
+};
+const SubmitReview: SumRev = function (props) {
+  const { disabled } = props;
+  const [open, setOpen] = useState(false);
+  const reason =
+    "You cannot submit a review, this is probably because you, or your selected account owns this project or you've been banned";
+  let content;
+  if (disabled)
+    content = (
+      <Button color="purple" title={reason} disabled fluid>
+        Submit review
+      </Button>
+    );
+  else {
+    content = (
       <Modal
         closeIcon
         onClose={() => setOpen(false)}
@@ -74,41 +300,30 @@ const SubmitReview: SumRev = function () {
       >
         <Modal.Header>Submit review</Modal.Header>
         <Modal.Content>
-          <Image
-            size="medium"
-            src="https://react.semantic-ui.com/images/avatar/large/rachel.png"
-            wrapped
-          />
-          <Modal.Description>
-            <Header>Default Profile Image</Header>
-            <p>
-              We've found the following gravatar image associated with your
-              e-mail address.
-            </p>
-            <p>Is it okay to use this photo?</p>
-          </Modal.Description>
+          <SubmitReviewForm />
         </Modal.Content>
-        <Modal.Actions>
-          {/* tx button here */}
-          <Button
-            content="Continue"
-            labelPosition="right"
-            icon="checkmark"
-            onClick={() => setOpen(false)}
-            positive
-          />
-        </Modal.Actions>
       </Modal>
-    </div>
-  );
+    );
+  }
+  return <div>{content}</div>;
 };
 
 const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   const { each } = props;
-  const { content, userID } = each;
+  const { content, userID, proposalStatus } = each;
+  const { keyringState, keyring } = useSubstrate();
+  const isProposed = () => proposalStatus.status === 'Proposed';
+  const accountPair =
+    userID && keyringState === 'READY' && keyring && keyring.getPair(userID);
+  const name = accountPair
+    ? (accountPair.meta?.name as string | undefined)
+    : 'Anonymous';
+
+  // see: https://github.com/polkadot-js/apps/blob/b957353d225da81e4e4b44835e535d9c389a1255/packages/react-hooks/src/useEventTrigger.ts
   const [readMore, setReadMore] = useState(false);
   const { reviewText, rating } = content;
-  const [limit, setLimit] = useState(reviewText.length >= 181);
+  // limit text to 182 chars once length is more than 450px to preserve height
+  const limit = reviewText.length >= 182;
   let rev;
   if (limit) {
     rev = (
@@ -124,13 +339,18 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
       </>
     );
   } else rev = reviewText;
-  // limit text to 118 chars once length is more than 450px
   const src = `https://avatars.dicebear.com/api/identicon/${userID}.svg`;
   return (
     <Card color="purple">
       <Card.Content>
+        {isProposed() && (
+          <Label color="yellow" ribbon="right">
+            {proposalStatus.status}
+          </Label>
+        )}
         <Card.Header>
           <Image src={src} floated="left" rounded size="mini" />
+          <Card.Meta>{name}</Card.Meta>
         </Card.Header>
         <Card.Description>{rev}</Card.Description>
       </Card.Content>
@@ -141,12 +361,16 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   );
 };
 const ReviewReel: RevReel = function (props) {
-  const { isFetched } = props;
+  const { isFetched, isLoading } = props;
   let renderContent;
-  if (!isFetched) renderContent = <i className="ui loader" />;
+  if (!isFetched && isLoading)
+    renderContent = <Loader content="loading reviews" />;
   else {
     const { data } = props;
-    renderContent = data.map((each) => (
+    // patch
+    if (!data?.filter) return <Loader content="loading reviews" />;
+    const newData = data.filter((each) => each !== undefined && each !== null);
+    renderContent = newData?.map((each) => (
       <ReviewSingle each={each} key={JSON.stringify(each)} />
     ));
   }
@@ -190,8 +414,8 @@ const ProjectProfile: PrProf = function (props) {
         isFetched={fproj}
         isLoading={lprm}
       />
-      <SubmitReview isLoading={lprm || lrev} disabled={canReview} />
-      <ReviewReel data={reviews} isFetched={frev} />
+      <SubmitReview isLoading={lprm || lrev} disabled={!canReview} />
+      <ReviewReel data={reviews} isLoading={lrev} isFetched={frev} />
     </main>
   );
 };
