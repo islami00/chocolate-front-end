@@ -65,6 +65,15 @@ When writing and deploying your own front end, you should configure:
 * `DEVELOPMENT_KEYRING` in `src/config/common.json` be set to `false`.
   See [Keyring](https://polkadot.js.org/api/start/keyring.html).
 
+### Custom config for chocolate:
+
+Make sure to intialize the firebase cloud function in the functions directory by installing dependencies and setting the environment variables for pinata.
+
+Afterwards, export those to a json locally by piping the output of the get environment variables command to `.runtimeconfig.json`. This is excluded from version control. 
+
+Then pull it all in using the firebase emulator. That should then work alongside the 
+
+Note: You can use any other method to pull in environment variables for the pinata api service used.
 ### Specifying Connecting Node
 
 There are two ways to specify it:

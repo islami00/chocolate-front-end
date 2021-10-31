@@ -32,7 +32,7 @@ export const Rating: React.FC<{
   useEffect(() => {
     if(debug) console.count('Used setOuterRate effect');
     if (!fixed) setOuterRate(rated);
-  }, [fixed, rated, setOuterRate]);
+  }, [fixed, rated,debug, setOuterRate]);
   return (
     <section className="review-wrap">
       {

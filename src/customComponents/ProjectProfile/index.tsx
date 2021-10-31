@@ -170,7 +170,7 @@ const SubmitReviewTx: React.FC<{
     if(debug) console.log(event);
     if (/finalized/i.exec(status)) setCompleted(true);
     else if (/failed/i.exec(status)) setError(true);
-  }, [event, status]);
+  }, [event, status,debug]);
   if (!userData.accountAddress && !keyring)
     return (
       <div>
