@@ -19,13 +19,9 @@ function Main() {
   const { state, dispatch } = useApp();
   const { userData } = state;
 
-  const accountPair =
-    userData.accountAddress && keyringState === 'READY' && keyring && keyring.getPair(userData.accountAddress);
 
   if (apiState === 'ERROR') return message(apiError);
   if (apiState !== 'READY') return loader('Connecting to Substrate');
-  // for splitting - TO-DO later
-  // to allow free access to content, place this check along with async load accounts(from useSubstrate) on pages that require an account to proceed. It will be a button component that says, load your account. Once ready, it will then render success and continue on
   if (keyringState !== 'READY') {
     return loader("Loading accounts (please review any extension's authorization)");
   }
@@ -52,7 +48,6 @@ if (process.env.NODE_ENV === 'development') {
 
 export default function RenderMe() {
   return (
-    // Wrapping in app and substrate context preserves state. There is only the issue of routing completely resetting on refresh
     <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_LOCAL : undefined}>
       <AppContextProvider>
         <LandingPage />

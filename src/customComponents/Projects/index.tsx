@@ -23,12 +23,14 @@ export const Rating: React.FC<{
   const { rating, fixed, setOuterRate } = props;
   const [rated, setRated] = useState(0);
   const [hover, setHover] = useState(0);
+  // debug
+  const debug=false;
   useEffect(() => {
     if (fixed) setRated(Number(rating));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rating]);
   useEffect(() => {
-    console.count('Used setOuterRate effect');
+    if(debug) console.count('Used setOuterRate effect');
     if (!fixed) setOuterRate(rated);
   }, [fixed, rated, setOuterRate]);
   return (

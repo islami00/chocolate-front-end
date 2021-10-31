@@ -37,10 +37,11 @@ import useProjectMeta from './useProjectMeta';
 import useReviews from './useReviews';
 
 const ProjectProfileSummary: ProfileSum = function (props) {
+  let debug=false;
   const { isFetched } = props;
   if (!isFetched) return <i className="ui loader">"Loading"</i>;
   const { data, ave } = props;
-  console.log('abe', ave);
+  if(debug) console.log('abe', ave);
   const { name, icon, Link: site, description } = data;
   const src = `https://avatars.dicebear.com/api/initials/${name}.svg`;
   return (
@@ -117,10 +118,10 @@ const EventView: React.FC<{ event: EventRecord[] }> = function (props) {
 
     localEvent.data.forEach((data, index) => {
       text.push(
-        <p>{`\t\t\t${types[index].type}: ${String(data.toHuman())}`} </p>
+        <p key={JSON.stringify(types)}>{`\t\t\t${types[index].type}: ${String(data.toHuman())}`} </p>
       );
     });
-    return <List.Item>{text}</List.Item>;
+    return <List.Item key={JSON.stringify(localEvent)}>{text}</List.Item>;
   });
 
   return <List divided>{view}</List>;
@@ -161,12 +162,12 @@ const SubmitReviewTx: React.FC<{
   const [event, setEvents] = useState<EventRecord[]>();
   const [completed, setCompleted] = useState<boolean>(undefined);
   const [error, setError] = useState<boolean>(undefined);
-
+  let debug=false;
   const { keyringState, keyring, api } = useSubstrate();
   useLoadAccounts(run, setRun);
   const { data: txFee } = useReviewSend({ id, cid }, userData.accountAddress);
   useEffect(() => {
-    console.log(event);
+    if(debug) console.log(event);
     if (/finalized/i.exec(status)) setCompleted(true);
     else if (/failed/i.exec(status)) setError(true);
   }, [event, status]);
@@ -323,7 +324,6 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   // see: https://github.com/polkadot-js/apps/blob/b957353d225da81e4e4b44835e535d9c389a1255/packages/react-hooks/src/useEventTrigger.ts
   const [readMore, setReadMore] = useState(false);
   const { reviewText, rating } = content;
-  // limit text to 182 chars once length is more than 450px to preserve height
   const limit = reviewText.length >= 182;
   let rev;
   if (limit) {
@@ -404,7 +404,6 @@ const ProjectProfile: PrProf = function (props) {
     isLoading: lprm,
     isFetched: fproj,
   } = useProjectMeta(data, id);
-  // get average ranking
   const [avRate] = useAverage(data, projectMeta, frev, fproj, reviews);
   // structure data here. Button component and the like
   return (
