@@ -17,7 +17,7 @@ import {
   List,
   Loader,
   Message,
-  Modal
+  Modal,
 } from 'semantic-ui-react';
 import AccountSelector from '../../AccountSelector';
 import { useSubstrate } from '../../substrate-lib';
