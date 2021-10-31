@@ -6,7 +6,7 @@ import { AnyNumber } from '@polkadot/types/types';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 // icons
-import { Button, Icon } from 'semantic-ui-react';
+import { Button, Icon, Label } from 'semantic-ui-react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
 import Pensive from '../../assets/pensive-face-emoji.svg';
 import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
@@ -14,24 +14,32 @@ import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
 import './projects.scss';
 
 /** @description rating component, optionally interactive */
-const Rating: React.FC<{
-  rating: AnyNumber;
+export const Rating: React.FC<{
+  rating?: AnyNumber;
   fixed: boolean;
+  setOuterRate?: React.Dispatch<React.SetStateAction<number>>;
 }> = function (props) {
   // expect rating to 2dp
-  const { rating, fixed } = props;
+  const { rating, fixed, setOuterRate } = props;
   const [rated, setRated] = useState(0);
   const [hover, setHover] = useState(0);
+  // debug
+  const debug=false;
   useEffect(() => {
     if (fixed) setRated(Number(rating));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [rating]);
+  useEffect(() => {
+    if(debug) console.count('Used setOuterRate effect');
+    if (!fixed) setOuterRate(rated);
+  }, [fixed, rated,debug, setOuterRate]);
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <section className="review-wrap">
       {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        [...Array(5)].map((_, i) => {
+        [...Array(5)].map((undef, i) => {
           const currentRating = i + 1;
+
           return (
             <label key={`choc_bar${currentRating}`}>
               <input
@@ -58,7 +66,10 @@ const Rating: React.FC<{
           );
         })
       }
-    </form>
+      <Label pointing="left" color="purple">
+        {rated.toPrecision(2)}
+      </Label>
+    </section>
   );
 };
 /** @description Houses a single project */

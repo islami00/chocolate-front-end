@@ -8,6 +8,7 @@ import utils from '../utils';
 
 function TxButton ({
   accountPair = null,
+  setEvent= (events)=>{console.log(events)},
   label,
   setStatus,
   color = 'blue',
@@ -60,10 +61,11 @@ function TxButton ({
     return fromAcct;
   };
 
-  const txResHandler = ({ status }) =>
-    status.isFinalized
-      ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
-      : setStatus(`Current transaction status: ${status.type}`);
+  const txResHandler = ({ status,events}) =>
+    { 
+      if(status.isFinalized) {setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`); setEvent(events);}
+      else setStatus(`Current transaction status: ${status.type}`); setEvent(events);
+    }
 
   const txErrHandler = err =>
     setStatus(`😞 Transaction Failed: ${err.toString()}`);

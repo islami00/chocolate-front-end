@@ -37,7 +37,8 @@
       "extends": ["wesbos/typescript"],
       "rules": {
         "react/prop-types": 0
-      }
+      },
+      "excludedFiles": ["functions/**/*.ts"]
     }
   ],
   "plugins": ["eslint-plugin-only-warn"]

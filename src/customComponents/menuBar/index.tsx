@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, matchPath, useLocation } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
 import {
@@ -8,14 +8,11 @@ import {
 } from '../../substrate-lib/SubstrateContext';
 import './index.css';
 import './wallet.css';
-/**
- * @description - A modal that either shows wallet info - account
- * selected and balances - rankpoints and regular, or it shows connect depending on wallet connection.
- */
-const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
-  const { connected } = props;
-  const { keyringState } = useSubstrate();
-  const [run, setRun] = useState(false);
+
+export const useLoadAccounts = (
+  run: boolean,
+  setRun: React.Dispatch<React.SetStateAction<boolean>>
+): void => {
   const { dispatch, loadAccounts } = useAccounts();
   const state = useSubstrate();
 
@@ -30,6 +27,16 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [run]);
+};
+/**
+ * @description - A modal that either shows wallet info - account
+ * selected and balances - rankpoints and regular, or it shows connect depending on wallet connection.
+ */
+const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
+  const { connected } = props;
+  const { keyringState } = useSubstrate();
+  const [run, setRun] = useState(false);
+  useLoadAccounts(run, setRun);
   let content;
   // do the keyring stuff here too.
   if (keyringState === 'LOADING') content = <p>Loading... </p>;
@@ -130,13 +137,20 @@ function Wallet() {
     </section>
   );
 }
-function Menu(): JSX.Element {
+const Menu: React.FC<{
+  setBack: React.Dispatch<React.SetStateAction<boolean>>;
+}> = function (props): JSX.Element {
+  const { setBack } = props;
+  const location = useLocation();
+  const match = matchPath(location.pathname, { path: '/', exact: true });
+  if (match) setBack(true);
+  if (!match) setBack(false);
   return (
     <header className="top-nav">
       <Navlinks />
       <Wallet />
     </header>
   );
-}
+};
 
 export default Menu;
