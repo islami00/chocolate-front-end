@@ -245,6 +245,7 @@ const SubmitReviewForm: SubRev = function (props) {
   // set the submitted review once fetched and submitted
   useEffect(() => {
     if (submitted && !isLoading) setSubmittedReview({ id, cid: data.cid });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitted, isLoading, id]);
   if (submitted && !isLoading) {
     content = <SubmitReviewTx {...submittedReview} />;
