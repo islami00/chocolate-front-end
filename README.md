@@ -1,3 +1,7 @@
+# Apac Hack note
+
+The code in this repository picks up from the progress done during the encode hack submission of this project.
+
 # Substrate Front End Template
 
 This template allows you to create a front-end application that connects to a
