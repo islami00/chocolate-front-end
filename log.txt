@@ -1,0 +1,414 @@
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apac-ui$ npm start
+
+> chocolate@0.1.1 start
+> react-app-rewired start
+
+
+There might be a problem with the project dependency tree.
+It is likely not a bug in Create React App, but something you need to fix locally.
+
+The react-scripts package provided by Create React App requires a dependency:
+
+  "babel-loader": "8.1.0"
+
+Don't try to install it manually: your package manager does it automatically.
+However, a different version of babel-loader was detected higher up in the tree:
+
+  /home/islam-mac/Dev/choco/apac-ui/node_modules/babel-loader (version: 8.2.3) 
+
+Manually installing incompatible versions is known to cause hard-to-debug issues.
+
+If you would prefer to ignore this check, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That will permanently disable this message but you might encounter other issues.
+
+To fix the dependency tree, try following the steps below in the exact order:
+
+  1. Delete package-lock.json (not package.json!) and/or yarn.lock in your project folder.
+  2. Delete node_modules in your project folder.
+  3. Remove "babel-loader" from dependencies and/or devDependencies in the package.json file in your project folder.
+  4. Run npm install or yarn, depending on the package manager you use.
+
+In most cases, this should be enough to fix the problem.
+If this has not helped, there are a few other things you can try:
+
+  5. If you used npm, install yarn (http://yarnpkg.com/) and repeat the above steps with it instead.
+     This may help because npm has known issues with package hoisting which may get resolved in future versions.
+
+  6. Check if /home/islam-mac/Dev/choco/apac-ui/node_modules/babel-loader is outside your project directory.
+     For example, you might have accidentally installed something in your home folder.
+
+  7. Try running npm ls babel-loader in your project folder.
+     This will tell you which other package (apart from the expected react-scripts) installed babel-loader.
+
+If nothing else helps, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That would permanently disable this preflight check in case you want to proceed anyway.
+
+P.S. We know this message is long but please read the steps above :-) We hope you find them helpful!
+
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apacnpm start
+
+> chocolate@0.1.1 start
+> react-app-rewired start
+
+
+There might be a problem with the project dependency tree.
+It is likely not a bug in Create React App, but something you need to fix locally.
+
+The react-scripts package provided by Create React App requires a dependency:
+
+  "babel-loader": "8.1.0"
+
+Don't try to install it manually: your package manager does it automatically.
+However, a different version of babel-loader was detected higher up in the tree:
+
+  /home/islam-mac/Dev/choco/apac-ui/node_modules/babel-loader (version: 8.2.3) 
+
+Manually installing incompatible versions is known to cause hard-to-debug issues.
+
+If you would prefer to ignore this check, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That will permanently disable this message but you might encounter other issues.
+
+To fix the dependency tree, try following the steps below in the exact order:
+
+  1. Delete package-lock.json (not package.json!) and/or yarn.lock in your project folder.
+  2. Delete node_modules in your project folder.
+  3. Remove "babel-loader" from dependencies and/or devDependencies in the package.json file in your project folder.
+  4. Run npm install or yarn, depending on the package manager you use.
+
+In most cases, this should be enough to fix the problem.
+If this has not helped, there are a few other things you can try:
+
+  5. If you used npm, install yarn (http://yarnpkg.com/) and repeat the above steps with it instead.
+     This may help because npm has known issues with package hoisting which may get resolved in future versions.
+
+  6. Check if /home/islam-mac/Dev/choco/apac-ui/node_modules/babel-loader is outside your project directory.
+     For example, you might have accidentally installed something in your home folder.
+
+  7. Try running npm ls babel-loader in your project folder.
+     This will tell you which other package (apart from the expected react-scripts) installed babel-loader.
+
+If nothing else helps, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That would permanently disable this preflight check in case you want to proceed anyway.
+
+P.S. We know this message is long but please read the steps above :-) We hope you find them helpful!
+
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apac-ui$ yarn start
+Internal Error: chocolate@workspace:.: This package doesn't seem to be present in your lockfile; run "yarn install" to update the lockfile
+    at fF.getCandidates (/home/islam-mac/Dev/choco/apac-ui/.yarn/releases/yarn-sources.cjs:437:4425)
+    at Rp.getCandidates (/home/islam-mac/Dev/choco/apac-ui/.yarn/releases/yarn-sources.cjs:395:1275)
+    at /home/islam-mac/Dev/choco/apac-ui/.yarn/releases/yarn-sources.cjs:441:7804
+    at qu (/home/islam-mac/Dev/choco/apac-ui/.yarn/releases/yarn-sources.cjs:394:10914)
+    at _ (/home/islam-mac/Dev/choco/apac-ui/.yarn/releases/yarn-sources.cjs:441:7784)
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apac-ui$ yarn install
+➤ YN0000: ┌ Resolution step
+➤ YN0032: │ nan@npm:2.15.0: Implicit dependencies on node-gyp are discouraged
+➤ YN0061: │ request@npm:2.88.2 is deprecated: request has been deprecated, see https://github.com/request/request/issues/3142
+➤ YN0061: │ babel-eslint@npm:10.1.0 is deprecated: babel-eslint is now @babel/eslint-parser. This package will no longer receive updates.
+➤ YN0032: │ fsevents@npm:2.3.2: Implicit dependencies on node-gyp are discouraged
+➤ YN0061: │ har-validator@npm:5.1.5 is deprecated: this library is no longer supported
+➤ YN0061: │ uuid@npm:3.4.0 is deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+➤ YN0061: │ chokidar@npm:2.1.8 is deprecated: Chokidar 2 will break on node v14+. Upgrade to chokidar 3 with 15x less dependencies.
+➤ YN0061: │ fsevents@npm:1.2.13 is deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
+➤ YN0061: │ core-js@npm:2.6.12 is deprecated: core-js@<3.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+➤ YN0013: │ node-fetch@https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetc
+➤ YN0061: │ querystring@npm:0.2.0 is deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+➤ YN0061: │ querystring@npm:0.2.1 is deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+➤ YN0061: │ rollup-plugin-babel@npm:4.4.0 is deprecated: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-babel.
+➤ YN0061: │ svgo@npm:1.3.2 is deprecated: This SVGO version is no longer supported. Upgrade to v2.x.x.
+➤ YN0061: │ @hapi/joi@npm:15.1.1 is deprecated: Switch to 'npm install joi'
+➤ YN0061: │ sane@npm:4.1.0 is deprecated: some dependency vulnerabilities fixed, support for node < 10 dropped, and newer ECMAScript syntax/features added
+➤ YN0061: │ urix@npm:0.1.0 is deprecated: Please see https://github.com/lydell/urix#deprecated
+➤ YN0061: │ flatten@npm:1.0.3 is deprecated: flatten is deprecated in favor of utility frameworks such as lodash.
+➤ YN0032: │ utf-8-validate@npm:5.0.7: Implicit dependencies on node-gyp are discouraged
+➤ YN0032: │ bufferutil@npm:4.0.5: Implicit dependencies on node-gyp are discouraged
+➤ YN0061: │ @hapi/bourne@npm:1.3.2 is deprecated: This version has been deprecated and is no longer supported or maintained
+➤ YN0061: │ @hapi/address@npm:2.1.4 is deprecated: Moved to 'npm install @sideway/address'
+➤ YN0061: │ @hapi/hoek@npm:8.5.1 is deprecated: This version has been deprecated and is no longer supported or maintained
+➤ YN0061: │ @hapi/topo@npm:3.1.6 is deprecated: This version has been deprecated and is no longer supported or maintained
+➤ YN0061: │ resolve-url@npm:0.2.1 is deprecated: https://github.com/lydell/resolve-url#deprecated
+➤ YN0013: │ bip32-ed25519@https://github.com/Zondax/bip32-ed25519.git#commit=0949df01
+➤ YN0032: │ evp_bytestokey@npm:1.0.3: Implicit dependencies on node-gyp are discouraged
+➤ YN0032: │ tiny-secp256k1@npm:1.1.6: Implicit dependencies on node-gyp are discouraged
+➤ YN0032: │ usb-detection@npm:4.13.0: Implicit dependencies on node-gyp are discouraged
+➤ YN0032: │ node-hid@npm:2.1.1: Implicit dependencies on node-gyp are discouraged
+➤ YN0032: │ node-addon-api@npm:3.2.1: Implicit dependencies on node-gyp are discouraged
+➤ YN0002: │ @mdx-js/loader@npm:1.6.22 doesn't provide react (p12550), requested by @mdx-js/react
+➤ YN0002: │ @storybook/addon-essentials@npm:6.3.12 [3d533] doesn't provide @storybook/components (pe5156), requested by @storybook/addon-measure
+➤ YN0002: │ @storybook/addon-essentials@npm:6.3.12 [3d533] doesn't provide @storybook/core-events (p1663a), requested by @storybook/addon-measure
+➤ YN0002: │ @storybook/addon-essentials@npm:6.3.12 [3d533] doesn't provide @storybook/theming (paedd9), requested by @storybook/addon-measure
+➤ YN0002: │ @storybook/core@npm:6.3.12 [3c788] doesn't provide webpack (pc4e6b), requested by @storybook/core-client
+➤ YN0002: │ @storybook/core@npm:6.3.12 [7a158] doesn't provide webpack (p387b3), requested by @storybook/core-client
+➤ YN0002: │ @storybook/csf-tools@npm:6.3.12 doesn't provide @babel/core (p3590e), requested by @babel/plugin-transform-react-jsx
+➤ YN0002: │ @storybook/csf-tools@npm:6.3.12 doesn't provide @babel/core (p857ee), requested by @babel/preset-env
+➤ YN0002: │ @storybook/preset-create-react-app@npm:3.2.0 [3d533] doesn't provide react-refresh (p05188), requested by @pmmmwh/react-refresh-webpack-plugin
+➤ YN0002: │ @storybook/preset-create-react-app@npm:3.2.0 [3d533] doesn't provide typescript (p264d0), requested by react-docgen-typescript-plugin
+➤ YN0002: │ @storybook/preset-create-react-app@npm:3.2.0 [3d533] doesn't provide webpack (p92553), requested by @pmmmwh/react-refresh-webpack-plugin
+➤ YN0002: │ @storybook/preset-create-react-app@npm:3.2.0 [3d533] doesn't provide webpack (p774af), requested by react-docgen-typescript-plugin
+➤ YN0002: │ chocolate@workspace:. doesn't provide babel-loader (p27d3b), requested by @storybook/addon-essentials
+➤ YN0002: │ chocolate@workspace:. doesn't provide react-is (pc16d9), requested by @polkadot/react-identicon
+➤ YN0002: │ dns-over-http-resolver@npm:1.2.3 doesn't provide node-fetch (p89343), requested by native-fetch
+➤ YN0002: │ eslint-config-airbnb-typescript@npm:14.0.2 [3d533] doesn't provide eslint (p0bbe0), requested by eslint-config-airbnb-base
+➤ YN0002: │ eslint-config-airbnb-typescript@npm:14.0.2 [3d533] doesn't provide eslint-plugin-import (p5e5a4), requested by eslint-config-airbnb-base
+➤ YN0002: │ react-dev-utils@npm:11.0.4 doesn't provide typescript (p79ddf), requested by fork-ts-checker-webpack-plugin
+➤ YN0002: │ react-dev-utils@npm:11.0.4 doesn't provide webpack (p2af19), requested by fork-ts-checker-webpack-plugin
+➤ YN0000: │ Some peer dependencies are incorrectly met; run yarn explain peer-requirements <hash> for details, where <hash> is the six-letter p-prefixed code
+➤ YN0000: └ Completed in 31s 78ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ yargs@npm:17.2.1 can't be found in the cache and will be fetched from the
+➤ YN0013: │ yn@npm:3.1.1 can't be found in the cache and will be fetched from the rem
+➤ YN0013: │ yocto-queue@npm:0.1.0 can't be found in the cache and will be fetched fro
+➤ YN0013: │ zwitch@npm:1.0.5 can't be found in the cache and will be fetched from the
+➤ YN0019: │ babel-loader-npm-8.1.0-e8c38740ba-fdbcae91cc.zip appears to be unused - r
+➤ YN0000: └ Completed in 3m 18s
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed in 2s 81ms
+➤ YN0000: Done with warnings in 3m 52s
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apac-ui$ yarn start
+
+There might be a problem with the project dependency tree.
+It is likely not a bug in Create React App, but something you need to fix locally.
+
+The react-scripts package provided by Create React App requires a dependency:
+
+  "babel-loader": "8.1.0"
+
+Don't try to install it manually: your package manager does it automatically.
+However, a different version of babel-loader was detected higher up in the tree:
+
+  /home/islam-mac/Dev/choco/apac-ui/node_modules/react-scripts/node_modules/babel-loader (version: 8.2.3) 
+
+Manually installing incompatible versions is known to cause hard-to-debug issues.
+
+If you would prefer to ignore this check, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That will permanently disable this message but you might encounter other issues.
+
+To fix the dependency tree, try following the steps below in the exact order:
+
+  1. Delete package-lock.json (not package.json!) and/or yarn.lock in your project folder.
+  2. Delete node_modules in your project folder.
+  3. Remove "babel-loader" from dependencies and/or devDependencies in the package.json file in your project folder.
+  4. Run npm install or yarn, depending on the package manager you use.
+
+In most cases, this should be enough to fix the problem.
+If this has not helped, there are a few other things you can try:
+
+  5. If you used npm, install yarn (http://yarnpkg.com/) and repeat the above steps with it instead.
+     This may help because npm has known issues with package hoisting which may get resolved in future versions.
+
+  6. Check if /home/islam-mac/Dev/choco/apac-ui/node_modules/react-scripts/node_modules/babel-loader is outside your project directory.
+     For example, you might have accidentally installed something in your home folder.
+
+  7. Try running npm ls babel-loader in your project folder.
+     This will tell you which other package (apart from the expected react-scripts) installed babel-loader.
+
+If nothing else helps, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That would permanently disable this preflight check in case you want to proceed anyway.
+
+P.S. We know this message is long but please read the steps above :-) We hope you find them helpful!
+
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apac-ui$ yarn start
+
+There might be a problem with the project dependency tree.
+It is likely not a bug in Create React App, but something you need to fix locally.
+
+The react-scripts package provided by Create React App requires a dependency:
+
+  "babel-loader": "8.1.0"
+
+Don't try to install it manually: your package manager does it automatically.
+However, a different version of babel-loader was detected higher up in the tree:
+
+  /home/islam-mac/Dev/choco/apac-ui/node_modules/react-scripts/node_modules/babel-loader (version: 8.2.3) 
+
+Manually installing incompatible versions is known to cause hard-to-debug issues.
+
+If you would prefer to ignore this check, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That will permanently disable this message but you might encounter other issues.
+
+To fix the dependency tree, try following the steps below in the exact order:
+
+  1. Delete package-lock.json (not package.json!) and/or yarn.lock in your project folder.
+  2. Delete node_modules in your project folder.
+  3. Remove "babel-loader" from dependencies and/or devDependencies in the package.json file in your project folder.
+  4. Run npm install or yarn, depending on the package manager you use.
+
+In most cases, this should be enough to fix the problem.
+If this has not helped, there are a few other things you can try:
+
+  5. If you used npm, install yarn (http://yarnpkg.com/) and repeat the above steps with it instead.
+     This may help because npm has known issues with package hoisting which may get resolved in future versions.
+
+  6. Check if /home/islam-mac/Dev/choco/apac-ui/node_modules/react-scripts/node_modules/babel-loader is outside your project directory.
+     For example, you might have accidentally installed something in your home folder.
+
+  7. Try running npm ls babel-loader in your project folder.
+     This will tell you which other package (apart from the expected react-scripts) installed babel-loader.
+
+If nothing else helps, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That would permanently disable this preflight check in case you want to proceed anyway.
+
+P.S. We know this message is long but please read the steps above :-) We hope you find them helpful!
+
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apac-ui$ yarn install
+➤ YN0000: ┌ Resolution step
+➤ YN0002: │ @mdx-js/loader@npm:1.6.22 doesn't provide react (p12550), requested by @mdx-js/react
+➤ YN0002: │ @storybook/addon-essentials@npm:6.3.12 [3d533] doesn't provide @storybook/components (pe5156), requested by @storybook/addon-measure
+➤ YN0002: │ @storybook/addon-essentials@npm:6.3.12 [3d533] doesn't provide @storybook/core-events (p1663a), requested by @storybook/addon-measure
+➤ YN0002: │ @storybook/addon-essentials@npm:6.3.12 [3d533] doesn't provide @storybook/theming (paedd9), requested by @storybook/addon-measure
+➤ YN0002: │ @storybook/core@npm:6.3.12 [3c788] doesn't provide webpack (pc4e6b), requested by @storybook/core-client
+➤ YN0002: │ @storybook/core@npm:6.3.12 [7a158] doesn't provide webpack (p387b3), requested by @storybook/core-client
+➤ YN0002: │ @storybook/csf-tools@npm:6.3.12 doesn't provide @babel/core (p3590e), requested by @babel/plugin-transform-react-jsx
+➤ YN0002: │ @storybook/csf-tools@npm:6.3.12 doesn't provide @babel/core (p857ee), requested by @babel/preset-env
+➤ YN0002: │ @storybook/preset-create-react-app@npm:3.2.0 [3d533] doesn't provide react-refresh (p05188), requested by @pmmmwh/react-refresh-webpack-plugin
+➤ YN0002: │ @storybook/preset-create-react-app@npm:3.2.0 [3d533] doesn't provide typescript (p264d0), requested by react-docgen-typescript-plugin
+➤ YN0002: │ @storybook/preset-create-react-app@npm:3.2.0 [3d533] doesn't provide webpack (p92553), requested by @pmmmwh/react-refresh-webpack-plugin
+➤ YN0002: │ @storybook/preset-create-react-app@npm:3.2.0 [3d533] doesn't provide webpack (p774af), requested by react-docgen-typescript-plugin
+➤ YN0002: │ chocolate@workspace:. doesn't provide babel-loader (p27d3b), requested by @storybook/addon-essentials
+➤ YN0002: │ chocolate@workspace:. doesn't provide react-is (pc16d9), requested by @polkadot/react-identicon
+➤ YN0002: │ dns-over-http-resolver@npm:1.2.3 doesn't provide node-fetch (p89343), requested by native-fetch
+➤ YN0002: │ eslint-config-airbnb-typescript@npm:14.0.2 [3d533] doesn't provide eslint (p0bbe0), requested by eslint-config-airbnb-base
+➤ YN0002: │ eslint-config-airbnb-typescript@npm:14.0.2 [3d533] doesn't provide eslint-plugin-import (p5e5a4), requested by eslint-config-airbnb-base
+➤ YN0002: │ react-dev-utils@npm:11.0.4 doesn't provide typescript (p79ddf), requested by fork-ts-checker-webpack-plugin
+➤ YN0002: │ react-dev-utils@npm:11.0.4 doesn't provide webpack (p2af19), requested by fork-ts-checker-webpack-plugin
+➤ YN0000: │ Some peer dependencies are incorrectly met; run yarn explain peer-requirements <hash> for details, where <hash> is the six-letter p-prefixed code
+➤ YN0000: └ Completed in 0s 781ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ babel-loader@npm:8.1.0 can't be found in the cache and will be fetched fr
+➤ YN0019: │ babel-loader-npm-8.2.3-855681b984-78e1e1a919.zip appears to be unused - r
+➤ YN0000: └ Completed in 1s 415ms
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed in 1s 958ms
+➤ YN0000: Done with warnings in 4s 872ms
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apac-ui$ yarn start
+
+There might be a problem with the project dependency tree.
+It is likely not a bug in Create React App, but something you need to fix locally.
+
+The react-scripts package provided by Create React App requires a dependency:
+
+  "webpack": "4.44.2"
+
+Don't try to install it manually: your package manager does it automatically.
+However, a different version of webpack was detected higher up in the tree:
+
+  /home/islam-mac/Dev/choco/apac-ui/node_modules/webpack (version: 4.46.0) 
+
+Manually installing incompatible versions is known to cause hard-to-debug issues.
+
+If you would prefer to ignore this check, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That will permanently disable this message but you might encounter other issues.
+
+To fix the dependency tree, try following the steps below in the exact order:
+
+  1. Delete package-lock.json (not package.json!) and/or yarn.lock in your project folder.
+  2. Delete node_modules in your project folder.
+  3. Remove "webpack" from dependencies and/or devDependencies in the package.json file in your project folder.
+  4. Run npm install or yarn, depending on the package manager you use.
+
+In most cases, this should be enough to fix the problem.
+If this has not helped, there are a few other things you can try:
+
+  5. If you used npm, install yarn (http://yarnpkg.com/) and repeat the above steps with it instead.
+     This may help because npm has known issues with package hoisting which may get resolved in future versions.
+
+  6. Check if /home/islam-mac/Dev/choco/apac-ui/node_modules/webpack is outside your project directory.
+     For example, you might have accidentally installed something in your home folder.
+
+  7. Try running npm ls webpack in your project folder.
+     This will tell you which other package (apart from the expected react-scripts) installed webpack.
+
+If nothing else helps, add SKIP_PREFLIGHT_CHECK=true to an .env file in your project.
+That would permanently disable this preflight check in case you want to proceed anyway.
+
+P.S. We know this message is long but please read the steps above :-) We hope you find them helpful!
+
+islam-mac@day-two-all-set-iamconfused-8gb-80-s-2vcpu-4gb-amd-lon1-01:~/Dev/choco/apac-ui$ npm ls webpack
+chocolate@0.1.1 /home/islam-mac/Dev/choco/apac-ui
+├─┬ @storybook/addon-docs@6.3.12
+│ ├─┬ @storybook/builder-webpack4@6.3.12
+│ │ ├─┬ css-loader@3.6.0
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ dotenv-webpack@1.8.0
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ file-loader@6.2.0
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ html-webpack-plugin@4.5.2
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ postcss-loader@4.3.0
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ raw-loader@4.0.2
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ style-loader@1.3.0
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ terser-webpack-plugin@4.2.3
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ url-loader@4.1.1
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ webpack-dev-middleware@3.7.3
+│ │ │ └── webpack@4.46.0 deduped
+│ │ ├─┬ webpack-filter-warnings-plugin@1.2.1
+│ │ │ └── webpack@4.46.0 deduped
+│ │ └── webpack@4.46.0 deduped
+│ ├─┬ @storybook/core@6.3.12
+│ │ ├─┬ @storybook/core-client@6.3.12
+│ │ │ └── webpack@4.46.0 deduped
+│ │ └─┬ @storybook/core-server@6.3.12
+│ │   ├─┬ @storybook/manager-webpack4@6.3.12
+│ │   │ └── webpack@4.46.0 deduped
+│ │   └── webpack@4.46.0 deduped
+│ └─┬ webpack@4.46.0
+│   └─┬ terser-webpack-plugin@1.4.5
+│     └── webpack@4.46.0 deduped
+├─┬ @storybook/addon-essentials@6.3.12
+│ ├─┬ babel-loader@8.1.0 invalid: "^8.2.2" from node_modules/@storybook/builder-webpack4
+│ │ └── webpack@4.46.0 deduped
+│ └── webpack@4.46.0 deduped
+├─┬ @storybook/preset-create-react-app@3.2.0
+│ ├─┬ @pmmmwh/react-refresh-webpack-plugin@0.4.3
+│ │ └── webpack@4.46.0 deduped
+│ └─┬ react-docgen-typescript-plugin@1.0.0
+│   └── webpack@4.46.0 deduped
+├─┬ @storybook/react@6.3.12
+│ ├─┬ @storybook/core-common@6.3.12
+│ │ ├─┬ fork-ts-checker-webpack-plugin@6.4.0
+│ │ │ └── webpack@4.46.0 deduped
+│ │ └── webpack@4.46.0 deduped
+│ ├─┬ @storybook/react-docgen-typescript-plugin@1.0.2-canary.253f8c1.0
+│ │ └── webpack@4.46.0 deduped
+│ └── webpack@4.46.0 deduped
+└─┬ react-scripts@4.0.3
+  ├─┬ @pmmmwh/react-refresh-webpack-plugin@0.4.3
+  │ └── webpack@4.44.2 deduped
+  ├─┬ babel-loader@8.1.0
+  │ └── webpack@4.44.2 deduped
+  ├─┬ css-loader@4.3.0
+  │ └── webpack@4.44.2 deduped
+  ├─┬ eslint-webpack-plugin@2.6.0
+  │ └── webpack@4.44.2 deduped
+  ├─┬ file-loader@6.1.1
+  │ └── webpack@4.44.2 deduped
+  ├─┬ html-webpack-plugin@4.5.0
+  │ └── webpack@4.44.2 deduped
+  ├─┬ mini-css-extract-plugin@0.11.3
+  │ └── webpack@4.44.2 deduped
+  ├─┬ optimize-css-assets-webpack-plugin@5.0.4
+  │ └── webpack@4.44.2 deduped
+  ├─┬ sass-loader@10.2.0
+  │ └── webpack@4.44.2 deduped
+  ├─┬ style-loader@1.3.0
+  │ └── webpack@4.44.2 deduped
+  ├─┬ terser-webpack-plugin@4.2.3
+  │ └── webpack@4.44.2 deduped
+  ├─┬ url-loader@4.1.1
+  │ └── webpack@4.44.2 deduped
+  ├─┬ webpack-dev-server@3.11.1
+  │ ├─┬ webpack-dev-middleware@3.7.3
+  │ │ └── webpack@4.44.2 deduped
+  │ └── webpack@4.44.2 deduped
+  ├─┬ webpack-manifest-plugin@2.2.0
+  │ └── webpack@4.44.2 deduped
+  ├─┬ webpack@4.44.2
+  │ └─┬ terser-webpack-plugin@1.4.5
+  │   └── webpack@4.44.2 deduped
+  └─┬ workbox-webpack-plugin@5.1.4
+    └── webpack@4.44.2 deduped
