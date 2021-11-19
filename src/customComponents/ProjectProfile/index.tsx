@@ -343,35 +343,51 @@ const ReviewReel: RevReel = function (props) {
       <Card.Group className='box_indiv'>{renderContent}</Card.Group>
     </article>
   );
-  /* eslint-enable prettier/prettier */
 };
+// checked upto here, testing - this is page-level
 const ProjectProfile: PrProf = function (props) {
   const { data, id } = props;
   const { state } = useApp();
   const { userData } = state;
   const { accountAddress: addr } = userData;
+  // error handle
   let canReview = true;
   if (data.ownerID.eq(addr)) canReview = false;
   // race!
 
-  const { data: reviews, isLoading: lrev, isFetched: frev } = useReviews(data, id, addr);
+  const {
+    isLoading: lrev,
+    isSuccess: frev,
+    isError: rvErr,
+    ...revRest
+  } = useReviews(data, id, addr);
+  // just give them their query results to handle
+  const {
+    isLoading: lprm,
+    isSuccess: fproj,
+    isError: prjErr,
+    ...prjRest
+  } = useProjectMeta(data, id);
+  const [avRate] = useAverage(data, prjRest.data, frev, fproj, revRest.data);
 
-  const { data: projectMeta, isLoading: lprm, isFetched: fproj } = useProjectMeta(data, id);
-  const [avRate] = useAverage(data, projectMeta, frev, fproj, reviews);
-  // structure data here. Button component and the like
+  if (prjErr && !prjRest.data) return <Loader content='Project errror' />; // prettify
+  if (rvErr && !revRest.data) return <Loader content='Reviews error' />; // prettify
+  // let them handle their state
   return (
     <main className='profile-wrap'>
-      <ProjectProfileSummary data={projectMeta} ave={avRate} isFetched={fproj} isLoading={lprm} />
+      <ProjectProfileSummary data={prjRest.data} ave={avRate} isFetched={fproj} isLoading={lprm} />
       <SubmitReview isLoading={lprm || lrev} disabled={!canReview} />
-      <ReviewReel data={reviews} isLoading={lrev} isFetched={frev} />
+      <ReviewReel data={revRest.data} isLoading={lrev} isFetched={frev} />
     </main>
   );
 };
 
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading } = useProject(id);
-  if (isLoading) return <i className='ui loader' />;
+  const { data, isLoading, isError } = useProject(id);
+  if (isLoading) return <Loader />;
+  // error handle component
+  if (isError) return <Loader content='something went wrong fetching data from the api' />; // needed data got
   const four = message('Error, project not found', true);
   if (data === 0) return four;
   const re = filter(data);
@@ -386,6 +402,7 @@ const Main: React.FC = function () {
     if (re === 1) return <p>This project is currently proposed</p>;
     return four;
   }
+  // error handled till here
   return <ProjectProfile data={data} id={id} />;
 };
 

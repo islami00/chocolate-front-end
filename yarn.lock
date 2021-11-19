@@ -7869,6 +7869,7 @@ __metadata:
     react-app-rewired: ^2.1.8
     react-copy-to-clipboard: ^5.0.3
     react-dom: ^16.14.0
+    react-hot-toast: ^2.1.1
     react-query: ^3.27.0
     react-router-dom: ^5.2.0
     react-scripts: ^4.0.3
@@ -11791,6 +11792,15 @@ __metadata:
     lodash: ~4.17.10
     minimatch: ~3.0.2
   checksum: 424b0503791fcaec526aff9a68fd08b6360fd4ec6a406a624ba385d410f3f363e8a1ee7d7fb2ef6448b7f5cd6458256ea08f4b9ef32dbd222977956a6171fc6b
+  languageName: node
+  linkType: hard
+
+"goober@npm:^2.0.35":
+  version: 2.0.43
+  resolution: "goober@npm:2.0.43"
+  peerDependencies:
+    csstype: ^2.6.2
+  checksum: 517d553e6371380f8bbac0f4da27daae2a0a6e1bbb03aa85b23f19730c8b509658b67640faf572ccfa9cd6e1b99b3963f53db900d59e5c05b078d769f7bf06aa
   languageName: node
   linkType: hard
 
@@ -18796,6 +18806,18 @@ __metadata:
     react: ^16.6.0 || ^17.0.0
     react-dom: ^16.6.0 || ^17.0.0
   checksum: 8db5d875bb681dabc5f277ee3b0debe96d58f4b6d33cb2e9c72a026f4fd22e44722d2a7164a21b51a4002a6cd40d716195731ba37cc1d73167adf85e56441c1c
+  languageName: node
+  linkType: hard
+
+"react-hot-toast@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "react-hot-toast@npm:2.1.1"
+  dependencies:
+    goober: ^2.0.35
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 029d375d50a937143d21d71c11d4ad00dbb58a6ca12a50378a7bd80fe294821def6f7a5b9a53404d31230d1fed5246453a73b9f90bc85811036e53b802ad790f
   languageName: node
   linkType: hard
 

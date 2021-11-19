@@ -3,6 +3,86 @@
 // prettier-ignore
 import { AbstractArray } from '@polkadot/types/codec/AbstractArray';
 import { ReviewID } from 'chocolate/interfaces';
+// credit:https://stackoverflow.com/questions/42651439/how-to-delay-execution-of-functions-javascript/42667512#42667512
+/* closures all the way down*/
+const queueAsyncCalls = function(){
+  let memoArray = [];
+  let asyncFunc = function(url) {
+  return new Promise((resolve, reject) => {
+    setTimeout(function() {
+      resolve({
+        url: url,
+        data: 'banana'
+      });
+    }, 5000);
+  });
+};
+type FactoryArgType = { delayMs: number; abstractAsyncFunc: Function; memo: Array<NodeJS.Timeout> }
+let delayFactory = function(args: FactoryArgType) {
+  let {
+    delayMs, abstractAsyncFunc,memo
+  } = args;
+  let queuedCalls = [];
+  let executing = false;
+  memo.forEach((time)=> clearTimeout(time));
+  memo.length = 0;
+  let queueCall = function(abstractAsyncArgs) {
+    return new Promise((resolve, reject) => {
+
+      queuedCalls.push({
+        abstractAsyncArgs,
+        resolve,
+        reject
+      });
+
+      if (executing === false) {
+        executing = true;
+        nextCall();
+      }
+    });
+  };
+
+  let execute = function(call) {    
+    console.log(`sending request ${call.abstractAsyncArgs}`);
+
+    abstractAsyncFunc(call.abstractAsyncArgs)
+      .then(call.resolve)
+      .catch(call.reject);
+
+    const timeoutId = setTimeout(nextCall, delayMs);
+    memo.push(timeoutId);
+  };
+
+  let nextCall = function() {
+    if (queuedCalls.length > 0)
+      execute(queuedCalls.shift());
+    else
+      executing = false;
+  };
+
+  return Object.freeze({
+    queueCall
+  });
+};
+
+let myFactory = delayFactory({
+  delayMs: 1000,
+  abstractAsyncFunc: asyncFunc,
+  memo: memoArray
+});
+
+myFactory.queueCall('http://test1')
+  .then(console.log)
+  .catch(console.log);
+
+myFactory.queueCall('http://test2')
+  .then(console.log)
+  .catch(console.log);
+
+myFactory.queueCall('http://test3')
+  .then(console.log)
+  .catch(console.log);
+}
 const sortReviewIDs =  function(a:ReviewID,b:ReviewID){
       const sb  = a.sub(b);
       if (sb.isNeg()) return -1
@@ -86,19 +166,19 @@ async function fetchData<Type>(
   return null;
 }
 
-async function errorHandled<type>(
+async function errorHandled<type = Response>(
   prom: Promise<type>
   ): Promise<[type, null] | [null, Error]> {
   try {
     const response = await prom;
     
-    if (typeof window !== "undefined" && response instanceof Response && !response.ok) {
+    if (response instanceof Response && !response.ok) {
       throw new Error(`Server said : ${response.status}! ${response.statusText}`);
     }
 
     return [response, null];
   } catch (error) {
-    if(!(error instanceof Error)){return [null, new Error('Unknown error')]}
+    if(!(error instanceof Error)){return [null, new Error(`Unknown error ${JSON.stringify(error)}`)]}
     return [null, error];
   }
 }
