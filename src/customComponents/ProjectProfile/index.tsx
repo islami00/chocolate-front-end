@@ -1,6 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import { AddressOrPair } from '@polkadot/api/types';
 import { EventRecord } from '@polkadot/types/interfaces';
 import { useEffect, useState } from 'react';
@@ -37,40 +34,28 @@ import useProjectMeta from './useProjectMeta';
 import useReviews from './useReviews';
 
 const ProjectProfileSummary: ProfileSum = function (props) {
-  let debug=false;
+  const debug = false;
   const { isFetched } = props;
-  if (!isFetched) return <i className="ui loader">"Loading"</i>;
+  if (!isFetched) return <i className='ui loader'>"Loading"</i>;
   const { data, ave } = props;
-  if(debug) console.log('abe', ave);
-  const { name, icon, Link: site, description } = data;
+  if (debug) console.log('abe', ave);
+  const { name, Link: site, description } = data;
   const src = `https://avatars.dicebear.com/api/initials/${name}.svg`;
   return (
-    <article className="head-profile">
-      <section className="left">
+    <article className='head-profile'>
+      <section className='left'>
         <Rating rating={ave} fixed />
-        <Image
-          alt="project logo"
-          className="project-logo"
-          wrapped
-          rounded
-          src={src}
-          ui={false}
-        />
+        <Image alt='project logo' className='project-logo' wrapped rounded src={src} ui={false} />
       </section>
 
-      <section className="right">
-        <h2 className="About">About</h2>
-        <p className="about_reviewer">{description}</p>
-        <div className="ui two mini buttons">
-          <Button as="a" color="purple" href={site} className="wh_top">
+      <section className='right'>
+        <h2 className='About'>About</h2>
+        <p className='about_reviewer'>{description}</p>
+        <div className='ui two mini buttons'>
+          <Button as='a' color='purple' href={site} className='wh_top'>
             Website
           </Button>
-          <Button
-            as="a"
-            color="purple"
-            href={`${site}/whitepaper`}
-            className="wh_top"
-          >
+          <Button as='a' color='purple' href={`${site}/whitepaper`} className='wh_top'>
             Whitepaper
           </Button>
         </div>
@@ -78,22 +63,18 @@ const ProjectProfileSummary: ProfileSum = function (props) {
     </article>
   );
 };
+
 /** Send the actual review to chain along with cid */
-const useReviewSend = function (
-  txData: { id: string; cid: string },
-  account: AddressOrPair
-) {
+const useReviewSend = function (txData: { id: string; cid: string }, account: AddressOrPair) {
   const { id, cid } = txData;
   const { api } = useSubstrate();
   const [fee, setFee] = useState('..loading fee..');
   const getPaymentInfo = async function () {
-    const paymentInfo = await api.tx.chocolateModule
-      .createReview(cid, id)
-      .paymentInfo(account);
+    const paymentInfo = await api.tx.chocolateModule.createReview(cid, id).paymentInfo(account);
     const retFee = paymentInfo.partialFee.toHuman();
     setFee(retFee);
   };
-  if (account) getPaymentInfo();
+  if (account) getPaymentInfo().catch(console.error);
   return { data: fee };
 };
 /** this is a faux event view, update this when events are understood better */
@@ -105,20 +86,18 @@ const EventView: React.FC<{ event: EventRecord[] }> = function (props) {
     const text = [<> </>];
     text.push(
       <p key={JSON.stringify(localEvent.section)}>
-        {`\t${localEvent.section}:${localEvent.method}:: (phase=${phase
-          .toHuman()
-          .toString()})`}
+        {`\t${localEvent.section}:${localEvent.method}:: (phase=${phase.toHuman().toString()})`}
       </p>
     );
     text.push(
-      <p key={JSON.stringify(localEvent.meta)}>{`\t\t${String(
-        localEvent.meta.docs.toHuman()
-      )}`}</p>
+      <p key={JSON.stringify(localEvent.meta)}>{`\t\t${String(localEvent.meta.docs.toHuman())}`}</p>
     );
 
     localEvent.data.forEach((data, index) => {
       text.push(
-        <p key={JSON.stringify(types)}>{`\t\t\t${types[index].type}: ${String(data.toHuman())}`} </p>
+        <p key={JSON.stringify(types)}>
+          {`\t\t\t${types[index].type}: ${String(data.toHuman())}`}{' '}
+        </p>
       );
     });
     return <List.Item key={JSON.stringify(localEvent)}>{text}</List.Item>;
@@ -162,15 +141,15 @@ const SubmitReviewTx: React.FC<{
   const [event, setEvents] = useState<EventRecord[]>();
   const [completed, setCompleted] = useState<boolean>(undefined);
   const [error, setError] = useState<boolean>(undefined);
-  let debug=false;
-  const { keyringState, keyring, api } = useSubstrate();
+  const debug = false;
+  const { keyringState, keyring } = useSubstrate();
   useLoadAccounts(run, setRun);
   const { data: txFee } = useReviewSend({ id, cid }, userData.accountAddress);
   useEffect(() => {
-    if(debug) console.log(event);
+    if (debug) console.log(event);
     if (/finalized/i.exec(status)) setCompleted(true);
     else if (/failed/i.exec(status)) setError(true);
-  }, [event, status,debug]);
+  }, [event, status, debug]);
   if (!userData.accountAddress && !keyring)
     return (
       <div>
@@ -186,18 +165,18 @@ const SubmitReviewTx: React.FC<{
     keyring &&
     keyring.getPair(userData.accountAddress);
   return (
-    <div className="spaced">
-      <Container className="spaced" fluid>
+    <div className='spaced'>
+      <Container className='spaced' fluid>
         <Header>Account Paying</Header>
         <AccountSelector />
         <p>Note: a fee of {txFee} will be applied</p>
       </Container>
       <TxButton
-        color="purple"
+        color='purple'
         disabled={!cid && !accountPair ? true : undefined}
         accountPair={accountPair.meta ? accountPair : undefined}
-        label="Submit"
-        type="SIGNED-TX"
+        label='Submit'
+        type='SIGNED-TX'
         setEvent={setEvents}
         setStatus={setStatus}
         attrs={{
@@ -207,9 +186,7 @@ const SubmitReviewTx: React.FC<{
           paramFields: [true, true],
         }}
       />
-      <details placeholder="Events">
-        {event?.length > 0 && <EventView event={event} />}
-      </details>
+      <details placeholder='Events'>{event?.length > 0 && <EventView event={event} />}</details>
       {status && !completed && !error && <Loader content={status} />}
       {(completed || error) && (
         <FinalNotif
@@ -222,7 +199,7 @@ const SubmitReviewTx: React.FC<{
   );
 };
 
-const SubmitReviewForm: SubRev = function (props) {
+const SubmitReviewForm: SubRev = function () {
   const { id } = useParams<{ id: string }>();
   const [submitted, setSubmitted] = useState(false);
   // form data
@@ -254,21 +231,16 @@ const SubmitReviewForm: SubRev = function (props) {
     content = (
       <Form onSubmit={handleSubmit}>
         {/* refactor to select */}
-        <Form.Input fluid label="Project" value={proj.name} />
+        <Form.Input fluid label='Project' value={proj.name} />
         <Form.TextArea
-          label="Body"
+          label='Body'
           required
           value={review}
-          onChange={(e, { name, value }) => setReview(value.toString())}
-          placeholder="Write your review here"
+          onChange={(e, { value }) => setReview(value.toString())}
+          placeholder='Write your review here'
         />
         <Rating fixed={false} setOuterRate={setRate} />
-        <Form.Button
-          content="submit"
-          fluid
-          color="purple"
-          loading={isLoading || undefined}
-        />
+        <Form.Button content='submit' fluid color='purple' loading={isLoading || undefined} />
       </Form>
     );
   }
@@ -283,7 +255,7 @@ const SubmitReview: SumRev = function (props) {
   let content;
   if (disabled)
     content = (
-      <Button color="purple" title={reason} disabled fluid>
+      <Button color='purple' title={reason} disabled fluid>
         Submit review
       </Button>
     );
@@ -295,11 +267,10 @@ const SubmitReview: SumRev = function (props) {
         onOpen={() => setOpen(true)}
         open={open}
         trigger={
-          <Button color="purple" className="purple" fluid>
+          <Button color='purple' className='purple' fluid>
             Submit a review
           </Button>
-        }
-      >
+        }>
         <Modal.Header>Submit review</Modal.Header>
         <Modal.Content>
           <SubmitReviewForm />
@@ -315,11 +286,8 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   const { content, userID, proposalStatus } = each;
   const { keyringState, keyring } = useSubstrate();
   const isProposed = () => proposalStatus.status === 'Proposed';
-  const accountPair =
-    userID && keyringState === 'READY' && keyring && keyring.getPair(userID);
-  const name = accountPair
-    ? (accountPair.meta?.name as string | undefined)
-    : 'Anonymous';
+  const accountPair = userID && keyringState === 'READY' && keyring && keyring.getPair(userID);
+  const name = accountPair ? (accountPair.meta?.name as string | undefined) : 'Anonymous';
 
   // see: https://github.com/polkadot-js/apps/blob/b957353d225da81e4e4b44835e535d9c389a1255/packages/react-hooks/src/useEventTrigger.ts
   const [readMore, setReadMore] = useState(false);
@@ -330,11 +298,7 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
     rev = (
       <>
         {readMore ? reviewText : `${reviewText.substring(0, 181)}...`}
-        <button
-          className="link_button"
-          type="button"
-          onClick={() => setReadMore(!readMore)}
-        >
+        <button className='link_button' type='button' onClick={() => setReadMore(!readMore)}>
           {readMore ? 'show less' : '  read more'}
         </button>
       </>
@@ -342,20 +306,20 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   } else rev = reviewText;
   const src = `https://avatars.dicebear.com/api/identicon/${userID}.svg`;
   return (
-    <Card color="purple">
+    <Card color='purple'>
       <Card.Content>
         {isProposed() && (
-          <Label color="yellow" ribbon="right">
+          <Label color='yellow' ribbon='right'>
             {proposalStatus.status}
           </Label>
         )}
         <Card.Header>
-          <Image src={src} floated="left" rounded size="mini" />
+          <Image src={src} floated='left' rounded size='mini' />
           <Card.Meta>{name}</Card.Meta>
         </Card.Header>
         <Card.Description>{rev}</Card.Description>
       </Card.Content>
-      <Card.Content extra floated="right">
+      <Card.Content extra floated='right'>
         <Rating rating={rating} fixed />
       </Card.Content>
     </Card>
@@ -364,22 +328,19 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
 const ReviewReel: RevReel = function (props) {
   const { isFetched, isLoading } = props;
   let renderContent;
-  if (!isFetched && isLoading)
-    renderContent = <Loader content="loading reviews" />;
+  if (!isFetched && isLoading) renderContent = <Loader content='loading reviews' />;
   else {
     const { data } = props;
     // patch
-    if (!data?.filter) return <Loader content="loading reviews" />;
+    if (!data?.filter) return <Loader content='loading reviews' />;
     const newData = data.filter((each) => each !== undefined && each !== null);
-    renderContent = newData?.map((each) => (
-      <ReviewSingle each={each} key={JSON.stringify(each)} />
-    ));
+    renderContent = newData?.map((each) => <ReviewSingle each={each} key={JSON.stringify(each)} />);
   }
 
   return (
-    <article className="review_bttm ">
-      <h2 className="About review_header card-list">Reviews</h2>
-      <Card.Group className="box_indiv">{renderContent}</Card.Group>
+    <article className='review_bttm '>
+      <h2 className='About review_header card-list'>Reviews</h2>
+      <Card.Group className='box_indiv'>{renderContent}</Card.Group>
     </article>
   );
   /* eslint-enable prettier/prettier */
@@ -393,27 +354,14 @@ const ProjectProfile: PrProf = function (props) {
   if (data.ownerID.eq(addr)) canReview = false;
   // race!
 
-  const {
-    data: reviews,
-    isLoading: lrev,
-    isFetched: frev,
-  } = useReviews(data, id, addr);
+  const { data: reviews, isLoading: lrev, isFetched: frev } = useReviews(data, id, addr);
 
-  const {
-    data: projectMeta,
-    isLoading: lprm,
-    isFetched: fproj,
-  } = useProjectMeta(data, id);
+  const { data: projectMeta, isLoading: lprm, isFetched: fproj } = useProjectMeta(data, id);
   const [avRate] = useAverage(data, projectMeta, frev, fproj, reviews);
   // structure data here. Button component and the like
   return (
-    <main className="profile-wrap">
-      <ProjectProfileSummary
-        data={projectMeta}
-        ave={avRate}
-        isFetched={fproj}
-        isLoading={lprm}
-      />
+    <main className='profile-wrap'>
+      <ProjectProfileSummary data={projectMeta} ave={avRate} isFetched={fproj} isLoading={lprm} />
       <SubmitReview isLoading={lprm || lrev} disabled={!canReview} />
       <ReviewReel data={reviews} isLoading={lrev} isFetched={frev} />
     </main>
@@ -423,7 +371,7 @@ const ProjectProfile: PrProf = function (props) {
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useProject(id);
-  if (isLoading) return <i className="ui loader" />;
+  if (isLoading) return <i className='ui loader' />;
   const four = message('Error, project not found', true);
   if (data === 0) return four;
   const re = filter(data);
@@ -431,8 +379,8 @@ const Main: React.FC = function () {
     if (re === 0)
       return (
         <p>
-          This project has been rejected from the chocolate ecosystem due to
-          being {data.proposalStatus.reason.toString()}
+          This project has been rejected from the chocolate ecosystem due to being{' '}
+          {data.proposalStatus.reason.toString()}
         </p>
       );
     if (re === 1) return <p>This project is currently proposed</p>;
