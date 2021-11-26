@@ -34,11 +34,12 @@ import useProjectMeta from './useProjectMeta';
 import useReviews from './useReviews';
 
 const ProjectProfileSummary: ProfileSum = function (props) {
-  const debug = false;
-  const { isFetched } = props;
-  if (!isFetched) return <i className='ui loader'>"Loading"</i>;
-  const { data, ave } = props;
-  if (debug) console.log('abe', ave);
+
+  const { pQuery, rQuery, project } = props;
+  const { data } = pQuery;
+  const [ave] = useAverage(project, data, rQuery.isSuccess, pQuery.isSuccess, rQuery.data);
+  if (pQuery.isError && !pQuery.data) return <Loader content='Project errror' />; // prettify
+  if (!pQuery.isSuccess) return <Loader content='Project loading' />;
   const { name, Link: site, description } = data;
   const src = `https://avatars.dicebear.com/api/initials/${name}.svg`;
   return (
@@ -106,11 +107,9 @@ const EventView: React.FC<{ event: EventRecord[] }> = function (props) {
   return <List divided>{view}</List>;
 };
 
-const FinalNotif: React.FC<{
-  completed: boolean;
-  error: boolean;
-  status: string;
-}> = function (props) {
+const FinalNotif: React.FC<{ completed: boolean; error: boolean; status: string }> = function (
+  props
+) {
   const { status, completed, error } = props;
   const msgProps = { positive: undefined, error: undefined };
   let copiable = '';
@@ -212,8 +211,13 @@ const SubmitReviewForm: SubRev = function () {
   const qClient = useQueryClient();
   const cachedProj = qClient.getQueryCache().find<NewMetaData>(queryKey);
   const proj = cachedProj.state.data;
-  // setup the query, then refetch when data is in place
-  const { data, isLoading } = useCid(submitted, review, rate);
+  // setup the query, then refetch when data is in place or manually on error.
+  const { data, isLoading, isError, refetch } = useCid(submitted, review, rate);
+  const doRefetch = () => {
+    refetch()
+      .then((value) => qClient.setQueryData(['cid', review, rate], value))
+      .catch(console.error);
+  };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitted(true);
@@ -222,10 +226,11 @@ const SubmitReviewForm: SubRev = function () {
   let content;
   // set the submitted review once fetched and submitted
   useEffect(() => {
-    if (submitted && !isLoading) setSubmittedReview({ id, cid: data.cid });
+    if ((submitted && !isLoading && !isError) || data) setSubmittedReview({ id, cid: data.cid });
+    if (isError) setSubmitted(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [submitted, isLoading, id]);
-  if (submitted && !isLoading) {
+  }, [submitted, isLoading, isError, id]);
+  if ((submitted && !isLoading && !isError) || (data && submittedReview.cid)) {
     content = <SubmitReviewTx {...submittedReview} />;
   } else {
     content = (
@@ -240,13 +245,20 @@ const SubmitReviewForm: SubRev = function () {
           placeholder='Write your review here'
         />
         <Rating fixed={false} setOuterRate={setRate} />
-        <Form.Button content='submit' fluid color='purple' loading={isLoading || undefined} />
+        <Form.Button
+          content={isError ? 'Retry' : 'Submit'}
+          fluid
+          color='purple'
+          onClick={() => isError && doRefetch()}
+          loading={isLoading || undefined}
+        />
       </Form>
     );
   }
 
   return <div>{content}</div>;
 };
+
 const SubmitReview: SumRev = function (props) {
   const { disabled } = props;
   const [open, setOpen] = useState(false);
@@ -280,7 +292,7 @@ const SubmitReview: SumRev = function (props) {
   }
   return <div>{content}</div>;
 };
-
+// looks good, refactor doesn't edge on this
 const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   const { each } = props;
   const { content, userID, proposalStatus } = each;
@@ -326,13 +338,12 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   );
 };
 const ReviewReel: RevReel = function (props) {
-  const { isFetched, isLoading } = props;
-  let renderContent;
-  if (!isFetched && isLoading) renderContent = <Loader content='loading reviews' />;
+  const { reelQuery } = props;
+  let renderContent: JSX.Element | JSX.Element[];
+  if (reelQuery.isError && !reelQuery.data) renderContent = <Loader content='Reviews error' />; // prettify
+  if (reelQuery.isLoading) renderContent = <Loader content='loading reviews' />;
   else {
-    const { data } = props;
-    // patch
-    if (!data?.filter) return <Loader content='loading reviews' />;
+    const { data } = reelQuery;
     const newData = data.filter((each) => each !== undefined && each !== null);
     renderContent = newData?.map((each) => <ReviewSingle each={each} key={JSON.stringify(each)} />);
   }
@@ -344,7 +355,6 @@ const ReviewReel: RevReel = function (props) {
     </article>
   );
 };
-// checked upto here, testing - this is page-level
 const ProjectProfile: PrProf = function (props) {
   const { data, id } = props;
   const { state } = useApp();
@@ -355,29 +365,16 @@ const ProjectProfile: PrProf = function (props) {
   if (data.ownerID.eq(addr)) canReview = false;
   // race!
 
-  const {
-    isLoading: lrev,
-    isSuccess: frev,
-    isError: rvErr,
-    ...revRest
-  } = useReviews(data, id, addr);
-  // just give them their query results to handle
-  const {
-    isLoading: lprm,
-    isSuccess: fproj,
-    isError: prjErr,
-    ...prjRest
-  } = useProjectMeta(data, id);
-  const [avRate] = useAverage(data, prjRest.data, frev, fproj, revRest.data);
-
-  if (prjErr && !prjRest.data) return <Loader content='Project errror' />; // prettify
-  if (rvErr && !revRest.data) return <Loader content='Reviews error' />; // prettify
-  // let them handle their state
+  const reviewQuery = useReviews(data, id, addr);
+  const projectQuery = useProjectMeta(data, id);
   return (
     <main className='profile-wrap'>
-      <ProjectProfileSummary data={prjRest.data} ave={avRate} isFetched={fproj} isLoading={lprm} />
-      <SubmitReview isLoading={lprm || lrev} disabled={!canReview} />
-      <ReviewReel data={revRest.data} isLoading={lrev} isFetched={frev} />
+      <ProjectProfileSummary pQuery={projectQuery} project={data} rQuery={reviewQuery} />
+      <SubmitReview
+        isLoading={reviewQuery.isLoading || projectQuery.isLoading}
+        disabled={!canReview}
+      />
+      <ReviewReel reelQuery={reviewQuery} />
     </main>
   );
 };

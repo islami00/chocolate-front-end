@@ -11,5 +11,8 @@ export default function useProjectMeta(
   // reuse useProject
   const { metaData } = project;
 
-  return useQuery(queryId, () => populateMetadata(metaData.toJSON()));
+  return useQuery(queryId, () => populateMetadata(metaData.toJSON()), {
+    retry: 2,
+    staleTime: Infinity,
+  });
 }
