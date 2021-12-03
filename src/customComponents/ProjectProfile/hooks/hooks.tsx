@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 import { useQuery, UseQueryResult } from 'react-query';
-import { getCid } from './majorUtils';
+import { getCid } from '../majorUtils';
 
 type UseCidReturns = UseQueryResult<{ cid: string }, Error>;
 const useCid = function (isSubmitted: boolean, reviewText: string, rating: number): UseCidReturns {

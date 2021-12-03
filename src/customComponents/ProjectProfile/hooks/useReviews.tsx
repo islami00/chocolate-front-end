@@ -1,8 +1,8 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import { Project } from '../../interfaces';
-import { useSubstrate } from '../../substrate-lib';
-import { NewReview } from '../../typeSystem/mockTypes';
-import { populateReviews } from './majorUtils';
+import { Project } from '../../../interfaces';
+import { useSubstrate } from '../../../substrate-lib';
+import { NewReview } from '../../../typeSystem/mockTypes';
+import { populateReviews } from '../majorUtils';
 
 export default function useReviews(
   data: Project,

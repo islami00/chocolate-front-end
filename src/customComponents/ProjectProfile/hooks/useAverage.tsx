@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ProjectAl } from '../../interfaces';
-import { JSONProject } from '../../typeSystem/appTypes';
-import {
-  ChainProject,
-  NewMetaData,
-  // eslint-disable-next-line prettier/prettier
-  NewReview
-} from '../../typeSystem/jsonTypes';
+import { ProjectAl } from '../../../interfaces';
+import { JSONProject } from '../../../typeSystem/appTypes';
+import { ChainProject, NewMetaData, NewReview } from '../../../typeSystem/jsonTypes';
 
 const useAverage = (
   data: ProjectAl,
