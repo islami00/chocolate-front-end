@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Redirect, Route, Switch, useParams } from 'react-router-dom';
 import { Button, Card, Image, Loader, Modal } from 'semantic-ui-react';
-
 import { Rating } from '../Projects';
 import { useApp } from '../state';
 import { message } from '../utilities/message';
@@ -49,9 +48,19 @@ const SubmitReview: SumRev = function (props) {
   const reason =
     "You cannot submit a review, this is probably because you, or your selected account owns this project or you've been banned";
   let content;
+
+  // initial stage for interactive modal. Run only once
+  // pathfor interactive modal
+  const params = useParams<{ id: string; stage?: string }>();
+  const { id } = params;
+  const init = params.stage;
+  useEffect(() => {
+    if (init) setOpen(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [init]);
   if (disabled)
     content = (
-      <Button color='purple' title={reason} disabled fluid>
+      <Button color='purple' disabled fluid>
         Submit review
       </Button>
     );
@@ -70,12 +79,17 @@ const SubmitReview: SumRev = function (props) {
       >
         <Modal.Header>Submit review</Modal.Header>
         <Modal.Content>
-          <SubmitReviewForm />
+          <Switch>
+            <Route exact path='/project/:id/stage/:stage'>
+              <SubmitReviewForm />
+            </Route>
+            <Redirect to={`/project/${id}/stage/1`} />
+          </Switch>
         </Modal.Content>
       </Modal>
     );
   }
-  return <div>{content}</div>;
+  return <div title={disabled ? reason : undefined}>{content}</div>;
 };
 
 const ReviewReel: RevReel = function (props) {
