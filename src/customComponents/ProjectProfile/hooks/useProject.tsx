@@ -4,9 +4,9 @@ import { VoidFn } from '@polkadot/api/types';
 import { Option } from '@polkadot/types';
 import { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
-import { ProjectAl } from '../../interfaces';
-import { useSubstrate } from '../../substrate-lib';
-import { errorHandled } from '../utils';
+import { ProjectAl } from '../../../interfaces';
+import { useSubstrate } from '../../../substrate-lib';
+import { errorHandled } from '../../utils';
 /**
  * @description enable only when websocket is needed
  * Note: To be called only inside useProject(). Can be generalised for all api subs

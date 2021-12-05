@@ -4589,6 +4589,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4.14.177":
+  version: 4.14.177
+  resolution: "@types/lodash@npm:4.14.177"
+  checksum: 00f9eb300ed5219cfbabb3448d4a71744895edad60dcfda9f028c0808a50eb6ad1ca9f673b56a85f85668a4ea54b9870643625468a747039c435643e52253a75
+  languageName: node
+  linkType: hard
+
 "@types/long@npm:^4.0.1":
   version: 4.0.1
   resolution: "@types/long@npm:4.0.1"
@@ -7838,6 +7845,7 @@ __metadata:
     "@storybook/node-logger": ^6.3.12
     "@storybook/preset-create-react-app": ^3.2.0
     "@storybook/react": ^6.3.12
+    "@types/lodash": ^4.14.177
     "@types/node": ^16.7.13
     "@types/react": ^17.0.26
     "@types/react-copy-to-clipboard": ^5.0.1

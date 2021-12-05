@@ -3,6 +3,20 @@
 // prettier-ignore
 import { AbstractArray } from '@polkadot/types/codec/AbstractArray';
 import { ReviewID } from 'chocolate/interfaces';
+// construct promise wrapper around localstorage
+const asyncCacheLocal = (key: string, value: string) =>
+  Promise.resolve(localStorage.setItem(key, value));
+const asyncGetLocal = (key: string) => {
+  const prom = new Promise<string>((resolve, reject) => {
+    const value = localStorage.getItem(key);
+    if (value) {
+      resolve(value);
+    } else {
+      reject(new Error('not found'));
+    }
+  });
+  return prom;
+};
 // credit:https://stackoverflow.com/questions/42651439/how-to-delay-execution-of-functions-javascript/42667512#42667512
 /* closures all the way down*/
 const queueAsyncCalls = function(){
@@ -188,6 +202,6 @@ function sendTrace(trace: string, browser: string, ...extras: string[]) {
   console.log(browser);
 }
 type errType = { status: boolean; content: string[] };
-export { fetchData, isEmpty, sendTrace, sleep, errorHandled, toPinataFetch, sortReviewIDs as sortAnyNum };
+export { fetchData, isEmpty, sendTrace, sleep, errorHandled, toPinataFetch, sortReviewIDs as sortAnyNum , asyncCacheLocal,asyncGetLocal};
 export type { errType };
 
