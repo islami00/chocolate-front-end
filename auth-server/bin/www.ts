@@ -3,14 +3,16 @@
  * Module dependencies.
  */
 
-const debug = require('debug')('auth-server:server');
-const http = require('http');
-const app = require('../app');
+import deb from 'debug';
+import http from 'http';
+import app from '../app';
+
+const debug = deb('auth-server:server');
 
 /**
  * Normalize a port into a number, string, or false.
  */
-function normalizePort(val) {
+function normalizePort(val: string) {
   const scopedPort = parseInt(val, 10);
 
   if (Number.isNaN(scopedPort)) {
@@ -45,7 +47,7 @@ const server = http.createServer(app);
 
 function onListening() {
   const addr = server.address();
-  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr?.port}`;
   debug(`Listening on ${bind}`);
 }
 
@@ -53,7 +55,7 @@ function onListening() {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError(error: { syscall: string; code: any; }) {
   if (error.syscall !== 'listen') {
     throw error;
   }
