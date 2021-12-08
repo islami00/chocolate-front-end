@@ -25,8 +25,10 @@ export const sessionConfig: session.SessionOptions = {
   resave: false,
   saveUninitialized: true,
   store: sessionStore,
+  // despite passport, we still manage our own cookies so we can set as needed.
+  // secure by default
   cookie: {
-    secure: false, // set to true in production for https sec
+    secure: process.env.NODE_ENV === 'production', // set to true in production for https sec
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
   },

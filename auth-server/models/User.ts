@@ -1,14 +1,14 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import mongoose, { Document, Model, Mongoose, Schema, Types } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
+import type { Model } from 'mongoose';
+import { connection as db } from '../config/sessionconfig';
 const schemaDoc = {
   email: { type: String, unique: true },
   passwordHash: String,
   passwordSalt: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
-  emailVerificationToken: String,
-  emailVerified: Boolean,
 
   web3Address: String,
   web3nonce: Number,
@@ -23,11 +23,9 @@ const schemaDoc = {
 interface UserTypeInterface {
   email: string;
   passwordHash: string;
-  passwordSalt: string;
+
   passwordResetToken: string;
   passwordResetExpires: Date;
-  emailVerificationToken: string;
-  emailVerified: boolean;
 
   web3Address: string;
   web3nonce: number;
@@ -39,25 +37,26 @@ interface UserTypeInterface {
   };
   validatePassword(
     candidatePassword: string,
-    cb: (err: Error | undefined, same: boolean) => any
+    cb: (err: Error | undefined, same: boolean) => void
   ): void;
   gravatar(size: number): string;
 }
 // interfaces
-interface UserBaseDocument extends UserTypeInterface, Document {
+export interface UserBaseDocument extends UserTypeInterface, Document {
   tokens: Types.Array<any>;
 }
 // For model
-export interface UserModel extends Model<UserBaseDocument> {
-  findByToken(token: string): Promise<UserBaseDocument>;
-}
+export interface UserModel extends Model<UserBaseDocument> {}
 
 const userSchema = new mongoose.Schema<UserTypeInterface>(schemaDoc, { timestamps: true });
 
 /**
- * Password hash middleware. This sets up our user to hash with salt before anything. Edit when you start express thingies
+ * Password hash middleware.
+ * This sets up our user to hash password with salt before create and modification actions on
+ * passwordhash -> implicit on user doc.
+ * i.e only hash the password if it has been modified (or is new). Should work mostly for
+ * account changes. No account system fn though.
  */
-// this is where we'll place create password 
 userSchema.pre<UserBaseDocument>('save', function save(next) {
   const user = this;
   if (!user.isModified('passwordHash')) {
@@ -78,15 +77,16 @@ userSchema.pre<UserBaseDocument>('save', function save(next) {
 });
 
 /**
- * Helper method for validating user's passwordHash.
+ * Helper method for validating user's passwordHash. Calls passport done method.
+ * Why there's no salt: https://stackoverflow.com/a/277057/16071410
  */
 userSchema.methods.validatePassword = function validatePassword(
   this: UserBaseDocument,
-  candidatePassword: string,
-  cb
+  candidatePassword,
+  done
 ) {
   bcrypt.compare(candidatePassword, this.passwordHash, (err, isMatch) => {
-    cb(err, isMatch);
+    done(err, isMatch);
   });
 };
 
@@ -97,13 +97,14 @@ userSchema.methods.gravatar = function gravatar(this: UserBaseDocument, size) {
   if (!size) {
     size = 200;
   }
-  if (!this.email) {
+  if (!this.web3Address) {
     return `https://gravatar.com/avatar/?s=${size}&d=retro`;
   }
-  const md5 = crypto.createHash('md5').update(this.email).digest('hex');
-  return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
+
+  return `https://gravatar.com/avatar/${this.web3Address}?s=${size}&d=retro`;
 };
 
-const User = mongoose.model<UserBaseDocument, UserModel>('User', userSchema);
-
+// ref:https://stackoverflow.com/questions/12806559/mongoose-model-vs-connection-model-vs-model-model
+const User = db.model<UserBaseDocument, UserModel>('User', userSchema);
+// connected user model to db
 export default User;

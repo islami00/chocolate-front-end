@@ -1,8 +1,6 @@
 import passport from 'passport';
-import * as passwordUtils from '../utils/password';
-import { connection } from '../config/sessionconfig';
 import express from 'express';
-const User = connection.models.User;
+import { registerPostController } from '../controllers/UserControllers';
 const router = express.Router();
 
 /**
@@ -10,10 +8,10 @@ const router = express.Router();
  */
 
 // TODO
-router.post('/login', (req, res, next) => {});
 
-// TODO
-router.post('/register', (req, res, next) => {});
+router.post('/login', passport.authenticate('local'), (req, res, next) => {});
+
+router.post('/register', registerPostController);
 
 /**
  * -------------- GET ROUTES ----------------
@@ -21,28 +19,6 @@ router.post('/register', (req, res, next) => {});
 
 router.get('/', (req, res, next) => {
   res.send('<h1>Home</h1><p>Please <a href="/register">register</a></p>');
-});
-
-// When you visit http://localhost:3000/login, you will see "Login Page"
-router.get('/login', (req, res, next) => {
-  const form =
-    '<h1>Login Page</h1><form method="POST" action="/login">\
-    Enter Username:<br><input type="text" name="username">\
-    <br>Enter Password:<br><input type="password" name="password">\
-    <br><br><input type="submit" value="Submit"></form>';
-
-  res.send(form);
-});
-
-// When you visit http://localhost:3000/register, you will see "Register Page"
-router.get('/register', (req, res, next) => {
-  const form =
-    '<h1>Register Page</h1><form method="post" action="register">\
-                    Enter Username:<br><input type="text" name="username">\
-                    <br>Enter Password:<br><input type="password" name="password">\
-                    <br><br><input type="submit" value="Submit"></form>';
-
-  res.send(form);
 });
 
 /**
