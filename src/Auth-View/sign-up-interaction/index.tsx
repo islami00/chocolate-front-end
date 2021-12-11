@@ -5,6 +5,8 @@ import { useAccounts } from '../../substrate-lib/SubstrateContext';
 import { errorHandled } from '../../customComponents/utils';
 import { useSubstrate } from '../../substrate-lib';
 
+import Form from "./form";
+
 const SignUp: React.FC = () => {
   const [userName, setUserName] = useState<string>('');
   const [accountAddress, setAccountAddress] = useState<string>('');
@@ -49,6 +51,7 @@ const SignUp: React.FC = () => {
       // clean up
     };
   }, []);
+
   return (
     <div className='login'>
       <Toaster />
@@ -68,6 +71,7 @@ const SignUp: React.FC = () => {
         </Button>
       </form>
       <div className='error'>{error}</div>
+      <Form />
     </div>
   );
 };
