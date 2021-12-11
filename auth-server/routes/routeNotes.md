@@ -4,3 +4,7 @@ password intercepts as a middleware before any other sassy login routes leaving 
 
 IF it succeeds we go next.
 Else, it stops thigns
+
+# Security
+
+1. Body parser fails and responds with error message on invalid json

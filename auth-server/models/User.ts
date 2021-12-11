@@ -4,13 +4,12 @@ import mongoose, { Document, Types } from 'mongoose';
 import type { Model } from 'mongoose';
 import { connection as db } from '../config/sessionconfig';
 const schemaDoc = {
-  email: { type: String, unique: true },
   passwordHash: String,
-  passwordSalt: String,
+
   passwordResetToken: String,
   passwordResetExpires: Date,
 
-  web3Address: String,
+  web3Address: { type: String, unique: true },
   web3nonce: Number,
 
   tokens: Array,
@@ -21,7 +20,6 @@ const schemaDoc = {
 };
 
 interface UserTypeInterface {
-  email: string;
   passwordHash: string;
 
   passwordResetToken: string;
@@ -37,7 +35,7 @@ interface UserTypeInterface {
   };
   validatePassword(
     candidatePassword: string,
-    cb: (err: Error | undefined, same: boolean) => void
+    cb: (err: Error | null, same?: boolean | UserBaseDocument) => void
   ): void;
   gravatar(size: number): string;
 }
@@ -80,13 +78,15 @@ userSchema.pre<UserBaseDocument>('save', function save(next) {
  * Helper method for validating user's passwordHash. Calls passport done method.
  * Why there's no salt: https://stackoverflow.com/a/277057/16071410
  */
-userSchema.methods.validatePassword = function validatePassword(
-  this: UserBaseDocument,
-  candidatePassword,
-  done
-) {
+userSchema.methods.validatePassword = function (this: UserBaseDocument, candidatePassword, done) {
   bcrypt.compare(candidatePassword, this.passwordHash, (err, isMatch) => {
-    done(err, isMatch);
+    if (err) {
+      return done(err);
+    }
+    if (!isMatch) {
+      return done(null, false);
+    }
+    done(null, this);
   });
 };
 

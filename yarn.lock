@@ -7883,6 +7883,7 @@ __metadata:
     react-scripts: ^4.0.3
     semantic-ui-css: ^2.4.1
     semantic-ui-react: ^2.0.3
+    styled-components: ^5.3.3
     ts-node: ^10.2.1
     typescript: ^4.4.2
   languageName: unknown
@@ -21149,7 +21150,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:^5.3.0":
+"styled-components@npm:^5.3.0, styled-components@npm:^5.3.3":
   version: 5.3.3
   resolution: "styled-components@npm:5.3.3"
   dependencies:

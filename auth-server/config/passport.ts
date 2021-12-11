@@ -4,7 +4,7 @@ import User, { UserBaseDocument } from '../models/User';
 import { connection } from './sessionconfig';
 import type { IStrategyOptionsWithRequest, VerifyFunctionWithRequest } from 'passport-local';
 import express from 'express';
-
+import validator from 'validator';
 const customFields: IStrategyOptionsWithRequest = {
   usernameField: 'uname',
   passwordField: 'ps',
@@ -13,9 +13,14 @@ const customFields: IStrategyOptionsWithRequest = {
 const verifyCallBackLocal: VerifyFunctionWithRequest = (_, username, password, done) => {
   // find by uname
   // Replace later with substrate accountId as that will be our new primary key
-
+  console.log('verifyCallBackLocal');
   // To-do: add validate middleware for input before find
-  User.findOne({ username: username })
+  if (typeof password !== 'string') {
+    return done(null, false, { message: 'Password is not a string' });
+  }
+  const isAlpha = validator.isAlphanumeric(username);
+  const isStrongPs = validator.isStrongPassword(password);
+  User.findOne({ profile: { username } })
     .then((user) => {
       if (!user) {
         // no error, no user, reject

@@ -20,7 +20,7 @@ const app = express();
  * express middles - logger is necessarry for development
  */
 app.use(logger('dev'));
-app.use(json()); // EXPRESS JSON() IS THE DEFACTO NOW , NO BODY PARSER
+app.use(json());
 app.use(urlencoded({ extended: false }));
 
 /**
