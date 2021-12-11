@@ -32,7 +32,7 @@ Reference [server-guide](./auth-server/README.md#%20Implementor's%20guide.) for 
 
 - Route protection can be obtained by doing auth check before switch statement and not in individual components. The hook itself can be polyfilled on the client while the actual endpoint is being developed on server
 - Each review object coming from the chain has the `ownerId` as the public key of the writer, hence this address serves as a good id for the respective profiles. Since the key is stored on the db, further metadata can be pulled.
-- For user profile, the components with styling are ready [here]() , all's left is to wire it up with the respective data and fill-in metadata with db on the server
+- For user profile, the components with styling are ready [here](https://github.com/tobechi00/jade) **Note:** doen't show review on click yet , all's left is to wire it up with the respective data and fill-in metadata with db on the server
 
 - Rerouting for login and signup can make use of [react-router]'s `useNavigate` hook to retain memory of last route before login/signup
 
