@@ -23,6 +23,15 @@ const ipfsConfig = {
   port: 5001,
   apiPath: 'api/v0',
 };
+export const getPinataData = async (element: ReviewAl): Promise<NewReview> => {
+  // this async error doesn't bubble to react query
+  const [res, err] = await errorHandled(fetch(toPinataFetch(element.content.toJSON())));
+  if (err) throw err;
+  const rev = (await res.json()) as ReviewContent;
+  const personified = element.toHuman() as unknown as ChainReview;
+  const properRev = { ...personified, content: rev };
+  return properRev;
+};
 async function populateReviews(
   referral: ReviewID[],
   api: ApiPromise,
@@ -49,16 +58,6 @@ async function populateReviews(
 
   const result = await Promise.all(chainRes);
   const resulting = result.filter((each) => each !== undefined);
-  const getPinataData = async (element: ReviewAl) => {
-    if (debug) debugger;
-    // this async error doesn't bubble to react query
-    const [res, err] = await errorHandled(fetch(toPinataFetch(element.content.toJSON())));
-    if (err) throw err;
-    const rev = (await res.json()) as ReviewContent;
-    const personified = element.toHuman() as unknown as ChainReview;
-    const properRev = { ...personified, content: rev };
-    return properRev;
-  };
 
   const contents = resulting.map(getPinataData);
   const contentResult = Promise.all(contents);

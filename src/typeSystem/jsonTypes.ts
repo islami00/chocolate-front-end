@@ -60,7 +60,7 @@ export interface ChainReview {
   proposalStatus: ProposalStatus;
   userID: string;
   content: string;
-  projectID: AnyNumber;
+  projectID: number;
 }
 
 export interface NewMetaData {
@@ -86,7 +86,9 @@ export interface ReviewContent {
 export type NewReview = Omit<ChainReview, 'content'> & {
   content: ReviewContent;
 };
-
+export interface TableSetReview extends NewReview {
+  project: NewProject;
+}
 export interface Status {
   _enum: 'Proposed' | 'Accepted' | 'Rejected';
 }

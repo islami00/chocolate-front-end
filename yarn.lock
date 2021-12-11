@@ -18964,7 +18964,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-
 "react-scripts@npm:^4.0.3":
   version: 4.0.3
   resolution: "react-scripts@npm:4.0.3"

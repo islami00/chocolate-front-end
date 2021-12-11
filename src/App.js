@@ -8,7 +8,6 @@ import './styles/index.css';
 import { SubstrateContextProvider } from './substrate-lib';
 import { DeveloperConsole } from './substrate-lib/components';
 
-
 /** @type {Record<"PROVIDER_LOCAL"| "PROVIDER_PLAYGROUND" | "PROVIDER_PHONE",string> | undefined} */
 let nodeConfig;
 if (process.env.NODE_ENV === 'development') {
@@ -18,10 +17,10 @@ if (process.env.NODE_ENV === 'development') {
 
 export default function RenderMe() {
   return (
-    <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_LOCAL : undefined}>
+    <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_PLAYGROUND : undefined}>
       <AppContextProvider>
-        <AuthView/>
-        {/* <LandingPage /> */}
+        {/* <AuthView/> */}
+        <LandingPage />
         <DeveloperConsole />
       </AppContextProvider>
     </SubstrateContextProvider>

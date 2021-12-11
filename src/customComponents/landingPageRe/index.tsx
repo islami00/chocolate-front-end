@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useSubstrate } from '../../substrate-lib';
 import About from '../About';
@@ -12,6 +13,7 @@ import Team from '../Team';
 import { loader, message } from '../utilities';
 import WallOfShame from '../WallOfShame';
 import './landing.css';
+import UserProfile from '../userProfile';
 
 const queryCache = new QueryCache({
   onError: (error: Error, query) => {
@@ -47,6 +49,10 @@ function Main(): JSX.Element {
             <Route path='/project/:id'>
               <ProjectProfile />
             </Route>
+
+            <Route path='/user/:web3Address'>
+              <UserProfile />
+            </Route>
             <Route path='/about'>
               <About />
             </Route>
@@ -57,6 +63,7 @@ function Main(): JSX.Element {
           </Switch>
         </Router>
         <Toaster position='bottom-right' />
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </div>
   );
