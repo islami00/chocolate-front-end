@@ -4,8 +4,9 @@ import { VoidFn } from '@polkadot/api/types';
 import { Option } from '@polkadot/types';
 import { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient, UseQueryResult } from 'react-query';
-import { ProjectAl } from '../../interfaces';
-import { useSubstrate } from '../../substrate-lib';
+import { ProjectAl } from '../../../interfaces';
+import { useSubstrate } from '../../../substrate-lib';
+import { errorHandled } from '../../utils';
 /**
  * @description enable only when websocket is needed
  * Note: To be called only inside useProject(). Can be generalised for all api subs
@@ -31,7 +32,7 @@ const useWs = (id: string, debug = false) => {
     un.then((unsubscribe) => {
       unsub = unsubscribe;
       if (debug) console.count('Passed unsub, meaning subscribed!');
-    });
+    }).catch(console.error);
     return () => unsub && unsub();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, subscribeToWs]);
@@ -40,19 +41,16 @@ const useWs = (id: string, debug = false) => {
  * @description This implementation assumes the staticProject is not live.
  * It also assumes it is being called under a substrate provider and a queryClientProvider
  */
-export default function useProject(
-  id: string,
-  debug = false
-): UseQueryResult<0 | ProjectAl> {
+export default function useProject(id: string, debug = false): UseQueryResult<0 | ProjectAl> {
   const { api } = useSubstrate();
   const queryId = ['project', id];
-  // let rq handle it
+  // let rq handle errs
   const getStaticProject = async () => {
-    const staticProject = await api.query.chocolateModule
-      .projects(id)
-      .then((opt) => opt.unwrapOr<0>(0));
+    const [staticProject, err] = await errorHandled(api.query.chocolateModule.projects(id));
+    if (err) throw err;
+    const unwrapped = staticProject.unwrapOr(0);
     if (debug) console.count('Got static project');
-    return staticProject;
+    return unwrapped;
   };
 
   return useQuery(queryId, getStaticProject);

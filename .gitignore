@@ -27,3 +27,5 @@ build
 
 # env vars
 .env.local
+
+src/**/SearchBarStd.tsx

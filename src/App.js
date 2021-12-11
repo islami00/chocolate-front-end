@@ -1,13 +1,7 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-// regular imports
-// substrate imports
-import React from 'react';
+/* eslint-disable import/no-unresolved */
 import 'semantic-ui-css/semantic.min.css';
-// eslint-disable-next-line import/no-unresolved
 import LandingPage from './customComponents/landingPageRe';
 import { AppContextProvider, useApp } from './customComponents/state';
-// eslint-disable-next-line import/no-unresolved
 import { loader, message } from './customComponents/utilities';
 // styles
 import './styles/index.css';
@@ -18,7 +12,6 @@ function Main() {
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const { state, dispatch } = useApp();
   const { userData } = state;
-
 
   if (apiState === 'ERROR') return message(apiError);
   if (apiState !== 'READY') return loader('Connecting to Substrate');
