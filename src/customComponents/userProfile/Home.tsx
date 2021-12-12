@@ -3,8 +3,10 @@ import { NewReview, User } from 'chocolate/typeSystem/jsonTypes';
 import { useState, useEffect, useReducer } from 'react';
 import { UseQueryResult } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { Card, Container, Dropdown, Input, Button, Checkbox, Table } from 'semantic-ui-react';
-import useUserReviews, { useChainProjects, useReviewMeta } from '../../common/hooks/useUserReviews';
+import { Card, Container, Dropdown, Input, Button, Checkbox, Table, Grid } from 'semantic-ui-react';
+import { useChainProjects } from '../../common/hooks/useUserReviews';
+import Sidebar from './Sidebar';
+import TableOfReviews from './TableOfReviews';
 
 interface ReviewTableAction {
   type: 'add' | 'FILTER_PROJECT' | 'FILTER_RATING' | 'FILTER_TIME';
@@ -28,16 +30,26 @@ const reviewTableReducer = (state: NewReview[], action: ReviewTableAction) => {
 interface ProfileTableProps {
   user: UseQueryResult<User, Error>;
 }
-const ProfileTable: React.FC<ProfileTableProps> = () => {
+const ProfileTable: React.FC<ProfileTableProps> = (props) => {
   const { web3Address } = useParams<{ web3Address: string }>();
 
   // get all reviews associated with user.
 
-  const { data, isLoading, isError } = useChainProjects(web3Address);
-  // see how the query performs.
-  console.log(data);
+  const search = useChainProjects(web3Address);
   // setup the ui structure.
-
+  // two grids. One floated left, the other right. The left grid will house user deets, right grid with table.
+  // size accordingly
+  const { user } = props;
+  return (
+    <Grid padded='vertically'>
+      <Grid.Column floated='left' width={3} doubling>
+        <Sidebar user={user} />
+      </Grid.Column>
+      <Grid.Column floated='right' stretched width={10}>
+        <TableOfReviews data={search} />
+      </Grid.Column>
+    </Grid>
+  );
   // setup the table.
   // setup a loading state for the table. sth simple.
 
@@ -48,6 +60,5 @@ const ProfileTable: React.FC<ProfileTableProps> = () => {
   // our data will be put into a reducer so that we can freely edit that with our filters.
   // filters will send actions to the reducer that then thins out data output.
   // same state will render the ui.
-  return <div className='kade' />;
 };
 export default ProfileTable;

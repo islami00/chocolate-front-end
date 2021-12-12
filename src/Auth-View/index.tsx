@@ -23,11 +23,12 @@ const AuthView: React.FC = function () {
   return (
     <Router>
       <Switch>
-        <Route exact path='/'>
+        <Route path='/'>
           <Container
             textAlign='center'
             style={{ height: '100vh', display: 'flex', alignItems: 'center' }}
-            fluid>
+            fluid
+          >
             <Card centered>
               <Card.Header content='Welcome Home' />
               <Card.Content>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 const redirect = (route) => <Redirect to={route} />;
 const Login: React.FC = function () {

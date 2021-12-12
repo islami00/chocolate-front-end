@@ -1,42 +1,58 @@
 import { User } from 'chocolate/typeSystem/jsonTypes';
 import { UseQueryResult } from 'react-query';
-import { Card, Container, Image, Button, Icon } from 'semantic-ui-react';
+import { Card, Container, Image, Button, Icon, Label, Grid } from 'semantic-ui-react';
 
 interface SidebarProps {
   user: UseQueryResult<User, Error>;
 }
-const Sidebar: React.FC<SidebarProps> = () => (
-  <Container fluid>
-    <div className='sidbr'>
-      <Card fluid className='sidbr' style={{ width: 300, height: 550 }}>
-        <Card.Content>
-          <Image src='/images/avatar/large/matthew.png ' size='medium' circular />
-          <Card.Header>Alice</Card.Header>
-          <Card.Meta>joined august</Card.Meta>
-          <Button color='violet' style={{ width: 200 }}>
-            Verified
-          </Button>
-          <div className='sidbr2'>
-            <Card style={{ width: 250, height: 300 }}>
-              <Card.Content>
-                <p className='reviews'>No.Reviews</p>
-                <p className='total'>total{}</p>
-                <p className='staking'>Staking</p>
-                <p className='points'>points</p>
-              </Card.Content>
-            </Card>
-          </div>
-          <Button color='purple' style={{ width: 200 }}>
-            Follow
-          </Button>
+
+const SideBarStat: React.FC<{
+  content: string;
+  stat: string;
+}> = ({ content, stat }) => (
+  <div
+    style={{
+      padding: '5px',
+      alignItems: 'center',
+      display: 'flex',
+      justifyContent: 'space-between',
+    }}
+  >
+    <span>{content}</span>
+    <span>{stat}</span>
+  </div>
+);
+
+const Sidebar: React.FC<SidebarProps> = (props) => {
+  const { user } = props;
+  return (
+    <Container fluid>
+      <Card fluid>
+        <Card.Content textAlign='center'>
+          <Image centered src='https://picsum.photos/200 ' size='small' circular />
         </Card.Content>
         <Card.Content>
-          <Icon name='mail' size='big' />
+          <Card.Header textAlign='center'>Alice</Card.Header>
+          {/* get from server */}
+          <Card.Meta textAlign='center'>joined august</Card.Meta>
+
+          <Card>
+            <Card.Content>
+              <Label color='purple' ribbon='right'>
+                Accepted
+              </Label>
+              <SideBarStat content='No. of Reviews' stat='5' />
+              <SideBarStat content='Staking' stat='$5' />
+              <SideBarStat content='Points' stat={user.data?.rankPoints?.toString() ?? '0'} />
+            </Card.Content>
+          </Card>
+        </Card.Content>
+        <Card.Content textAlign='center'>
           <Icon name='twitter square' size='big' />
           <Icon name='discord' size='big' />
         </Card.Content>
       </Card>
-    </div>
-  </Container>
-);
+    </Container>
+  );
+};
 export default Sidebar;

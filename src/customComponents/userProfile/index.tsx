@@ -8,13 +8,6 @@ const UserProfile: React.FC = function () {
   // fetch user data from chain based on w3 <points>
   const { web3Address } = useParams<{ web3Address: string }>();
   const userQuery = useChainUser(web3Address);
-  return (
-    <Container fluid>
-      <div>
-        <Home user={userQuery} />
-      </div>
-      <Sidebar user={userQuery} />
-    </Container>
-  );
+  return <Home user={userQuery} />;
 };
 export default UserProfile;
