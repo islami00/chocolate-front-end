@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Card, Label, Image } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 import { Rating } from '../../Projects';
 import { useSubstrate } from '../../../substrate-lib';
 import { NewReview } from '../../../typeSystem/jsonTypes';
-
 // looks good, refactor doesn't edge on this
 const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   const { each } = props;
@@ -39,7 +39,9 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
         )}
         <Card.Header>
           <Image src={src} floated='left' rounded size='mini' />
-          <Card.Meta>{name}</Card.Meta>
+          <Card.Meta as={Link} to={`/user/${userID}`}>
+            {name}
+          </Card.Meta>
         </Card.Header>
         <Card.Description>{rev}</Card.Description>
       </Card.Content>

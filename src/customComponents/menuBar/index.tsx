@@ -1,3 +1,4 @@
+import { useAuthService } from 'chocolate/common/providers/authProvider';
 import { useEffect, useRef, useState } from 'react';
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
@@ -74,6 +75,7 @@ const HandleWallet = function () {
 };
 
 function Navlinks() {
+  const { isAuthenticated } = useAuthService();
   return (
     <nav className='nav-links'>
       <Link to='/' className='nav-link nav-link__home'>
@@ -100,6 +102,13 @@ function Navlinks() {
             CHOC Token
           </Link>
         </li>
+        {!isAuthenticated && (
+          <li>
+            <Link className='nav-link' to='/login'>
+              Login
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   );
@@ -155,7 +164,7 @@ const Menu: React.FC<{
     if (match && isMounted) setBack(true);
     else if (!match && isMounted) setBack(false);
     return () => {};
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [match]);
   return (
     <header className='top-nav'>

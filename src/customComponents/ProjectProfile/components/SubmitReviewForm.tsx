@@ -1,6 +1,6 @@
 import { useReducer, useEffect } from 'react';
 import { Query, QueryKey, useQueryClient } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useParams, Redirect } from 'react-router-dom';
 import _ from 'lodash';
 import { NewMetaData } from '../../../typeSystem/jsonTypes';
 import { SubRev } from '../types';
@@ -10,7 +10,6 @@ import type { LocalFormProps } from './FormToEnter';
 import { useAuthState } from '../../../common/hooks/useAuth';
 import { CheckAuthAndGetCid, CheckCidProps } from './CheckAuthAndGetCid';
 import { asyncCacheLocal } from '../../utils';
-
 // cache reducer types
 export interface Stage1Cache {
   [x: string]: unknown;
@@ -119,6 +118,7 @@ const SubmitReviewForm: SubRev = function () {
     cid: cache.stage2,
   };
   console.count('SubmitReviewForm');
+  if (stage >= '2' && !isAuthenticated) return <Redirect to='/login' />;
   // render based on stage
   switch (stage) {
     case '1':
