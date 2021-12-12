@@ -18,12 +18,11 @@ if (process.env.NODE_ENV === 'development') {
 
 export default function RenderMe() {
   return (
-    <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_PLAYGROUND : undefined}>
+    <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_LOCAL : undefined}>
       <AppContextProvider>
-        
-          {/* <AuthView/> */}
-          <LandingPage />
-          <DeveloperConsole />
+        {/* <AuthView/> */}
+        <LandingPage />
+        <DeveloperConsole />
       </AppContextProvider>
     </SubstrateContextProvider>
   );
