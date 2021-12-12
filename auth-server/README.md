@@ -36,6 +36,12 @@ Further relations should be setup on the db for likes and co. due to the immutab
 
 With that, the server should be ready for use.
 
+# Notes on implemented parts
+
+Only username/password signup/signin were implemented, and csrf policies require a https connection for testing.
+hence why the effects of login are not seen in the video.
+Same goes for the gallery page whose designs were completed and showcased although data hasn't been wired up to it.
+
 ## Further resources and notes:
 
 1. Reference implementation 1 - [Hackathon starter](https://github.com/sahat/hackathon-starter)
@@ -70,3 +76,5 @@ To promote interaction, we could ask users to join the discord for chocolate by 
 Or provide a messaging system.
 
 - We could also simply have notifications pop up as the users need, dashboard and all.
+
+Also, the web3 authentication could be extended to substrate with jwts, providing security of the platform both on the site and with blockchain transactions.
