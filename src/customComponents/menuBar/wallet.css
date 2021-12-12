@@ -13,6 +13,7 @@
   position: absolute;
   /* ideas for limiting modal: scale relative to parent */
   width: max-content;
+  z-index: 5;
 }
 .modal_drop--right {
   right: 0;

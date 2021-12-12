@@ -42,7 +42,7 @@ const ProfileTable: React.FC<ProfileTableProps> = (props) => {
   const { user } = props;
   return (
     <Grid padded='vertically'>
-      <Grid.Column floated='left' width={3} doubling>
+      <Grid.Column  floated='left' width={3} doubling>
         <Sidebar user={user} />
       </Grid.Column>
       <Grid.Column floated='right' stretched width={10}>
