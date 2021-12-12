@@ -30,6 +30,10 @@ The goals are split into the following sections:
 
 Reference [server-guide](./auth-server/README.md#%20Implementor's%20guide.) for more info, or lmk.
 
+# Notes on implemented parts
+
+Only goals 1, 2, 4, 5,6,8 and 9 were achieved for this hackathon.
+
 ## Further resources
 
 1. [Manual_routing](https://github.com/remix-run/react-router/tree/main/examples/auth)
