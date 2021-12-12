@@ -1,6 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import 'semantic-ui-css/semantic.min.css';
 import AuthView from './Auth-View';
+import AuthProvider from './common/providers/authProvider';
 import LandingPage from './customComponents/landingPageRe';
 import { AppContextProvider } from './customComponents/state';
 // styles
@@ -19,9 +20,10 @@ export default function RenderMe() {
   return (
     <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_PLAYGROUND : undefined}>
       <AppContextProvider>
-        {/* <AuthView/> */}
-        <LandingPage />
-        <DeveloperConsole />
+        
+          {/* <AuthView/> */}
+          <LandingPage />
+          <DeveloperConsole />
       </AppContextProvider>
     </SubstrateContextProvider>
   );

@@ -15,7 +15,15 @@ const isAuthHandler: express.RequestHandler = (req, res, next) => {
 router.post('/login', passport.authenticate('local'), loginPostController);
 
 router.post('/register', registerPostController);
-
+router.get('/auth/check', isAuthHandler,(req,res,next)=>{
+  res.json({
+    success: true,
+    user: {
+      publicKey: req.user?.web3Address
+    }
+  });
+  next();
+});
 // Visiting this route logs the user out
 router.get('/logout', (req, res, next) => {
   req.logout();

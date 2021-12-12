@@ -30,7 +30,7 @@ export const registerPostController: RegisterRequestHandler = async (
   const web3Address = req.body.web3Address;
   const uname = req.body.uname;
   const ps = req.body.ps;
-  console.log(ps, req.body);
+
   const validUname = validator.isAlphanumeric(uname);
   if (!validUname) {
     res.status(400).json('Invalid username');

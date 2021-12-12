@@ -8,7 +8,7 @@ import logger from 'morgan';
 import session from 'express-session';
 import indexRouter from './routes/index';
 import sessionRouter from './routes/session-example';
-
+import cors from 'cors';
 // passport setup
 import passport from 'passport';
 
@@ -19,6 +19,10 @@ const app = express();
 /*
  * express middles - logger is necessarry for development
  */
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:8000'],
+    credentials: true,
+}));
 app.use(logger('dev'));
 app.use(json());
 app.use(urlencoded({ extended: false }));
