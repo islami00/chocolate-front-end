@@ -1,8 +1,8 @@
 import HCaptcha from '@hcaptcha/react-hcaptcha';
-import { useAuthService } from 'chocolate/common/providers/authProvider';
+import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
 import { useEffect, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation, useHistory } from 'react-router-dom';
 import { Form } from 'semantic-ui-react';
 
 interface SignUpMut {
@@ -12,26 +12,27 @@ interface SignUpMut {
   captcha: string;
 }
 const LOGIN_MUTATION = async (form: SignUpMut) => {
- let headersList = {
- "Accept": "application/json",
- "Content-Type": "application/json",
-}
+  const headersList = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  };
 
-const scc = await fetch("http://localhost:3000/login", { 
-  method: "POST",
-  body: JSON.stringify(form),
-  headers: headersList
-}).then(function(response) {
-  return response.text();
-}).then(function(data) {
-  console.log(data);
-})
+  const scc = (await fetch('http://localhost:3000/login', {
+    method: 'POST',
+    body: JSON.stringify(form),
+    headers: headersList,
+  }).then((response) => response.json())) as {
+    success: boolean;
+    publicKey: string | undefined;
+  };
+
   return scc;
 };
 const redirect = (route: string) => <Redirect to={route} />;
 const Login: React.FC = function () {
   // try to read secret key - jwt
   const captchaRef = useRef(null);
+  const location = useLocation();
   const [token, setToken] = useState(null);
   const { isAuthenticated } = useAuthService();
   const [form, setForm] = useState({
@@ -46,10 +47,15 @@ const Login: React.FC = function () {
       setForm({ ...form, captcha: token });
     }
   }, [token]);
+  const auth = useAuthService();
+
   const loginMutation = useMutation(LOGIN_MUTATION);
-  if(loginMutation.status === 'success'){
-    return redirect('/');
+  if (loginMutation.status === 'success') {
+    auth.login({ publicKey: loginMutation.data.publicKey });
+    const redirectUrl = location.state.from ?? '/';
+    return redirect(redirectUrl);
   }
+
   const onSubmit = () => {
     // this reaches out to the hcaptcha library and runs the
     // execute function on it. you can use other functions as well
@@ -73,8 +79,7 @@ const Login: React.FC = function () {
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-if(token)          loginMutation.mutate(form);
-
+    if (token) loginMutation.mutate(form);
   };
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -95,13 +100,12 @@ if(token)          loginMutation.mutate(form);
             type='submit'
             content='Submit'
             fluid
-          
             color='purple'
             onChange={handleChange}
           />
         </Form>
       ) : (
-        redirect('/')
+        redirect(location.state.from ?? '/')
       )}
       <HCaptcha
         // This is testing sitekey, will autopass

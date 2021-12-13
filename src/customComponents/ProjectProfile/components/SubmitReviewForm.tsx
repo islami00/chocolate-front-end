@@ -1,13 +1,13 @@
 import { useReducer, useEffect } from 'react';
 import { Query, QueryKey, useQueryClient } from 'react-query';
-import { useParams, Redirect } from 'react-router-dom';
+import { useParams, Redirect, useLocation } from 'react-router-dom';
 import _ from 'lodash';
+import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
 import { NewMetaData } from '../../../typeSystem/jsonTypes';
 import { SubRev } from '../types';
 import { FormToEnter } from './FormToEnter';
 import { SubmitReviewTx as SubmitToChain } from './SubmitReviewTx';
 import type { LocalFormProps } from './FormToEnter';
-import { useAuthState } from '../../../common/hooks/useAuth';
 import { CheckAuthAndGetCid, CheckCidProps } from './CheckAuthAndGetCid';
 import { asyncCacheLocal } from '../../utils';
 // cache reducer types
@@ -92,7 +92,7 @@ const SubmitReviewForm: SubRev = function () {
   const [cache, dispatchCache] = useReducer(stageCacheReducer, InitialCache);
 
   // overarching deets 1. pass in auth deets to each
-  const { isAuthenticated } = useAuthState();
+  const { isAuthenticated } = useAuthService();
   // stage1 deets
   const { id } = useParams<{ id: string }>();
   useEffect(() => {
@@ -118,7 +118,16 @@ const SubmitReviewForm: SubRev = function () {
     cid: cache.stage2,
   };
   console.count('SubmitReviewForm');
-  if (stage >= '2' && !isAuthenticated) return <Redirect to='/login' />;
+  const location = useLocation();
+  if (stage >= '2' && !isAuthenticated)
+    return (
+      <Redirect
+        to={{
+          pathname: '/login',
+          state: { from: location },
+        }}
+      />
+    );
   // render based on stage
   switch (stage) {
     case '1':

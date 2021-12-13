@@ -71,7 +71,10 @@ export const registerPostController: RegisterRequestHandler = async (
 };
 
 export const loginPostController: express.RequestHandler = (req, res, next) => {
+  const user = req.user;
   res.json({
     success: true,
+    publicKey: user?.web3Address
   });
+ 
 };

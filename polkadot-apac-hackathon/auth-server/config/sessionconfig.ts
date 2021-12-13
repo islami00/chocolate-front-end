@@ -19,6 +19,7 @@ const sessionStore = new MongoStore({
   collection: 'sessions',
 });
 // session config
+
 const sessionSecret = process.env.DB_SECRET ?? '';
 export const sessionConfig: session.SessionOptions = {
   secret: sessionSecret,
@@ -32,7 +33,6 @@ export const sessionConfig: session.SessionOptions = {
     // specify samesite=false and secure for cross origin
     sameSite: "none",
     secure: process.env.NODE_ENV === 'production', // set to true in production for https sec
-    domain:'localhost',
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
   },

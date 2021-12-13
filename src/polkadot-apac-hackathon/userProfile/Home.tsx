@@ -4,7 +4,7 @@ import { useState, useEffect, useReducer } from 'react';
 import { UseQueryResult } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { Card, Container, Dropdown, Input, Button, Checkbox, Table, Grid } from 'semantic-ui-react';
-import { useChainProjects } from '../../common/hooks/useUserReviews';
+import { useChainProjects } from '../common/hooks/useUserReviews';
 import Sidebar from './Sidebar';
 import TableOfReviews from './TableOfReviews';
 

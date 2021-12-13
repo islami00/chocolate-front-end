@@ -20,7 +20,7 @@ const app = express();
  * express middles - logger is necessarry for development
  */
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:8000'],
+    origin: ['http://localhost:3000','https://chocolate-demo.web.app', 'http://localhost:8000'],
     credentials: true,
 }));
 app.use(logger('dev'));

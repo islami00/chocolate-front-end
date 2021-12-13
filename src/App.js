@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import 'semantic-ui-css/semantic.min.css';
-import AuthView from './Auth-View';
-import AuthProvider from './common/providers/authProvider';
+import AuthView from './polkadot-apac-hackathon/Auth-View';
+import AuthProvider from './polkadot-apac-hackathon/common/providers/authProvider';
 import LandingPage from './customComponents/landingPageRe';
 import { AppContextProvider } from './customComponents/state';
 // styles

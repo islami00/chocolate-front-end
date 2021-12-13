@@ -1,10 +1,10 @@
 import { ApiPromise } from '@polkadot/api';
 import { useQuery, UseQueryResult } from 'react-query';
 import { StorageKey, Option } from '@polkadot/types';
-import { ChainProject, NewProject, NewReview, TableSetReview } from '../../typeSystem/jsonTypes';
-import { Project, ProjectID, Review } from '../../interfaces';
-import { useSubstrate } from '../../substrate-lib';
-import { getPinataData, populateMetadata } from '../../customComponents/ProjectProfile/majorUtils';
+import { ChainProject, NewProject, NewReview, TableSetReview } from '../../../typeSystem/jsonTypes';
+import { Project, ProjectID, Review } from '../../../interfaces';
+import { useSubstrate } from '../../../substrate-lib';
+import { getPinataData, populateMetadata } from '../../../customComponents/ProjectProfile/majorUtils';
 
 const getRelatedProjects = async (api: ApiPromise, reviews: Review[]) => {
   const ids = reviews.map((review) => Number(review.projectID));

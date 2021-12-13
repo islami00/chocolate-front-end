@@ -1,6 +1,6 @@
 import { Container } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
-import useChainUser from '../../common/hooks/useChainUser';
+import useChainUser from '../common/hooks/useChainUser';
 import Home from './Home';
 import Sidebar from './Sidebar';
 

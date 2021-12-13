@@ -1,4 +1,4 @@
-import { useChainProjects } from 'chocolate/common/hooks/useUserReviews';
+import { useChainProjects } from 'chocolate/polkadot-apac-hackathon/common/hooks/useUserReviews';
 import { useSubstrate } from 'chocolate/substrate-lib';
 import { User } from 'chocolate/typeSystem/jsonTypes';
 import { useEffect, useState } from 'react';

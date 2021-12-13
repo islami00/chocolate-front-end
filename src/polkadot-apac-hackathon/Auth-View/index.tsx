@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { Button, Card, Header, Container } from 'semantic-ui-react';
-import { loader, message } from '../customComponents/utilities';
+import { loader, message } from '../../customComponents/utilities';
 import Login from './login-interaction';
 import SignUp from './sign-up-interaction';
-import { useSubstrate } from '../substrate-lib';
+import { useSubstrate } from '../../substrate-lib';
 
 const AuthView: React.FC = function () {
   const state = useSubstrate();

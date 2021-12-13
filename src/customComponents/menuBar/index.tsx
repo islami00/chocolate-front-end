@@ -1,4 +1,4 @@
-import { useAuthService } from 'chocolate/common/providers/authProvider';
+import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
 import { useEffect, useRef, useState } from 'react';
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';

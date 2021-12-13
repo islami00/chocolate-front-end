@@ -13,7 +13,7 @@ import {
   Transition,
   Label,
 } from 'semantic-ui-react';
-import { Rating } from '../Projects';
+import { Rating } from '../../customComponents/Projects';
 
 interface TableReducerAction {
   type: 'FILTER_PROJECT_NAME' | 'FILTER_REVIEW_RATING' | 'INITIALISE' | 'FILTER_REVIEW_STATUS';
