@@ -55,8 +55,10 @@ const SubmitReview: SumRev = function (props) {
   const { id } = params;
   const init = params.stage;
   useEffect(() => {
-    if (init) setOpen(true);
+    let interval;
+    if (init) interval = setTimeout(() => setOpen(true), 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => clearTimeout(interval);
   }, [init]);
   if (disabled)
     content = (

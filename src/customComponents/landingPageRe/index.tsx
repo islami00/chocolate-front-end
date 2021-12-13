@@ -3,9 +3,10 @@ import toast, { Toaster } from 'react-hot-toast';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import SignUp from 'chocolate/Auth-View/sign-up-interaction';
-import AuthProvider from 'chocolate/common/providers/authProvider';
-import Login from 'chocolate/Auth-View/login-interaction';
+
+import SignUp from 'chocolate/polkadot-apac-hackathon/Auth-View/sign-up-interaction';
+import AuthProvider from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
+import Login from 'chocolate/polkadot-apac-hackathon/Auth-View/login-interaction';
 import { useSubstrate } from '../../substrate-lib';
 import About from '../About';
 import Gallery from '../Gallery';
@@ -16,7 +17,7 @@ import Team from '../Team';
 import { loader, message } from '../utilities';
 import WallOfShame from '../WallOfShame';
 import './landing.css';
-import UserProfile from '../userProfile';
+import UserProfile from '../../polkadot-apac-hackathon/userProfile';
 
 const queryCache = new QueryCache({
   onError: (error: Error, query) => {
@@ -73,7 +74,7 @@ function Main(): JSX.Element {
             </Switch>
           </Router>
           <Toaster position='bottom-right' />
-          <ReactQueryDevtools />
+          {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
         </AuthProvider>
       </QueryClientProvider>
     </div>

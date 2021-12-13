@@ -1,4 +1,4 @@
-import { Loader } from 'semantic-ui-react';
+import { Loader, Container } from 'semantic-ui-react';
 import { useEffect, useState } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import { useCid } from '../hooks';
@@ -37,6 +37,11 @@ const CheckAuthAndGetCid: React.FC<CheckCidProps> = function (props) {
   }
   if (next) return <Redirect to={`/project/${id}/stage/3`} />;
 
-  return <Loader content='Redirecting to next stage...' />;
+  return (
+    <Container fluid>
+      <p>Fetching your review's cid...</p>
+      <Loader />
+    </Container>
+  );
 };
 export { CheckAuthAndGetCid };
