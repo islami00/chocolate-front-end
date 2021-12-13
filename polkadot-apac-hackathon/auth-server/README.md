@@ -9,7 +9,7 @@ Although it is written in typescript, for ease of use, the code can be built to 
 
 # Implementor's guide.
 
-Taking a page from invarch's no-email policy, this first phase will only enable two means of authentication:
+Taking a page from Invarch's no-email policy, this first phase will only enable two means of authentication:
 
 1. Username password,
 2. web3 address.
@@ -38,9 +38,10 @@ With that, the server should be ready for use.
 
 # Notes on implemented parts
 
-Only username/password signup/signin were implemented, and csrf policies require a https connection for testing.
+Only the username/password signup/signin were implemented on the api, and csrf policies require a https connection for polling the server from the ui.
 hence why the effects of login are not seen in the video.
 Same goes for the gallery page whose designs were completed and showcased although data hasn't been wired up to it.
+The build folder is included.
 
 ## Further resources and notes:
 
@@ -61,9 +62,9 @@ Given that this is purely an api without a direct view, postman or similar softw
 
 ## Long term notes:
 
-Now, for concerns of spam and human verification, the flips api will eventually act as a check of humanity to avoid spamming the system.
+Now, for concerns of spam and human verification, a flips-backed human authentication api will eventually act as a check of humanity to avoid spamming the system.
 
-This still doesn't stop users from signing up with multiple web3 addresses and usernames - the primary key on db being the username in this case (subject to change to web3address to align with routes). But ultimately, that has no gain to the user as that cannot be automated due to flips, and they'll probably lose some token on initial review as no reward is given for level0.
+This still doesn't stop users from signing up with multiple web3 addresses and usernames - the primary key on db being the username in this case (subject to change to web3address to align with routes). But ultimately, that has no gain to the user as that cannot be automated due to flips human verification, and they'll probably lose some token on initial review as no reward is given for level0.
 
 Also, such users can be flagged with regular bot detection and blacklisted on the server here.
 
@@ -71,10 +72,6 @@ We can also provide a dust collection policy for storage attacks that states if 
 
 A note also on contacting users. Some additional metadata could be collected e.g twitter, discord, or even gathered from the respective chain via an input tagged "what blockchains have you previously interacted with on this account?" leveraging preexisting identity.
 
-To promote interaction, we could ask users to join the discord for chocolate by providing some incentive, but that is by the way.
-
-Or provide a messaging system.
-
 - We could also simply have notifications pop up as the users need, dashboard and all.
 
-Also, the web3 authentication could be extended to substrate with jwts, providing security of the platform both on the site and with blockchain transactions.
+The web3 authentication could be extended to substrate with jwts, providing security of the platform both on the site and with blockchain transactions.
