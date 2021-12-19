@@ -1,13 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiPromise } from '@polkadot/api';
-import { Vec } from '@polkadot/types';
-import { ProjectAl, ReviewID } from '../../interfaces';
+import { ProjectAl, ReviewAl, ReviewID } from '../../interfaces';
 import { PinServerRes } from '../../typeSystem/appTypes';
-import {
-  ChainReview,
-  NewMetaData,
-  NewReview,
-} from '../../typeSystem/jsonTypes';
+import { ChainReview, NewMetaData, NewReview } from '../../typeSystem/jsonTypes';
 import { ReviewContent } from '../../typeSystem/mockTypes';
 import { errorHandled, sortAnyNum, toPinataFetch } from '../utils';
 
@@ -28,47 +23,48 @@ const ipfsConfig = {
   port: 5001,
   apiPath: 'api/v0',
 };
+export const getPinataData = async (element: ReviewAl): Promise<NewReview> => {
+  // this async error doesn't bubble to react query
+  const [res, err] = await errorHandled(fetch(toPinataFetch(element.content.toJSON())));
+  if (err) throw err;
+  const rev = (await res.json()) as ReviewContent;
+  const personified = element.toHuman() as unknown as ChainReview;
+  const properRev = { ...personified, content: rev };
+  return properRev;
+};
 async function populateReviews(
-  referral: Vec<ReviewID>,
+  referral: ReviewID[],
   api: ApiPromise,
   userId: string,
   debug = false
 ): Promise<NewReview[]> {
   // setup time stamps for easier sort
   referral.sort(sortAnyNum);
-  if (debug) console.log('After sort', referral);
+  if (debug) debugger;
+  // error handled
   const chainRes = referral.map(async (element) => {
     const optReview = await api.query.chocolateModule.reviews(element);
     const review = optReview.unwrapOr(0);
-    if (review === 0) throw new Error('Review does not exist');
-    if (review.proposalStatus.status.isAccepted) return review;
-    if (review.userID.eq(userId)) return review;
-    // fall through case comes here, this can be undefined in the case wherein the userId is proposed
-  });
-  const result = await Promise.all(chainRes);
-  // patch
-  const resulting = result.filter((each) => !!each);
-  const contents = resulting.map(async (element, i, arr) => {
-    if (debug) console.log('ITer', i, arr, element);
-    const [res, err] = await errorHandled(
-      fetch(toPinataFetch(element.content.toJSON()))
-    );
-    if (err) throw err;
-    const rev = (await res.json()) as ReviewContent;
-    if (debug) console.log('returned', rev);
-    const personified = element.toHuman() as unknown as ChainReview;
-    const properRev = { ...personified, content: rev };
-    return properRev;
+    try {
+      if (review === 0) throw new Error('Review does not exist');
+      if (review.proposalStatus.status.isAccepted) return review;
+      if (review.userID.eq(userId)) return review;
+    } catch (error) {
+      // send metric to track and return undefined
+      console.error(error);
+      return undefined;
+    }
   });
 
-  return Promise.all(contents);
-  // use the referral array here.
+  const result = await Promise.all(chainRes);
+  const resulting = result.filter((each) => each !== undefined);
+
+  const contents = resulting.map(getPinataData);
+  const contentResult = Promise.all(contents);
+  return contentResult;
 }
 /** works */
-async function populateMetadata(
-  cid: string,
-  debug = false
-): Promise<NewMetaData> {
+async function populateMetadata(cid: string, debug = false): Promise<NewMetaData> {
   if (debug) console.log('got metadata cid', cid);
   // fetch meta from cid.
   const [res, err] = await errorHandled(fetch(toPinataFetch(cid)));
@@ -78,10 +74,7 @@ async function populateMetadata(
   return metaData;
 }
 type GetCidReturns = { cid: string };
-const getCid = async function (
-  reviewText: string,
-  rating: number
-): Promise<GetCidReturns> {
+const getCid = async function (reviewText: string, rating: number): Promise<GetCidReturns> {
   const cacheable: ReviewContent = { rating, reviewText };
   const endpoint = 'http://127.0.0.1:5001/chocolate-demo/us-central1/api/pin';
   const headers = {

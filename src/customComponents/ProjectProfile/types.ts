@@ -1,4 +1,5 @@
 import React from 'react';
+import { UseQueryResult } from 'react-query';
 import { ProjectAl } from '../../interfaces';
 import { NewMetaData, NewReview } from '../../typeSystem/jsonTypes';
 
@@ -7,18 +8,13 @@ export type PrProf = React.FC<{
   id: string;
 }>;
 export type ProfileSum = React.FC<{
-  data: NewMetaData;
-  isFetched: boolean;
-  isLoading: boolean;
-  ave: string;
+  pQuery: UseQueryResult<NewMetaData, unknown>;
+  rQuery: UseQueryResult<NewReview[], unknown>;
+  project: ProjectAl;
 }>;
 export type SumRev = React.FC<{
   isLoading: boolean;
   disabled: boolean;
 }>;
-export type RevReel = React.FC<{
-  data: NewReview[];
-  isFetched: boolean;
-  isLoading: boolean;
-}>;
+export type RevReel = React.FC<{ reelQuery: UseQueryResult<NewReview[], unknown> }>;
 export type SubRev = React.FC;

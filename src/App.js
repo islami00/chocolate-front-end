@@ -1,44 +1,14 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-// regular imports
-// substrate imports
-import React from 'react';
+/* eslint-disable import/no-unresolved */
 import 'semantic-ui-css/semantic.min.css';
-// eslint-disable-next-line import/no-unresolved
+import AuthView from './polkadot-apac-hackathon/Auth-View';
+import AuthProvider from './polkadot-apac-hackathon/common/providers/authProvider';
 import LandingPage from './customComponents/landingPageRe';
-import { AppContextProvider, useApp } from './customComponents/state';
-// eslint-disable-next-line import/no-unresolved
-import { loader, message } from './customComponents/utilities';
+import { AppContextProvider } from './customComponents/state';
 // styles
 import './styles/index.css';
-import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
+import { SubstrateContextProvider } from './substrate-lib';
 import { DeveloperConsole } from './substrate-lib/components';
 
-function Main() {
-  const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const { state, dispatch } = useApp();
-  const { userData } = state;
-
-
-  if (apiState === 'ERROR') return message(apiError);
-  if (apiState !== 'READY') return loader('Connecting to Substrate');
-  if (keyringState !== 'READY') {
-    return loader("Loading accounts (please review any extension's authorization)");
-  }
-  if (!userData.accountType) {
-    return loader('Loading your preferences...', true);
-  }
-  // To-do: complete user flow
-  return (
-    <div>
-      <h1>What once was only an app</h1>
-    </div>
-  );
-}
-
-export function App() {
-  return <Main />;
-}
 /** @type {Record<"PROVIDER_LOCAL"| "PROVIDER_PLAYGROUND" | "PROVIDER_PHONE",string> | undefined} */
 let nodeConfig;
 if (process.env.NODE_ENV === 'development') {
@@ -50,6 +20,7 @@ export default function RenderMe() {
   return (
     <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_LOCAL : undefined}>
       <AppContextProvider>
+        {/* <AuthView/> */}
         <LandingPage />
         <DeveloperConsole />
       </AppContextProvider>

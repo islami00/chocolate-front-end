@@ -1,7 +1,10 @@
 .root-wrap {
-  /* sandbox --static */
-  width: 100vw;
+  /* sandbox --static, proper responsivity guaranteed by parent */
+
   height: 100vh;
+  min-height: 100vh;
+  min-width: 100vw;
+  width: 100vw;
   /* set on body for all */
   box-sizing: border-box;
   /* buff content in --static */
@@ -9,6 +12,12 @@
   /* fix */
   letter-spacing: normal;
 }
-.background{
+#root {
+  height: 100vh;
+  min-height: 100vh;
+  min-width: 100vw;
+  width: 100vw;
+}
+.background {
   background-image: url(../../assets/blob-scene-haikei.svg);
 }
