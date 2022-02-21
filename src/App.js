@@ -11,14 +11,18 @@ import { DeveloperConsole } from './substrate-lib/components';
 
 /** @type {Record<"PROVIDER_LOCAL"| "PROVIDER_PLAYGROUND" | "PROVIDER_PHONE",string> | undefined} */
 let nodeConfig;
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_NODE_CONFIG) {
   // Use config when not running local node.
-  if (process.env.REACT_APP_NODE_CONFIG) nodeConfig = JSON.parse(process.env.REACT_APP_NODE_CONFIG);
+  nodeConfig = {
+      PROVIDER_LOCAL: process.env.REACT_APP_PROVIDER_LOCAL,
+      PROVIDER_PLAYGROUND: process.env.REACT_APP_PROVIDER_PLAYGROUND,
+      PROVIDER_PHONE: process.env.REACT_APP_PROVIDER_PHONE,
+    };
 }
 
 export default function RenderMe() {
   return (
-    <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_LOCAL : undefined}>
+    <SubstrateContextProvider socket={nodeConfig ? nodeConfig.PROVIDER_PLAYGROUND : undefined}>
       <AppContextProvider>
         {/* <AuthView/> */}
         <LandingPage />

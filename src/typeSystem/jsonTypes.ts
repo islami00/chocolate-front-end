@@ -38,11 +38,13 @@ export interface ChainProject {
   badge?: boolean;
   metaData: ChainMetaData;
   proposalStatus: ProposalStatus;
+  reward: AnyNumber;
+  totalUserScores: AnyNumber;
 }
 
 export interface ProposalStatus {
-  status: Status['_enum'];
-  reason: Reason['_enum'];
+  status: Status["_enum"];
+  reason: Reason["_enum"];
 }
 
 export interface Reason {
@@ -61,6 +63,7 @@ export interface ChainReview {
   userID: string;
   content: string;
   projectID: number;
+  pointSnapshot: number;
 }
 
 export interface NewMetaData {

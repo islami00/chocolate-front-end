@@ -58,6 +58,20 @@ declare module '@polkadot/api/types/consts' {
        **/
       [key: string]: Codec;
     };
+    chocolateModule: {
+      /**
+       * * Reward Cap: Max reward projects can place on themselves. Interestingly, this also serves as their stake amount.
+       **/
+      rewardCap: BalanceOf & AugmentedConst<ApiType>;
+      /**
+       * Hard coded collateral amount for the Users
+       **/
+      userCollateral: BalanceOf & AugmentedConst<ApiType>;
+      /**
+       * Generic const
+       **/
+      [key: string]: Codec;
+    };
     elections: {
       /**
        * How much should be locked up in order to submit one's candidacy.

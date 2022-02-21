@@ -1,7 +1,7 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
 /* eslint-disable */
 
-import type { Enum, Option, Struct, Text, Vec, bool, u128, u32, u64 } from '@polkadot/types';
+import type { Enum, Option, Struct, Text, bool, u128, u32, u64 } from '@polkadot/types';
 import type { AccountId } from '@polkadot/types/interfaces/runtime';
 
 /** @name Balance */
@@ -10,20 +10,17 @@ export interface Balance extends u128 {}
 /** @name BalanceOf */
 export interface BalanceOf extends Balance {}
 
-/** @name ListOfNames */
-export interface ListOfNames extends Vec<Text> {}
-
 /** @name MetaData */
 export interface MetaData extends Text {}
 
 /** @name Project */
 export interface Project extends Struct {
   readonly ownerID: AccountId;
-  readonly reviewers: Option<Vec<AccountId>>;
-  readonly reviews: Option<Vec<ReviewID>>;
   readonly badge: Option<bool>;
-  readonly metaData: MetaData;
+  readonly metadata: MetaData;
   readonly proposalStatus: ProposalStatus;
+  readonly reward: Balance;
+  readonly totalUserScores: u32;
 }
 
 /** @name ProjectAl */
@@ -53,6 +50,7 @@ export interface Review extends Struct {
   readonly userID: AccountId;
   readonly content: Text;
   readonly projectID: ProjectID;
+  readonly pointSnapshot: u32;
 }
 
 /** @name ReviewAl */
@@ -67,8 +65,5 @@ export interface Status extends Enum {
   readonly isAccepted: boolean;
   readonly isRejected: boolean;
 }
-
-/** @name TextAl */
-export interface TextAl extends Text {}
 
 export type PHANTOM_CHOCOLATEMODULE = 'chocolateModule';

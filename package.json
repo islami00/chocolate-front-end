@@ -7,11 +7,10 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "get:meta": "ts-node -P tsconfig.defs.json getJson.ts",
-    "make:JsonMeta": "ts-node -P tsconfig.defs.json ./src/typeSystem/mockTypes.ts",
+    "get:meta": "ts-node -P tsconfig.defs.json ./scripts/getJson.ts",
     "build-types": "npm run generate:defs && npm run generate:meta",
     "generate:defs": "ts-node -P tsconfig.defs.json node_modules/@polkadot/typegen/scripts/polkadot-types-from-defs.cjs --package chocolate/interfaces --input ./src/interfaces",
-    "generate:meta": "ts-node -P tsconfig.defs.json node_modules/@polkadot/typegen/scripts/polkadot-types-from-chain.cjs --package chocolate/interfaces --endpoint ./chocolate.json --output ./src/interfaces",
+    "generate:meta": "ts-node -P tsconfig.defs.json node_modules/@polkadot/typegen/scripts/polkadot-types-from-chain.cjs --package chocolate/interfaces --endpoint ./jsons/chocolate.json --output ./src/interfaces",
     "test": "CI=true react-app-rewired test --env=jsdom",
     "eject": "react-app-rewired eject",
     "lint": "eslint src/**/*{.js,.jsx,.ts,.tsx}",

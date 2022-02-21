@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiPromise } from '@polkadot/api';
-import { ProjectAl, ReviewAl, ReviewID } from '../../interfaces';
+import { AnyNumber } from '@polkadot/types/types';
+import { ProjectAl, ProjectID, ReviewAl, ReviewID } from '../../interfaces';
 import { PinServerRes } from '../../typeSystem/appTypes';
 import { ChainReview, NewMetaData, NewReview } from '../../typeSystem/jsonTypes';
-import { ReviewContent } from '../../typeSystem/mockTypes';
+import { ReviewContent } from '../../typeSystem/jsonTypes';
 import { errorHandled, sortAnyNum, toPinataFetch } from '../utils';
 
 function filter(project: ProjectAl): 0 | 1 | 2 | void {
@@ -33,11 +34,19 @@ export const getPinataData = async (element: ReviewAl): Promise<NewReview> => {
   return properRev;
 };
 async function populateReviews(
-  referral: ReviewID[],
+  // referral: ReviewID[], Referral is project id.
+  id: AnyNumber,
   api: ApiPromise,
   userId: string,
   debug = false
 ): Promise<NewReview[]> {
+  const limit = (revs: ReviewAl[])=>{
+    const max = revs.length > 10 ? 10 : revs.length;
+    const revsArr = revs.slice(0, max);
+    return revsArr;
+  };
+//  Setup what we'll limit.
+const referral = await api.query.chocolateModule.reviews(id);
   // setup time stamps for easier sort
   referral.sort(sortAnyNum);
   if (debug) debugger;
