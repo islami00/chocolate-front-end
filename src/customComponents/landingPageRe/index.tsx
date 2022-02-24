@@ -1,12 +1,12 @@
+import Login from 'chocolate/polkadot-apac-hackathon/Auth-View/login-interaction';
+import SignUp from 'chocolate/polkadot-apac-hackathon/Auth-View/sign-up-interaction';
+import AuthProvider from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
-import SignUp from 'chocolate/polkadot-apac-hackathon/Auth-View/sign-up-interaction';
-import AuthProvider from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
-import Login from 'chocolate/polkadot-apac-hackathon/Auth-View/login-interaction';
+import UserProfile from '../../polkadot-apac-hackathon/userProfile';
 import { useSubstrate } from '../../substrate-lib';
 import About from '../About';
 import Gallery from '../Gallery';
@@ -17,7 +17,6 @@ import Team from '../Team';
 import { loader, message } from '../utilities';
 import WallOfShame from '../WallOfShame';
 import './landing.css';
-import UserProfile from '../../polkadot-apac-hackathon/userProfile';
 
 const queryCache = new QueryCache({
   onError: (error: Error, query) => {
@@ -33,6 +32,7 @@ function Main(): JSX.Element {
   const { apiState, apiError } = useSubstrate();
   const [back, setBack] = useState(false);
 
+  // Remove these when done.
   if (apiState === 'ERROR') return message(apiError);
   if (apiState !== 'READY') return loader('Connecting to Substrate');
   return (

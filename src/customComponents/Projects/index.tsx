@@ -76,8 +76,8 @@ export const Rating: React.FC<{
 const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   const { data } = props;
   const { Id, project } = data;
-  const { ownerID, proposalStatus, metaData } = project;
-  const { name } = metaData;
+  const { ownerID, proposalStatus, metadata } = project;
+  const { name } = metadata;
   const { status } = proposalStatus;
   let rateBar = <></>;
   let toProject = <></>;

@@ -8,8 +8,8 @@ import { NewProjectWithIndex } from '../../../typeSystem/jsonTypes';
 const DataSummaryDisplay: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   const { data } = props;
   const { Id, project } = data;
-  const { metaData, proposalStatus } = project;
-  const { name, icon } = metaData;
+  const { metadata, proposalStatus } = project;
+  const { name, icon } = metadata;
   const { status } = proposalStatus;
   // turn project into a class and allow it to average out rating from reviews.
 

@@ -36,15 +36,15 @@ export interface ChainProject {
   reviewers?: string[];
   reviews?: AnyNumber[];
   badge?: boolean;
-  metaData: ChainMetaData;
+  metadata: ChainMetaData;
   proposalStatus: ProposalStatus;
   reward: AnyNumber;
   totalUserScores: AnyNumber;
 }
 
 export interface ProposalStatus {
-  status: Status["_enum"];
-  reason: Reason["_enum"];
+  status: Status['_enum'];
+  reason: Reason['_enum'];
 }
 
 export interface Reason {
@@ -77,8 +77,8 @@ export interface NewMetaData {
   date: number;
 }
 
-export type NewProject = Omit<ChainProject, 'metaData'> & {
-  metaData: NewMetaData;
+export type NewProject = Omit<ChainProject, 'metadata'> & {
+  metadata: NewMetaData;
 };
 
 // store on ipfs fully

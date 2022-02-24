@@ -55,7 +55,7 @@ const Main: React.FC<{ data: UseQueryResult<TableSetReview[], Error> }> = (props
   const filterProjects = data.data.map((review) => ({
     name: 'project',
     key: review.projectID,
-    text: review.project.metaData.name,
+    text: review.project.metadata.name,
     value: review.projectID,
   }));
   // filter reducer
@@ -149,7 +149,7 @@ const Main: React.FC<{ data: UseQueryResult<TableSetReview[], Error> }> = (props
                   <>
                     <Table.Row key={review.projectID} onClick={(e) => handleClick(e, { index: i })}>
                       <Table.Cell>
-                        <Image src={`${review.project.metaData.icon}`} size='mini' rounded />
+                        <Image src={`${review.project.metadata.icon}`} size='mini' rounded />
                       </Table.Cell>
                       <Table.Cell>
                         <Accordion>
@@ -159,7 +159,7 @@ const Main: React.FC<{ data: UseQueryResult<TableSetReview[], Error> }> = (props
                             index={i}
                             onClick={handleClick}
                           >
-                            {review.project.metaData.name}
+                            {review.project.metadata.name}
                           </Accordion.Title>
                         </Accordion>
                       </Table.Cell>
