@@ -5,7 +5,7 @@ let pinataApiKey: string; let pinataSecretApiKey: string; let pinataJWT: string;
 if (process.env.NODE_ENV === "test") {
   // Testing
   pinataApiKey = process.env.PINATA_API_KEY ?? "";
-  pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY ?? "";
+  pinataSecretApiKey = process.env.PINATA_API_SECRET ?? "";
   pinataJWT= process.env.PINATA_JWT ?? "";
 } else {
   pinataApiKey = config().pinata.api.key;

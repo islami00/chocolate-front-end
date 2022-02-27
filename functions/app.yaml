@@ -1,0 +1,11 @@
+runtime: nodejs14
+
+instance_class: F2
+# Pull from secret manager.
+# env_variables:
+#   NODE_ENV: test
+handlers:
+- url: /.* #wha?
+  secure: always 
+  redirect_htto_response_code: 301
+  script: auto # wha?
