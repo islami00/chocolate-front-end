@@ -6,9 +6,9 @@
     {
       "path": "../chocolate-node"
     },
-    // {
-    //   "path": "H:\\chocolate\\profile-merge\\src"
-    // },
+    {
+      "path": "functions"
+    },
     // {
     // "path": "../githubtest"
     // },

@@ -1,26 +1,31 @@
 import * as cors from "cors";
+import debug from "debug";
 import * as express from "express";
-import * as functions from "firebase-functions";
-// eslint-disable-next-line
-import { AnyKindOfDictionary } from "lodash";
 import fetch from "node-fetch";
+import {pinataApiKey, pinataJWT, pinataSecretApiKey} from "./config";
+// types
 export interface ReviewContent {
   reviewText: string;
   rating: number;
 }
-type pinataResponse={
-      IpfsHash: string;
-      PinSize: number;
-      Timestamp: string;
-      isDuplicate: boolean;
-    };
-type res = {
-    error?: AnyKindOfDictionary;
-    success?:string;
-  };
-const pinataApiKey = functions.config().pinata.api.key;
-const pinataSecretApiKey = functions.config().pinata.secret.api.key;
-const pinataJWT= functions.config().pinata.jwt;
+interface PinataSuccess {
+  IpfsHash: string;
+  PinSize: number;
+  Timestamp: string;
+  isDuplicate: boolean;
+  error: undefined;
+}
+interface PinataError {
+  error: {
+    reason: string;
+    details: string;
+  }
+}
+type PinataResponse = PinataSuccess | PinataError;
+interface PinSuccess {success: string}
+interface PinFail {error: string}
+type PinRes = PinFail | PinSuccess
+// Consts
 const headersList = {
   "Accept": "*/*",
   "User-Agent": "Thunder Client (https://www.thunderclient.io)",
@@ -29,51 +34,63 @@ const headersList = {
   "Authorization": `Bearer ${pinataJWT}`,
   "Content-Type": "application/json",
 };
-
-
-export const basicHttp = functions.https.onRequest((request, response) => {
-  console.log("Started exec");
-
-  response.send("Sweet, can I do express stuff here??");
-  console.log("Ended exec:");
-});
 const endpoint = "https://api.pinata.cloud/pinning/pinJSONToIPFS/";
+
+// App config
 const app = express();
 app.use(cors({origin: true}));
-app.post("/pin", (request, response) => {
-  const body = JSON.parse(request.body);
+app.use(express.json());
+// Error handler. Must have  next as arg
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const error: express.ErrorRequestHandler = function(err, req, res, next) {
+  // log it
+  debug(err.stack);
 
-  const ret:res = {
-    error: undefined,
-    success: undefined,
-  };
-  if (!body.reviewText || !body.rating) {
-    ret.error = "wrong body";
-    return response.status(400).send(ret);
-  }
+  // respond with 500 "Internal Server Error", instead of default stack trace
+  res.status(500);
+  res.json("Oops! Internal Server Error");
+};
+/**
+ * Post: "/pin"
+ */
+interface PinRequest {
+  reviewText: string;
+  rating: string;
+}
+// Generics: app.[method]<Params,ResBody,ReqBody,ReqQuery,Locals>
+app.post<null, PinRes, PinRequest>("/pin", (request, response, next) => {
+  const {body} = request;
+  // External error, return early with bad res.
+  // Body is always json.
+  const invalidBod = !body.reviewText || !body.rating;
+  if (invalidBod) return response.status(403).send({error: "Invalid json"});
+
   fetch(endpoint, {
     method: "POST",
     body: JSON.stringify(body),
     headers: headersList,
   })
-      .then((response) => response.json())
-      .then((data) => {
-        const returnable= data as unknown as NonNullable<pinataResponse>;
-        ret.success = returnable.IpfsHash;
+      .then(async (_response) => {
+        if (_response.status < 200 || _response.status >= 300) {
+          // Internal err
+          throw new Error(await _response.json());
+        }
+
+        const data = await _response.json() as unknown as PinataResponse;
+        if (data.error) {
+          throw new Error(JSON.stringify(data.error));
+        }
         // sending a string over
-        response.send(ret);
-      }).catch((error)=>{
-        ret.error = error;
-        response.status(400).send(ret);
-      }).finally(()=>{
-        response.end();
+        response.status(200).json({success: data.IpfsHash});
+      })
+      .catch((error)=>{
+        // Internal err, logged in errback, just pass to next.
+        next(error);
       });
-  return response;
+  // Ts err, must return val.
+  return;
 });
-app.get("/cat", (request, response) => {
-  response.send("Hello cat");
-});
-app.get("/dog", (request, response) => {
-  response.send("Hello dog");
-});
-export const api = functions.https.onRequest(app);
+// Final err back
+app.use(error);
+export {app};
+
