@@ -30,5 +30,10 @@
     "node",
     "src/interfaces",
     "functions"
+  ],
+  "references": [
+    {
+      "path": "functions/tsconfig.json"
+    }
   ]
 }
