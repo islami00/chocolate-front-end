@@ -12,6 +12,6 @@ if (process.env.NODE_ENV === "test") {
   pinataSecretApiKey = config().pinata.secret.api.key;
   pinataJWT= config().pinata.jwt;
 }
-const port =  Number(process.env.PORT) || 3000;
-export {pinataApiKey, pinataJWT, pinataSecretApiKey,port};
+const port = Number(process.env.PORT) || 3000;
+export {pinataApiKey, pinataJWT, pinataSecretApiKey, port};
 
