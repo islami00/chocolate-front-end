@@ -28,7 +28,7 @@
   ],
   "exclude": [
     "node",
-    "./src/interfaces",
-    "./functions"
+    "src/interfaces",
+    "functions"
   ]
 }

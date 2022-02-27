@@ -2,7 +2,7 @@ import { writeFile } from "fs/promises";
 import fetch from "node-fetch";
 import path from "path";
 process.env;
-const rpcEndpoint = "http://9933-silver-sloth-xiy9cp8p.ws-eu33.gitpod.io/";
+const rpcEndpoint = "http://127.0.0.1:9933";
 const headersList = {
   Accept: "*/*",
   "User-Agent": "Thunder Client (https://www.thunderclient.io)",
@@ -16,7 +16,7 @@ fetch(rpcEndpoint, {
 })
   .then((response) => response.text())
   .then((data) => {
-    writeFile(path.resolve(__dirname, "../jsons/chocolate.json"), data, {
+    if(data) writeFile(path.resolve(__dirname, "../jsons/chocolate.json"), data, {
       encoding: "utf-8",
       flag: "w",
     })
