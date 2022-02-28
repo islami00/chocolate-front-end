@@ -5,7 +5,7 @@ import { errorHandled } from '../utils/regUtils';
 import validator from 'validator';
 /**
  * Post: /register.
- * Move to: /api/users/register
+ * Move to: /api/user/register
  */
 interface RegisterRequest extends express.Request {
   body: {
@@ -71,7 +71,10 @@ export const registerPostController: RegisterRequestHandler = async (
   }
   return next();
 };
-
+/**
+ * Post: /login --when authed
+ * MoveTo: /api/user/login
+ */
 export const loginPostController: express.RequestHandler = (req, res, next) => {
   const user = req.user;
   res.json({
