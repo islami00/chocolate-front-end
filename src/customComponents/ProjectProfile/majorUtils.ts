@@ -99,11 +99,15 @@ async function populateMetadata(cid: string, debug = false): Promise<NewMetaData
 }
 type GetCidReturns = { cid: string };
 const getCid = async function (reviewText: string, rating: number): Promise<GetCidReturns> {
-  const cacheable: ReviewContent = { rating, reviewText };
-  const endpoint = 'http://127.0.0.1:5001/chocolate-demo/us-central1/api/pin';
+  const cacheable: ReviewContent = { reviewText, rating };
+  const endpoint = "https://united-option-342615.oa.r.appspot.com//pin";
   const headers = {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(cacheable),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
   };
   const [cid, err] = await errorHandled(fetch(endpoint, headers));
   if (err) throw err;

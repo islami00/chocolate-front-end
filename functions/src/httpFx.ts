@@ -63,7 +63,7 @@ app.post<null, PinRes, PinRequest>("/pin", (request, response, next) => {
   // External error, return early with bad res.
   // Body is always json.
   const invalidBod = !body.reviewText || !body.rating;
-  if (invalidBod) return response.status(403).send({ error: "Invalid json" });
+  if (invalidBod) return response.status(400).send({ error: "Invalid json" });
 
   fetch(endpoint, {
     method: "POST",
