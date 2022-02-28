@@ -6,8 +6,10 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "start": "nodemon --exec ts-node ./bin/www.ts",
-    "build": "tsc"
+    "start":"node ./bin/www.js",
+    "start-dev": "nodemon --exec ts-node ./bin/www.ts",
+    "build": "PATH=$(npm bin):$PATH tsc",
+    "publish-code":"gcloud app deploy db.yaml"
   },
   "author": "Chocolate",
   "license": "Unlicense",

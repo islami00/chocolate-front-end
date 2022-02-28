@@ -75,3 +75,7 @@ A note also on contacting users. Some additional metadata could be collected e.g
 - We could also simply have notifications pop up as the users need, dashboard and all.
 
 The web3 authentication could be extended to substrate with jwts, providing security of the platform both on the site and with blockchain transactions.
+
+## Migrating to app engine
+
+[Multiple services: many app.yamls](https://stackoverflow.com/questions/46036320/deploy-multiple-applications-from-same-project)

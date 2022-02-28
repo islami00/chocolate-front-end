@@ -34,6 +34,9 @@
   "references": [
     {
       "path": "functions/tsconfig.json"
+    },
+    {
+      "path": "polkadot-apac-hackathon/auth-server/tsconfig.json"
     }
   ]
 }

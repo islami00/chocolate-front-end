@@ -9,6 +9,10 @@
     {
       "path": "functions"
     },
+    {
+      "name": "auth-server",
+      "path": "polkadot-apac-hackathon/auth-server"
+    }
     // {
     // "path": "../githubtest"
     // },

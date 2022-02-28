@@ -20,7 +20,7 @@ const sessionStore = new MongoStore({
 });
 // session config
 
-const sessionSecret = process.env.DB_SECRET ?? '';
+const sessionSecret = process.env.SESSION_SECRET ?? '';
 export const sessionConfig: session.SessionOptions = {
   secret: sessionSecret,
   resave: false,
