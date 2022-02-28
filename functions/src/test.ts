@@ -1,12 +1,16 @@
 // Enable debugging--gcloud
 // Import app.
 import * as gcdbg from "@google-cloud/debug-agent";
+import debug from "debug";
 gcdbg.start({ serviceContext: { enableCanary: false }});
 import * as http from "http";
-import {port} from "./config";
-import {app} from "./httpFx";
+import { port, gConnect, isGconnect } from "./config";
+import { app } from "./httpFx";
 
-// Serve
-http.createServer(app).listen(port);
-// On good call, should server err due to firebase config not being available.
-
+// Serve in async main to get secrets.
+async function main() {
+  if (isGconnect) await gConnect();
+  debug(`IsGconnect: ${isGconnect}`);
+  http.createServer(app).listen(port);
+}
+main();

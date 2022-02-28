@@ -10,7 +10,8 @@
     "deploy": "firebase deploy --only functions",
     "publish-code": "gcloud app deploy",
     "logs": "firebase functions:log",
-    "test": "NODE_ENV=test npx ts-node src/test.ts -P ./tsconfig.json"
+    "test-prod": "cd lib && NODE_RAW=true npm start",
+    "test": "NODE_RAW=true NODE_ENV=test npx ts-node src/test.ts -P ./tsconfig.json"
   },
   "engines": {
     "node": "14"
@@ -18,8 +19,10 @@
   "main": "lib/index.js",
   "dependencies": {
     "@google-cloud/debug-agent": "^5.2.8",
+    "@google-cloud/secret-manager": "^3.11.0",
     "cors": "^2.8.5",
     "debug": "^4.3.3",
+    "dotenv": "^16.0.0",
     "express": "^4.17.1",
     "express-winston": "^4.2.0",
     "firebase-admin": "^9.8.0",

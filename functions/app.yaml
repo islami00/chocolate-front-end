@@ -2,8 +2,10 @@ runtime: nodejs14
 
 # instance_class: F2
 # # Pull from secret manager.
-# # env_variables:
-# #   NODE_ENV: test
+env_variables:
+  PINATA_API_KEY: PINATA_API_KEY
+  PINATA_API_SECRET: PINATA_API_SECRET
+  PINATA_JWT: PINATA_JWT
 # Ensure that all requests are redirected to our app.
 # A handler can be setup before this to serve static assets
 handlers:
