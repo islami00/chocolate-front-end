@@ -3,11 +3,12 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
     "lint-fix": "npm run lint -- --fix",
-    "build": "tsc",
+    "build": "./node_modules/.bin/tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
+    "start": "NODE_ENV=test node ./src/test.js",
     "deploy": "firebase deploy --only functions",
+    "publish-code": "gcloud app deploy",
     "logs": "firebase functions:log",
     "test": "NODE_ENV=test npx ts-node src/test.ts -P ./tsconfig.json"
   },
@@ -16,6 +17,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@google-cloud/debug-agent": "^5.2.8",
     "cors": "^2.8.5",
     "debug": "^4.3.3",
     "express": "^4.17.1",

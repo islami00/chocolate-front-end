@@ -1,11 +1,13 @@
 runtime: nodejs14
 
-instance_class: F2
-# Pull from secret manager.
-# env_variables:
-#   NODE_ENV: test
+# instance_class: F2
+# # Pull from secret manager.
+# # env_variables:
+# #   NODE_ENV: test
+# Ensure that all requests are redirected to our app.
+# A handler can be setup before this to serve static assets
 handlers:
-- url: /.* #wha?
-  secure: always 
-  redirect_htto_response_code: 301
-  script: auto # wha?
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
