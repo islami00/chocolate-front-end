@@ -5,7 +5,10 @@
 
 import deb from 'debug';
 import http from 'http';
+import { AddressInfo } from 'net';
 import app from '../app';
+import * as gcdbg from "@google-cloud/debug-agent";
+import { gConnect, isGconnect } from '../config';
 
 const debug = deb('auth-server:server');
 
@@ -36,17 +39,10 @@ const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
- */
-
-const server = http.createServer(app);
-
-/**
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
-  const addr = server.address();
+function onListening(addr: string | AddressInfo | null) {
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr?.port}`;
   debug(`Listening on ${bind}`);
 }
@@ -55,7 +51,7 @@ function onListening() {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error: { syscall: string; code: any; }) {
+function onError(error: { syscall: string; code: any }) {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -77,10 +73,24 @@ function onError(error: { syscall: string; code: any; }) {
   }
 }
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+const main = async function () {
+  if (isGconnect){
+     await gConnect();
+  }
+  debug(`IsGconnect: ${isGconnect}`);
+  /**
+   * Create HTTP server.
+   */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+  const server = http.createServer(app);
+
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', () => onListening(server.address()));
+};
+
+main();

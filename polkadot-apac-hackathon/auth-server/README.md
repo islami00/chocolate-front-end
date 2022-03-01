@@ -79,3 +79,5 @@ The web3 authentication could be extended to substrate with jwts, providing secu
 ## Migrating to app engine
 
 [Multiple services: many app.yamls](https://stackoverflow.com/questions/46036320/deploy-multiple-applications-from-same-project)
+
+Note: Firebase was not considered as a deployment option. This could be the case eventually. In that case, consult [functions/index.ts](../../functions/src/index.ts) and [functions/config.ts](../../functions/src/config.ts)

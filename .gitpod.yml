@@ -6,4 +6,35 @@ tasks:
   - init: yarn install && yarn run build
     command: yarn run start
 
-
+vscode:
+  extensions:
+    # Linters
+    - esbenp.prettier-vscode
+    - dbaeumer.vscode-eslint
+    
+    # Tools 
+    - rangav.vscode-thunder-client
+    # - nrwl.angular-console
+    # - firsttris.vscode-jest-runner
+    # - styled-components.vscode-styled-components
+    
+    # Paths and npm
+    - visualstudioexptteam.vscodeintellicode
+    - christian-kohler.path-intellisense
+    - christian-kohler.npm-intellisense
+    
+    # Language servers
+    - redhat.vscode-yaml
+    - ahmadalli.vscode-nginx-conf
+    - ecmel.vscode-html-css
+    # - bradlc.vscode-tailwindcss
+    
+    # convenience
+    - yzhang.markdown-all-in-one
+    - github.copilot
+    - rubbersheep.gi
+    - oouo-diogo-perdigao.docthis
+    - mads-hartmann.bash-ide-vscode
+    
+    # Visuals
+    - oderwat.indent-rainbow
