@@ -100,7 +100,7 @@ async function populateMetadata(cid: string, debug = false): Promise<NewMetaData
 type GetCidReturns = { cid: string };
 const getCid = async function (reviewText: string, rating: number): Promise<GetCidReturns> {
   const cacheable: ReviewContent = { reviewText, rating };
-  const endpoint = "https://united-option-342615.oa.r.appspot.com//pin";
+  const endpoint = `${process.env.REACT_APP_PIN_SERVER}/pin`;
   const headers = {
     method: "POST",
     body: JSON.stringify(cacheable),

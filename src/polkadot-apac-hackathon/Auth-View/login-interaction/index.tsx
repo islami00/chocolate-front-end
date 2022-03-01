@@ -52,7 +52,7 @@ const Login: React.FC = function () {
   const loginMutation = useMutation(LOGIN_MUTATION);
   if (loginMutation.status === 'success') {
     auth.login({ publicKey: loginMutation.data.publicKey });
-    const redirectUrl = location.state.from ?? '/';
+    const redirectUrl = location?.state?.from ?? '/';
     return redirect(redirectUrl);
   }
 
@@ -95,7 +95,7 @@ const Login: React.FC = function () {
             value={form.uname}
             onChange={handleChange}
           />
-          <Form.Input fluid label='Password' name='ps' value={form.ps} onChange={handleChange} />
+          <Form.Input fluid label='Password' name='ps' type='password' value={form.ps} onChange={handleChange} />
           <Form.Button
             type='submit'
             content='Submit'
@@ -105,7 +105,7 @@ const Login: React.FC = function () {
           />
         </Form>
       ) : (
-        redirect(location.state.from ?? '/')
+        redirect(location?.state?.from ?? '/')
       )}
       <HCaptcha
         // This is testing sitekey, will autopass
