@@ -13,3 +13,9 @@ handlers:
     secure: always
     redirect_http_response_code: 301
     script: auto
+# Instance and limits. Sets 9hr free tier instance hours. Light enough to move to firebase.
+# https://cloud.google.com/appengine/docs/managing-costs
+instance_class: B1
+basic_scaling:
+  max_instances: 1
+  idle_timeout: 10m
