@@ -17,7 +17,7 @@ const LOGIN_MUTATION = async (form: SignUpMut) => {
     'Content-Type': 'application/json',
   };
 
-  const scc = (await fetch('http://localhost:3000/login', {
+  const scc = (await fetch(`${process.env.REACT_APP_AUTH_SERVER}/login`, {
     method: 'POST',
     body: JSON.stringify(form),
     headers: headersList,
