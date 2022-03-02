@@ -8,7 +8,7 @@ import http from 'http';
 import { AddressInfo } from 'net';
 import app from '../app';
 import * as gcdbg from "@google-cloud/debug-agent";
-import { gConnect, isGconnect } from '../config';
+import { gConnect, isGconnect, isMockGConnect, wrapMockGConnect } from '../config';
 
 const debug = deb('auth-server:server');
 
@@ -76,6 +76,10 @@ function onError(error: { syscall: string; code: any }) {
 const main = async function () {
   if (isGconnect){
      await gConnect();
+  }
+  // Testing logic. Abstract to test file.
+  if (isMockGConnect){
+    await wrapMockGConnect();
   }
   debug(`IsGconnect: ${isGconnect}`);
   /**

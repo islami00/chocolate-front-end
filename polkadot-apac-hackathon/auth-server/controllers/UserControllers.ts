@@ -1,8 +1,8 @@
 // register. Interface and fx
 import express from 'express';
-import User from '../models/User';
-import { errorHandled } from '../utils/regUtils';
 import validator from 'validator';
+import { UserPromise } from '../models/User';
+import { errorHandled } from '../utils/regUtils';
 /**
  * Post: /register.
  * Move to: /api/user/register
@@ -37,9 +37,10 @@ export const registerPostController: RegisterRequestHandler = async (
      res.json('Invalid username');
      return;
   }
-
-  const user = await User.findOne({ profile: { username: uname } });
-  const userW3 = await User.findOne({ web3Address: web3Address });
+  // Hopefully express catches this.
+  const _User = await UserPromise;
+  const user = await _User.findOne({ profile: { username: uname } });
+  const userW3 = await _User.findOne({ web3Address: web3Address });
   if (user || userW3) {
     // This isn't a server error
     const msg = `${user ? 'Username' : 'web3Address'} already exists`;
@@ -50,7 +51,7 @@ export const registerPostController: RegisterRequestHandler = async (
     return;
   }
   // hook hashes for us
-  const newUser = new User({
+  const newUser = new _User({
     profile: { username: uname },
     passwordHash: ps,
     web3Address: web3Address,
