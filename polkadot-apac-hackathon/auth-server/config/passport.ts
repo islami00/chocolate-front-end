@@ -1,10 +1,8 @@
 import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
-import User, { UserBaseDocument } from '../models/User';
-import { connection } from './sessionconfig';
 import type { IStrategyOptionsWithRequest, VerifyFunctionWithRequest } from 'passport-local';
-import express from 'express';
+import { Strategy as LocalStrategy } from 'passport-local';
 import validator from 'validator';
+import { UserBaseDocument, UserPromise } from '../models/User';
 const customFields: IStrategyOptionsWithRequest = {
   usernameField: 'uname',
   passwordField: 'ps',
@@ -19,26 +17,24 @@ const verifyCallBackLocal: VerifyFunctionWithRequest = (_, username, password, d
   }
   const isAlpha = validator.isAlphanumeric(username);
   const isStrongPs = validator.isStrongPassword(password);
-  User.findOne({ profile: { username } })
-    .then((user) => {
-      if (!user) {
-        // no error, no user, reject
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (!user.passwordHash) {
-        return done(null, false, {
-          message:
-            'You signed up with web3, do retry with your address instead. Account management coming soon!',
-        });
-      }
-      return user.validatePassword(password, done);
-    })
-    .catch((err) => {
-      return done(err);
-    });
+  UserPromise.then(async _User=>{
+    const user = await _User.findOne({ profile: { username } });
+    if (!user) {
+      // no error, no user, reject
+      return done(null, false, { message: 'Incorrect username.' });
+    }
+    if (!user.passwordHash) {
+      return done(null, false, {
+        message: 'You signed up with web3, do retry with your address instead. Account management coming soon!',
+      });
+    }
+    return user.validatePassword(password, done);
+  }).catch(err => done(err));
+  
 };
 
-const configLocalStrategy = new LocalStrategy(customFields, verifyCallBackLocal);
+// Export and do this in app.ts
+export const configLocalStrategy = new LocalStrategy(customFields, verifyCallBackLocal);
 passport.use(configLocalStrategy);
 
 // passport ser types
@@ -47,16 +43,17 @@ declare global {
     interface User extends UserBaseDocument {}
   }
 }
+//ToDo Refactor to function and do this in app.ts
 passport.serializeUser<string>((user, done) => {
   done(null, user.id);
 });
 
+// Refactor to function and do this in app.ts
 passport.deserializeUser<string>((id, done) => {
-  User.findById(id)
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((err) => {
-      done(err, false);
-    });
+  UserPromise.then(async _User =>{
+    const user = await _User.findById(id);
+    done(null, user);
+  }).catch((err) => {
+    done(err, false);
+  });
 });

@@ -2,9 +2,10 @@ runtime: nodejs14
 
 # instance_class: F2
 # # Can't use secret manager because of sync issue.
-# env_variables:
-  # DB_STRING: DB_STRING
-  # SESSION_SECRET: SESSION_SECRET
+env_variables:
+  DB_STRING: DB_STRING
+  SESSION_SECRET: SESSION_SECRET
+
 service: db
 # Ensure that all requests are redirected to our app.
 # A handler can be setup before this to serve static assets
