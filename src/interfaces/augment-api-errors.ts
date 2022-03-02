@@ -99,9 +99,29 @@ declare module '@polkadot/api/types/errors' {
     };
     chocolateModule: {
       /**
+       * The call to accept must be on a proposed review with appropriate state
+       **/
+      AcceptingNotProposed: AugmentedError<ApiType>;
+      /**
+       * User already owns a project
+       **/
+      AlreadyOwnsProject: AugmentedError<ApiType>;
+      /**
+       * The checked division method failed, either due to overflow/underflow or because of division by zero.
+       **/
+      CheckedDivisionFailed: AugmentedError<ApiType>;
+      /**
        * The reviewer has already placed a review on this project with following id
        **/
       DuplicateReview: AugmentedError<ApiType>;
+      /**
+       * The collateral for the review is not present
+       **/
+      InconsistentCollateral: AugmentedError<ApiType>;
+      /**
+       * Insufficient funds for performing a task. Add more funds to your account/call/reserve.
+       **/
+      InsufficientBalance: AugmentedError<ApiType>;
       NoneValue: AugmentedError<ApiType>;
       /**
        * The project does not exist
@@ -111,6 +131,14 @@ declare module '@polkadot/api/types/errors' {
        * Project owners cannot review their projects
        **/
       OwnerReviewedProject: AugmentedError<ApiType>;
+      /**
+       * The review matching this key cannot be found
+       **/
+      ReviewNotFound: AugmentedError<ApiType>;
+      /**
+       * The reward on the project isn't same as reserve
+       **/
+      RewardInconsistent: AugmentedError<ApiType>;
       /**
        * The index exceeds max usize.
        **/

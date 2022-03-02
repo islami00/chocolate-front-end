@@ -1,39 +1,26 @@
-import session from 'express-session';
 import connectMongo from 'connect-mongo';
+import session from 'express-session';
 import mongoose from 'mongoose';
 // mongo settings for db and connection
-const dbString = process.env.DB_STRING ?? '';
+import { envVarPromise } from '.';
+
 const dbOptions: mongoose.ConnectionOptions = {
   // he said: suppress warning
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-// db connection
-export const connection = mongoose.createConnection(dbString, dbOptions);
 
-// store init
-const MongoStore = connectMongo(session);
-// store config
-const sessionStore = new MongoStore({
-  mongooseConnection: connection,
-  collection: 'sessions',
+// db connection. Err handling for connection string is done higher up the chain
+export const connectionPromise = envVarPromise.then(function ({ dbString }) {
+  const _connection = mongoose.createConnection(dbString, dbOptions);
+  return _connection;
 });
-// session config
 
-const sessionSecret = process.env.DB_SECRET ?? '';
-export const sessionConfig: session.SessionOptions = {
-  secret: sessionSecret,
-  resave: false,
-  saveUninitialized: true,
-  
-  store: sessionStore,
-  // despite passport, we still manage our own cookies so we can set as needed.
-  // secure by default
-  cookie: {
-    // specify samesite=false and secure for cross origin
-    sameSite: "none",
-    secure: process.env.NODE_ENV === 'production', // set to true in production for https sec
-    maxAge: 1000 * 60 * 60 * 24,
-    httpOnly: true,
-  },
-};
+export const sessionStorePromise = connectionPromise.then((_connection) => {
+  const MongoStore = connectMongo(session);
+  const store = new MongoStore({
+    mongooseConnection: _connection,
+    collection: 'sessions',
+  });
+  return store;
+});

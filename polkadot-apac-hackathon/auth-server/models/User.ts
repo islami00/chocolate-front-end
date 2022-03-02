@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import mongoose, { Document, Types } from 'mongoose';
 import type { Model } from 'mongoose';
-import { connection as db } from '../config/sessionconfig';
+import { connectionPromise } from '../config/sessionconfig';
 const schemaDoc = {
   passwordHash: String,
 
@@ -104,7 +104,9 @@ userSchema.methods.gravatar = function gravatar(this: UserBaseDocument, size) {
   return `https://gravatar.com/avatar/${this.web3Address}?s=${size}&d=retro`;
 };
 
+
+
 // ref:https://stackoverflow.com/questions/12806559/mongoose-model-vs-connection-model-vs-model-model
-const User = db.model<UserBaseDocument, UserModel>('User', userSchema);
 // connected user model to db
-export default User;
+// User promise.
+export const UserPromise =  connectionPromise.then(conn=>conn.model<UserBaseDocument, UserModel>('User', userSchema));

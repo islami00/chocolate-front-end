@@ -8,14 +8,14 @@ const calcResults = function (
 ): [NewProjectWithIndex[], boolean] {
   const filtered = data.filter((each) => {
     const reg = new RegExp(`(${value})`, 'gi');
-    const escaped = _.escapeRegExp(each.project.metaData.name);
+    const escaped = _.escapeRegExp(each.project.metadata.name);
     return reg.exec(escaped); /* returns null otherwise */
   });
   let found = true;
   if (filtered.length === 0) found = false;
   return [filtered, found];
 };
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
   e.preventDefault();
 };
 export { calcResults, handleSubmit };

@@ -9,9 +9,9 @@ export default function useProjectMeta(
 ): UseQueryResult<NewMetaData, unknown> {
   const queryId = ['project', 'meta', id];
   // reuse useProject
-  const { metaData } = project;
+  const { metadata } = project;
 
-  return useQuery(queryId, () => populateMetadata(metaData.toJSON()), {
+  return useQuery(queryId, () => populateMetadata(metadata.toJSON()), {
     retry: 2,
     staleTime: Infinity,
   });

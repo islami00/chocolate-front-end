@@ -1,11 +1,11 @@
 // register. Interface and fx
 import express from 'express';
-import User from '../models/User';
-import { errorHandled } from '../utils/regUtils';
 import validator from 'validator';
+import { UserPromise } from '../models/User';
+import { errorHandled } from '../utils/regUtils';
 /**
  * Post: /register.
- * Move to: /api/users/register
+ * Move to: /api/user/register
  */
 interface RegisterRequest extends express.Request {
   body: {
@@ -33,23 +33,25 @@ export const registerPostController: RegisterRequestHandler = async (
 
   const validUname = validator.isAlphanumeric(uname);
   if (!validUname) {
-    res.status(400).json('Invalid username');
-    return next();
+     res.status(400);
+     res.json('Invalid username');
+     return;
   }
-
-  const user = await User.findOne({ profile: { username: uname } });
-  const userW3 = await User.findOne({ web3Address: web3Address });
+  // Hopefully express catches this.
+  const _User = await UserPromise;
+  const user = await _User.findOne({ profile: { username: uname } });
+  const userW3 = await _User.findOne({ web3Address: web3Address });
   if (user || userW3) {
+    // This isn't a server error
     const msg = `${user ? 'Username' : 'web3Address'} already exists`;
-    const userError = new Error(msg);
-    res.status(400).json({
+     res.status(400);
+    res.json({
       error: msg,
     });
-
-    return next(userError);
+    return;
   }
   // hook hashes for us
-  const newUser = new User({
+  const newUser = new _User({
     profile: { username: uname },
     passwordHash: ps,
     web3Address: web3Address,
@@ -57,6 +59,7 @@ export const registerPostController: RegisterRequestHandler = async (
 
   const [savedUser, err] = await errorHandled(newUser.save());
   if (err) {
+    // Handle via errback
     res.status(500).json({
       error: 'Error saving user',
     });
@@ -69,7 +72,10 @@ export const registerPostController: RegisterRequestHandler = async (
   }
   return next();
 };
-
+/**
+ * Post: /login --when authed
+ * MoveTo: /api/user/login
+ */
 export const loginPostController: express.RequestHandler = (req, res, next) => {
   const user = req.user;
   res.json({

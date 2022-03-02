@@ -36,8 +36,10 @@ export interface ChainProject {
   reviewers?: string[];
   reviews?: AnyNumber[];
   badge?: boolean;
-  metaData: ChainMetaData;
+  metadata: ChainMetaData;
   proposalStatus: ProposalStatus;
+  reward: AnyNumber;
+  totalUserScores: AnyNumber;
 }
 
 export interface ProposalStatus {
@@ -61,6 +63,7 @@ export interface ChainReview {
   userID: string;
   content: string;
   projectID: number;
+  pointSnapshot: number;
 }
 
 export interface NewMetaData {
@@ -74,8 +77,8 @@ export interface NewMetaData {
   date: number;
 }
 
-export type NewProject = Omit<ChainProject, 'metaData'> & {
-  metaData: NewMetaData;
+export type NewProject = Omit<ChainProject, 'metadata'> & {
+  metadata: NewMetaData;
 };
 
 // store on ipfs fully

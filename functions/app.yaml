@@ -1,0 +1,21 @@
+runtime: nodejs14
+
+# instance_class: F2
+# # Pull from secret manager.
+env_variables:
+  PINATA_API_KEY: PINATA_API_KEY
+  PINATA_API_SECRET: PINATA_API_SECRET
+  PINATA_JWT: PINATA_JWT
+# Ensure that all requests are redirected to our app.
+# A handler can be setup before this to serve static assets
+handlers:
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
+# Instance and limits. Sets 9hr free tier instance hours. Light enough to move to firebase.
+# https://cloud.google.com/appengine/docs/managing-costs
+instance_class: B1
+basic_scaling:
+  max_instances: 1
+  idle_timeout: 10m
