@@ -84,11 +84,5 @@ Note: Firebase was not considered as a deployment option. This could be the case
 
 ## Synchronisation problem with async env vars.
 
-~~My earlier solution utilised semaphores without a proper task queue and unraveled upon itself.~~
-~~Hence, I propose a new solution that doesn't require semaphores.~~
-~~This would use the promise api, packaging the things that require the env var until after the env var has been sourced. This also ensures the app errors out properly in that case.~~
-~~This also means properly closing the passport config and connection config.~~
-~~https://stackoverflow.com/questions/111102/how-do-javascript-closures-work?rq=1~~
-~~I think it's safe to assume everyone gets connection and dbString once they are updated. So, as long as we can delay the code that needs to use them, we'll be fine~~
 
-Use cloud run after configuring ws.
+~~Use cloud run after configuring ws.~~ Use promises.
