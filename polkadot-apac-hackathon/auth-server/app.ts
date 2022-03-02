@@ -3,8 +3,8 @@ import express, { json, RequestHandler, urlencoded } from 'express';
 import session from 'express-session';
 import logger from 'morgan';
 import passport from 'passport';
+import { envVarPromise } from './config';
 // config should come before other modules because it calls dotenv.
-import { sessionSecret } from './config';
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
@@ -42,8 +42,13 @@ const memo: Record<string, RequestHandler | null> = {
   middle: null,
 };
 app.use(async (req, res, next) => {
-  // Dynamic session. Promise ensures we kick down err if env variables haven't been supplied.
+  // Dynamic session. Promise ensures we kick down err if env variables haven't been supplied. 
+  // Earliest handler for env vars here.
   // https://stackoverflow.com/a/68669306/16071410
+  const arrVars =  await errorHandled(envVarPromise);
+  if(arrVars[1]) return next(arrVars[1]);
+  const {sessionSecret} = arrVars[0];
+  
   const arr = await errorHandled(sessionStorePromise);
   if (arr[1]) return next(arr[1]);
   const store = arr[0];

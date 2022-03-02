@@ -1,3 +1,4 @@
+```ts
 // For when we have jest.
 // Place mockGConnect here.
 // import { randomBytes } from 'crypto';
@@ -11,3 +12,4 @@
 //     _sessionSecret = SESSION_SECRET ?? randomBytes(32).toString();
 // }
 // export {mockGConnect};
+```

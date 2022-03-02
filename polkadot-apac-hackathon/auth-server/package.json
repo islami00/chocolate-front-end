@@ -6,10 +6,9 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
-    "start": "NODE_ENV=test NODE_RAW=true node ./bin/www.js",
+    "start": "NODE_ENV=test node ./bin/www.js",
     "start-dev": "nodemon --exec NODE_ENV=test NODE_RAW=true ts-node ./bin/www.ts",
     "test-async": "nodemon --exec NODE_ENV=test-gcp-secrets ts-node ./bin/www.ts",
-
     "build": "PATH=$(npm bin):$PATH tsc",
     "publish-code": "gcloud app deploy db.yaml"
   },
