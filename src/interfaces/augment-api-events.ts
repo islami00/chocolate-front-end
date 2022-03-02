@@ -144,9 +144,13 @@ declare module '@polkadot/api/types/events' {
        **/
       Minted: AugmentedEvent<ApiType, [BalanceOf]>;
       /**
-       * parameters. [owner,cid]
+       * parameters. [owner,cid,project_id]
        **/
-      ProjectCreated: AugmentedEvent<ApiType, [AccountId, Bytes]>;
+      ProjectCreated: AugmentedEvent<ApiType, [AccountId, Bytes, ProjectID]>;
+      /**
+       * parameters [owner,id]
+       **/
+      ReviewAccepted: AugmentedEvent<ApiType, [AccountId, ProjectID]>;
       /**
        * parameters. [owner,project_id]
        **/

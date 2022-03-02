@@ -14,7 +14,8 @@ export interface AuthState {
 }
 type AuthStateFx = () => AuthState;
 export const useAuthState: AuthStateFx = () => {
-  const authCheckEndpoint = `http://localhost:${process.env.REACT_APP_AUTH_SERVER_PORT}/auth/check`;
+  // Use websockets to listen to auth state changes from the server when porting this, as the server will publish
+  const authCheckEndpoint = `${process.env.REACT_APP_AUTH_SERVER}/auth/check`;
 
   // poll server for auth state
   const fetchServer = async function () {

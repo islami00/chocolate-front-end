@@ -1,0 +1,23 @@
+runtime: nodejs14
+
+# instance_class: F2
+# # Can't use secret manager because of sync issue.
+# env_variables:
+  # DB_STRING: DB_STRING
+  # SESSION_SECRET: SESSION_SECRET
+service: db
+# Ensure that all requests are redirected to our app.
+# A handler can be setup before this to serve static assets
+handlers:
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
+# New link: https://db-dot-united-option-342615.oa.r.appspot.com
+
+# Instance and limits. Sets 9hr free tier instance hours. TBD: ws endpoint.
+# https://cloud.google.com/appengine/quotas
+instance_class: B1
+basic_scaling:
+  max_instances: 1
+  idle_timeout: 10m

@@ -28,7 +28,15 @@
   ],
   "exclude": [
     "node",
-    "./src/interfaces",
-    "./functions"
+    "src/interfaces",
+    "functions"
+  ],
+  "references": [
+    {
+      "path": "functions/tsconfig.json"
+    },
+    {
+      "path": "polkadot-apac-hackathon/auth-server/tsconfig.json"
+    }
   ]
 }

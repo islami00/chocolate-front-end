@@ -3,11 +3,21 @@ import express from 'express';
 import { loginPostController, registerPostController } from '../controllers/UserControllers';
 const router = express.Router();
 
+// https://expressjs.com/en/guide/error-handling.html
+const errorHandler: express.ErrorRequestHandler = function (err, req, res, next) {
+  // log it
+  console.error(err.stack);
+  console.error(err.message);
+  // respond with 500 "Internal Server Error", instead of default stack trace
+  res.status(500);
+  res.json(err.stack);
+};;
 const isAuthHandler: express.RequestHandler = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.status(401).json({
+  res.status(401);
+  res.json({
     message: 'Unauthorized',
   });
 };
@@ -34,5 +44,5 @@ router.get('/protected', isAuthHandler, (req, res, next) => {
     message: 'This is a protected route',
   });
 });
-
+router.use(errorHandler)
 export default router;

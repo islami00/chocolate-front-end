@@ -26,8 +26,8 @@ const getRelatedProjectsMeta = async (
     async ([storageKeyHold, project]): Promise<[number, NewProject]> => {
       const id = Number(storageKeyHold.toHuman()[0]);
       const chainPrj = project.toHuman() as unknown as ChainProject;
-      const newMeta = await populateMetadata(chainPrj.metaData);
-      const newPrj = { ...chainPrj, metaData: newMeta };
+      const newMeta = await populateMetadata(chainPrj.metadata);
+      const newPrj = { ...chainPrj, metadata: newMeta };
       const returnValue: [number, NewProject] = [id, newPrj];
       return returnValue;
     }

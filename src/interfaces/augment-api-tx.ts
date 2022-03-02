@@ -530,22 +530,24 @@ declare module '@polkadot/api/types/submittable' {
     };
     chocolateModule: {
       /**
-       * An example dispatchable that may throw a custom error.
+       * Releases collateral and rewards user for a good review.
+       * 
+       * **Call requirements**:
+       * - Origin must be cacao
+       * 
        **/
-      causeError: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>, []>;
+      acceptReview: AugmentedSubmittable<(userId: AccountId | string | Uint8Array, projectId: ProjectID | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [AccountId, ProjectID]>;
       /**
        * Create a project
+       * 
+       * - O(1).
+       * - Init: Index starts at 0
        **/
       createProject: AugmentedSubmittable<(projectMeta: Bytes | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [Bytes]>;
       /**
-       * Create a review by updating the list of reviewers and reviews of a project and adding review to storage.
+       * Create a review, reserve required collateral and increase total of user trust scores on project.
        **/
       createReview: AugmentedSubmittable<(reviewMeta: Bytes | string | Uint8Array, projectId: ProjectID | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Bytes, ProjectID]>;
-      /**
-       * An example dispatchable that takes a singles value as a parameter, writes the value to
-       * storage and emits an event. This function must be dispatched by a signed extrinsic.
-       **/
-      doSomething: AugmentedSubmittable<(something: u32 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [u32]>;
       mint: AugmentedSubmittable<(x: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [BalanceOf]>;
       /**
        * Generic tx

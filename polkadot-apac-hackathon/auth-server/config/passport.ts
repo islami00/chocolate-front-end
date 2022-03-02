@@ -13,7 +13,6 @@ const customFields: IStrategyOptionsWithRequest = {
 const verifyCallBackLocal: VerifyFunctionWithRequest = (_, username, password, done) => {
   // find by uname
   // Replace later with substrate accountId as that will be our new primary key
-  console.log('verifyCallBackLocal');
   // To-do: add validate middleware for input before find
   if (typeof password !== 'string') {
     return done(null, false, { message: 'Password is not a string' });

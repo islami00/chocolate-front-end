@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
+    "target": "es2017",
     "strict": true,
-    "target": "es2017"
+    "composite": true
   },
   "compileOnSave": true,
   "include": [

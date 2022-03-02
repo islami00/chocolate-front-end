@@ -17,7 +17,7 @@ const useAverage = (
         .filter((each) => each.proposalStatus.status === 'Accepted')
         .map((each) => each.content);
       const nPr: ChainProject = data.toHuman() as unknown as ChainProject;
-      const useThis = { ...nPr, metaData: projectMeta };
+      const useThis = { ...nPr, metadata: projectMeta };
       const pr = new JSONProject(useThis, content);
       setAvRate(pr.rankAverage.toPrecision(2));
     }
