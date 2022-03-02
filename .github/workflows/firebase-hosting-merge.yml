@@ -16,7 +16,7 @@ jobs:
           node-version: 14
       - run: npm i -g yarn
       - run: yarn set version stable
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
