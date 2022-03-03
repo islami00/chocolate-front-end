@@ -1,116 +1,62 @@
-# Substrate Front End Template
+# Apac Hack note
 
-This template allows you to create a front-end application that connects to a
-[Substrate](https://github.com/paritytech/substrate) node back-end with minimal
-configuration. To learn about Substrate itself, visit the
-[Substrate Developer Hub](https://substrate.dev).
+The code in this repository picks up from the progress done during the encode hack submission of this project.
+i.e All work stemming from this [commit](https://github.com/chocolatenetwork/apac-ui/commit/492089a45fd9f682d10c3b9168387aa17f5e063c)
 
-The template is built with [Create React App](https://github.com/facebook/create-react-app)
-and [Polkadot js API](https://polkadot.js.org/api/). Familiarity with these tools
-will be helpful, but the template strives to be self-explanatory.
+During the apac hackathon, the following improvements were made to our platform:
 
-## Using The Template
+1. Inclusion of an auth system - username and password
+2. User profiles and a gallery page of the projects
 
-### Installation
+These have been organised into respective polkadot-apac-hackathon folders.
 
-The codebase is installed using [git](https://git-scm.com/) and [yarn](https://yarnpkg.com/). This tutorial assumes you have installed yarn globally prior to installing it within the subdirectories. For the most recent version and how to install yarn, please refer to [yarn](https://yarnpkg.com/) documentation and installation guides. 
+1. [Auth-server](./polkadot-apac-hackathon/README.md)
+2. [Auth-view](./src/polkadot-apac-hackathon/README.md)
+## UI Setup
 
-```bash
-# Clone the repository
-git clone https://github.com/substrate-developer-hub/substrate-front-end-template.git
-cd substrate-front-end-template
-yarn install
-```
+This has been moved to [substrate-template](./substrate-template.md)
 
-## Usage
+# Implementor's guide.
 
-You can start the template in development mode to connect to a locally running node
+The goals are split into the following sections:
 
-```bash
-yarn start
-```
+1. Route protection for stage 2 and above in review modal - require auth.
+2. Include user profile route based on web3 address as pulled from chain.
+3. Include the gallery page.
+4. Complete signup form that collects name, web3 address and, _optionally_, password
+5. Setup react router for the login to redirect to last page
+6. Complete `useAuthState` hook to check with server and implement further guards for [jwt auth](https://www.youtube.com/watch?v=iD49_NIQ-R4).
+7. Develop multicurrency selector for collateralisation and use in a stage of the submit review modal- requires types from chain.
+8. Add in hcaptcha component for forms _optional_, ref could be made to flips instead.
+9. setup docs detailing the distinct feature added and code separation for moderators
 
-You can also build the app in production mode,
+Reference [server-guide](./auth-server/README.md#%20Implementor's%20guide.) for more info, or lmk.
 
-```bash
-yarn build
-```
-and open `build/index.html` in your favorite browser.
+# Notes on implemented parts
 
-## Configuration
+Only goals 1, 2, 4, 5,6,8 and 9 were achieved for this hackathon.
 
-The template's configuration is stored in the `src/config` directory, with
-`common.json` being loaded first, then the environment-specific json file,
-and finally environment variables, with precedence.
+## Further resources
 
-* `development.json` affects the development environment
-* `test.json` affects the test environment, triggered in `yarn test` command.
-* `production.json` affects the production environment, triggered in
-`yarn build` command.
+1. [Manual_routing](https://github.com/remix-run/react-router/tree/main/examples/auth)
+2. [server redirects](https://stackoverflow.com/a/43213567/16071410).
 
-Some environment variables are read and integrated in the template `config` object,
-including:
+## Further notes
 
-* `REACT_APP_PROVIDER_SOCKET` overriding `config[PROVIDER_SOCKET]`
-* `REACT_APP_DEVELOPMENT_KEYRING` overriding `config[DEVELOPMENT_KEYRING]`
+- Route protection can be obtained by doing auth check before switch statement and not in individual components. The hook itself can be polyfilled on the client while the actual endpoint is being developed on server
+- Each review object coming from the chain has the `ownerId` as the public key of the writer, hence this address serves as a good id for the respective profiles. Since the key is stored on the db, further metadata can be pulled.
+- For user profile, the components with styling are ready [here](https://github.com/tobechi00/jade) **Note:** doen't show review on click yet , all's left is to wire it up with the respective data and fill-in metadata with db on the server
 
-More on [React environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables).
+- Rerouting for login and signup can make use of [react-router]'s `useNavigate` hook to retain memory of last route before login/signup
 
-When writing and deploying your own front end, you should configure:
+- for access to substrate rpc calls, the api promise interface is used with methods mapping each section - `queries`, `extrinsics` and the like.Provided by the [`useSubstrate`] hook from the [`substrateProvider`]. Further notes on api [here](./substrate-template.md#%20useSubstrate%20Custom%20Hook)
 
-* Custom types as JSON in `src/config/types.json`. See
-  [Extending types](https://polkadot.js.org/api/start/types.extend.html).
-* `PROVIDER_SOCKET` in `src/config/production.json` pointing to your own
-  deployed node.
-* `DEVELOPMENT_KEYRING` in `src/config/common.json` be set to `false`.
-  See [Keyring](https://polkadot.js.org/api/start/keyring.html).
+Note: TxButton is a useful interface currently used to handle calls to `api.tx`
 
-### Specifying Connecting Node
+## Security notes.
 
-There are two ways to specify it:
+As listed out by the hasura tutorial, owasp provides a concrete way of preventing xss after the prereq of csrf protection that jwts and refresh tokens provide.
 
-* With `PROVIDER_SOCKET` in `{common, development, production}.json`.
-* With `rpc=<ws or wss connection>` query paramter after the URL. This overrides the above setting.
+One such is disallowing any untrusted data injection.
 
-## Reusable Components
-
-### useSubstrate Custom Hook
-
-The custom hook `useSubstrate` provides access to the Polkadot js API and thus the
-keyring and the blockchain itself. Specifically it exposes this API.
-
-```js
-{
-  socket,
-  types,
-  keyring,
-  keyringState,
-  api,
-  apiState,
-}
-```
-
-- `socket` - The remote provider socket it is connecting to.
-- `types` - The custom types used in the connected node.
-- `keyring` - A keyring of accounts available to the user.
-- `keyringState` - One of `"READY"` or `"ERROR"` states. `keyring` is valid
-only when `keyringState === "READY"`.
-- `api` - The remote api to the connected node.
-- `apiState` - One of `"CONNECTING"`, `"READY"`, or `"ERROR"` states. `api` is valid
-only when `apiState === "READY"`.
-
-
-### TxButton Component
-
-The [TxButton](./src/substrate-lib/components/TxButton.js) handles basic
-[query](https://polkadot.js.org/api/start/api.query.html) and
-[transaction](https://polkadot.js.org/api/start/api.tx.html) requests to the
-connected node. You can reuse this component for a wide variety of queries and
-transactions. See [src/Transfer.js](./src/Transfer.js) for a transaction example
-and [src/ChainState.js](./src/ChainState.js) for a query example.
-
-### Account Selector
-
-The [Account Selector](./src/AccountSelector.js) provides the user with a unified way to
-select their account from a keyring. If the Balances module is installed in the runtime,
-it also displays the user's token balance. It is included in the template already.
+1. An example is react router route params

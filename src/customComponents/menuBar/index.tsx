@@ -1,21 +1,16 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
+import { useEffect, useRef, useState } from 'react';
+import { Link, matchPath, useLocation } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
-import {
-  useAccounts,
-  useSubstrate,
-} from '../../substrate-lib/SubstrateContext';
+import { useAccounts, useSubstrate } from '../../substrate-lib/SubstrateContext';
 import './index.css';
 import './wallet.css';
-/**
- * @description - A modal that either shows wallet info - account
- * selected and balances - rankpoints and regular, or it shows connect depending on wallet connection.
- */
-const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
-  const { connected } = props;
-  const { keyringState } = useSubstrate();
-  const [run, setRun] = useState(false);
+
+export const useLoadAccounts = (
+  run: boolean,
+  setRun: React.Dispatch<React.SetStateAction<boolean>>
+): void => {
   const { dispatch, loadAccounts } = useAccounts();
   const state = useSubstrate();
 
@@ -30,16 +25,25 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [run]);
+};
+/**
+ * @description - A modal that either shows wallet info - account
+ * selected and balances - rankpoints and regular, or it shows connect depending on wallet connection.
+ */
+const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
+  const { connected } = props;
+  const { keyringState } = useSubstrate();
+  const [run, setRun] = useState(false);
+  useLoadAccounts(run, setRun);
   let content;
   // do the keyring stuff here too.
   if (keyringState === 'LOADING') content = <p>Loading... </p>;
-  else if (keyringState === 'ERROR')
-    content = <p>Something went wrong, please refresh the page</p>;
+  else if (keyringState === 'ERROR') content = <p>Something went wrong, please refresh the page</p>;
   else if (!connected) {
     content = (
       <>
         <p>Your wallet is not connected, do connect</p>
-        <button type="button" onClick={() => setRun(true)}>
+        <button type='button' onClick={() => setRun(true)}>
           Connect wallet
         </button>
       </>
@@ -48,7 +52,7 @@ const WalletModal: React.FC<{ connected?: boolean }> = function (props) {
     content = <AccountSelector />;
   }
 
-  return <div className="modal modal_drop modal_drop--right">{content}</div>;
+  return <div className='modal modal_drop modal_drop--right'>{content}</div>;
 };
 
 /**
@@ -71,32 +75,40 @@ const HandleWallet = function () {
 };
 
 function Navlinks() {
+  const { isAuthenticated } = useAuthService();
   return (
-    <nav className="nav-links">
-      <Link to="/" className="nav-link nav-link__home">
+    <nav className='nav-links'>
+      <Link to='/' className='nav-link nav-link__home'>
         Chocolate
       </Link>
-      <ul className="nav-links-ul">
+      <ul className='nav-links-ul'>
         <li>
-          <Link className="nav-link" to="/about">
+          <Link className='nav-link' to='/about'>
             About
           </Link>
         </li>
         <li>
-          <Link className="nav-link" to="/team">
+          <Link className='nav-link' to='/team'>
             Team
           </Link>
         </li>
         <li>
-          <Link className="nav-link" to="/gallery">
+          <Link className='nav-link' to='/gallery'>
             Projects
           </Link>
         </li>
         <li>
-          <Link className="nav-link" to="/choc">
+          <Link className='nav-link' to='/choc'>
             CHOC Token
           </Link>
         </li>
+        {!isAuthenticated && (
+          <li>
+            <Link className='nav-link' to='/login'>
+              Login
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   );
@@ -121,22 +133,44 @@ function Wallet() {
   };
   // clean returns
   return (
-    <section className="wallet">
-      <button type="button" className="wallet_btn" onClick={handleModal}>
-        <img src={WalletPurple} alt="Wallet" className="wallet-icon" />
+    <section className='wallet'>
+      <button type='button' className='wallet_btn' onClick={handleModal}>
+        <img src={WalletPurple} alt='Wallet' className='wallet-icon' />
       </button>
       {/* Position absolute, start at leftmost part */}
       <Modal />
     </section>
   );
 }
-function Menu(): JSX.Element {
+
+const useIsMounted: () => React.MutableRefObject<boolean> = () => {
+  const isMounted = useRef(false);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+  return isMounted;
+};
+const Menu: React.FC<{
+  setBack: React.Dispatch<React.SetStateAction<boolean>>;
+}> = function (props): JSX.Element {
+  const { setBack } = props;
+  const location = useLocation();
+  const isMounted = useIsMounted();
+  const match = matchPath(location.pathname, { path: '/', exact: true });
+  useEffect(() => {
+    if (match && isMounted) setBack(true);
+    else if (!match && isMounted) setBack(false);
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [match]);
   return (
-    <header className="top-nav">
+    <header className='top-nav'>
       <Navlinks />
       <Wallet />
     </header>
   );
-}
-
+};
 export default Menu;

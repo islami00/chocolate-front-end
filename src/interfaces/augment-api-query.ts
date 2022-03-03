@@ -14,7 +14,7 @@ import type { SeatHolder, Voter } from '@polkadot/types/interfaces/staking';
 import type { AccountInfo, ConsumedWeight, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo, Phase } from '@polkadot/types/interfaces/system';
 import type { TreasuryProposal } from '@polkadot/types/interfaces/treasury';
 import type { Multiplier } from '@polkadot/types/interfaces/txpayment';
-import type { ProjectAl, ProjectID, ReviewAl, ReviewID } from 'chocolate/interfaces/chocolateModule';
+import type { ProjectAl, ProjectID, ReviewAl } from 'chocolate/interfaces/chocolateModule';
 import type { User } from 'chocolate/interfaces/usersModule';
 import type { ApiTypes } from '@polkadot/api/types';
 
@@ -78,23 +78,18 @@ declare module '@polkadot/api/types/storage' {
     chocolateModule: {
       /**
        * Storage value for project index. Increment as we go.
-       * Analogous to length of project map
+       * Analogous to 1+length of project map. it starts at 1.
        **/
-      projectIndex: AugmentedQuery<ApiType, () => Observable<Option<ProjectID>>, []> & QueryableStorageEntry<ApiType, []>;
+      nextProjectIndex: AugmentedQuery<ApiType, () => Observable<Option<ProjectID>>, []> & QueryableStorageEntry<ApiType, []>;
       /**
        * Storage map from the project index - id to the projects. getters are for json rpc.
        **/
       projects: AugmentedQuery<ApiType, (arg: ProjectID | AnyNumber | Uint8Array) => Observable<Option<ProjectAl>>, [ProjectID]> & QueryableStorageEntry<ApiType, [ProjectID]>;
       /**
-       * Storage value for reviews index. Increment as we go.
-       * Analogous to length of review map
+       * Storage double map from the userid and projectid to the reviews.
+       * I.e A user owns many reviews,each belonging to a unique project.
        **/
-      reviewIndex: AugmentedQuery<ApiType, () => Observable<Option<ReviewID>>, []> & QueryableStorageEntry<ApiType, []>;
-      /**
-       * Storage map from the review index - id to the reviews
-       **/
-      reviews: AugmentedQuery<ApiType, (arg: ReviewID | AnyNumber | Uint8Array) => Observable<Option<ReviewAl>>, [ReviewID]> & QueryableStorageEntry<ApiType, [ReviewID]>;
-      something: AugmentedQuery<ApiType, () => Observable<Option<u32>>, []> & QueryableStorageEntry<ApiType, []>;
+      reviews: AugmentedQuery<ApiType, (arg1: AccountId | string | Uint8Array, arg2: ProjectID | AnyNumber | Uint8Array) => Observable<Option<ReviewAl>>, [AccountId, ProjectID]> & QueryableStorageEntry<ApiType, [AccountId, ProjectID]>;
       /**
        * Generic query
        **/
@@ -345,6 +340,9 @@ declare module '@polkadot/api/types/storage' {
       [key: string]: QueryableStorageEntry<ApiType>;
     };
     usersModule: {
+      /**
+       * users store
+       **/
       users: AugmentedQuery<ApiType, (arg: AccountId | string | Uint8Array) => Observable<Option<User>>, [AccountId]> & QueryableStorageEntry<ApiType, [AccountId]>;
       /**
        * Generic query

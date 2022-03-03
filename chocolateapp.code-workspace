@@ -4,13 +4,17 @@
       "path": "../chocolate-front-end"
     },
     {
-      "path": "../chocolate-web-app"
+      "path": "../chocolate-node"
     },
+    {
+      "path": "functions"
+    },
+    {
+      "name": "auth-server",
+      "path": "polkadot-apac-hackathon/auth-server"
+    }
     // {
-    //   "path": "H:\\programming\\Documents\\chocolate-front-end\\src\\customComponents"
-    // },
-    // {
-    //   "path": "../githubtest"
+    // "path": "../githubtest"
     // },
   ],
   "settings": {
@@ -32,6 +36,7 @@
     "[typescript]": {
       "editor.formatOnSave": false,
       "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+
     },
     "[typescriptreact]": {
       "editor.formatOnSave": false,
@@ -39,6 +44,7 @@
     },
     // show eslint icon at bottom toolbar
     "eslint.alwaysShowStatus": true,
+    "typescript.tsdk": "./node_modules/typescript/lib",
     // tell the ESLint plugin to run on save
     "editor.codeActionsOnSave": {
       "source.fixAll": true,
@@ -48,6 +54,10 @@
     "js/ts.implicitProjectConfig.checkJs": true
   },
   "extensions": {
-    "recommendations": ["sysoev.language-stylus", "jpoissonnier.vscode-styled-components", "humao.rest-client"]
+    "recommendations": [ "dbaeumer.vscode-eslint",
+    "ms-vsliveshare.vsliveshare",
+    "ms-vsliveshare.vsliveshare-audio",
+    "esbenp.prettier-vscode",
+    "christian-kohler.npm-intellisense"]
   }
 }

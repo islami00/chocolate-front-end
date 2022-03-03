@@ -23,10 +23,20 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "polkadot-apac-hackathon/auth-view"
   ],
   "exclude": [
     "node",
-    "./src/interfaces"
+    "src/interfaces",
+    "functions"
+  ],
+  "references": [
+    {
+      "path": "functions/tsconfig.json"
+    },
+    {
+      "path": "polkadot-apac-hackathon/auth-server/tsconfig.json"
+    }
   ]
 }

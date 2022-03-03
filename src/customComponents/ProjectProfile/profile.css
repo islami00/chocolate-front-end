@@ -1,0 +1,111 @@
+
+.choc_img{
+    margin-top: 1.5em;
+    height: 3.5em;
+    width: 3.5em;
+    float: left;
+}
+
+.reviewer_name{
+    display: block;
+    height: 5em;
+    width: auto;
+}
+.rating{
+    font-family:'Montserrat', sans-serif ;
+    font-size: 20px;
+}
+ .wh_top{
+    background-color: rgb(213, 172, 252);
+    padding: 0.3em;
+    border: none;
+    border-radius: 5px;
+    text-align: left;
+
+} 
+.About{
+    font-size: 20px;
+}
+.about_reviewer{
+    max-width: 500px;
+    background-color:  rgb(240, 225, 255) ;
+    padding: 1em;
+    overflow-y: auto;
+    border-radius: 5px;
+    height: 4em;
+    width: 40em;
+    position: relative;
+}
+.review_header{
+    /* padding-top: 3em; */
+    text-align: left;
+}
+.box_indiv{
+    display: flex;
+    overflow-x: auto;
+}
+.box_indiv > *{
+    background-color: rgb(240, 225, 255) ;
+    width: 600px;
+    height: max-content;
+    min-width: 450px; 
+}
+.box_indiv > :nth-of-type(n + 2){
+    margin-left: 1em;
+}
+
+.head-profile{
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.head-profile > .right{
+    justify-self: flex-end;
+    margin-left: auto;
+}
+.head-profile > .left{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.profile-wrap{
+    margin-top: 34px;
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    grid-template-columns: 100%;
+    row-gap: 2vh;
+}
+.card-head{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.card-right{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.project-logo{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+/* used */
+.link_button{
+    /* smilga */
+    background: transparent;
+    border-color: transparent;
+    text-transform: capitalize;
+    color: lightblue;
+    font-size: 1rem;
+    cursor: pointer;
+    padding-left: 0.25rem;
+}
+
+.spaced{
+    display: grid;
+    grid-template-rows: repeat(auto-fit,1fr);
+    row-gap: 35px;
+}

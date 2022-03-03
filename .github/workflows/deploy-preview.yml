@@ -9,20 +9,23 @@ on:
 
 jobs:
   build_and_preview:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-      - run: npm i -g npm@7.24.2
-      - run: npm ci
-      - run: npm run lint:fix
-      - run: npm run build
-      # - run: npm ci && npm run build
+      - run: npm i -g yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn run lint:fix
+      - run: yarn run build
+      # - run: npm ci && yarn run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.FIREBASE_TOKEN }}'
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CHOCOLATE_DEMO }}'
           expires: 30d
           projectId: chocolate-demo
+

@@ -1,7 +1,8 @@
 // defined the various classes
 //
 
-import { NewProject, ReviewContent } from './mockTypes';
+import { AnyJson } from '@polkadot/types/types';
+import { NewProject, ReviewContent } from './jsonTypes';
 
 /**
  * @description this class decorates a plain object with our ideal project type with useful getter functions
@@ -28,5 +29,9 @@ class JSONProject {
     return av;
   }
 }
-
+type PinServerRes = {
+  error?: AnyJson;
+  success?: string;
+};
+export type { PinServerRes };
 export { JSONProject };
