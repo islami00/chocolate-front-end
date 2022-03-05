@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
-import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { SearchBar } from './components/SearchBar';
 import { useProjects } from './hooks';
 import './project.css';
-import _ from 'lodash';
 
-import { SearchBar } from './components/SearchBar';
 
 /** @description Redo of the projects page */
 const ProjectsRe: React.FC = function () {
+  // Get the keys.
   const { data, isError } = useProjects();
+  // Pass me projects.
   useEffect(() => {
     if (isError && !data) toast.error('Something went wrong fetching search list');
     return () => {};
