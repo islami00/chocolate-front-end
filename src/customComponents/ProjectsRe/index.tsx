@@ -1,22 +1,30 @@
 /* eslint-disable react/prop-types */
+import { useSubstrate } from 'chocolate/substrate-lib';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import ChocolateRedBig from '../../assets/chocolate-red-big.svg';
 import { SearchBar } from './components/SearchBar';
-import { useProjects } from './hooks';
+import { useSearchData } from './hooks';
 import './project.css';
 
-
+// 24.
+const renderDebug = false;
 /** @description Redo of the projects page */
 const ProjectsRe: React.FC = function () {
-  // Get the keys.
-  const { data, isError } = useProjects();
-  // Pass me projects.
+  const { api } = useSubstrate();
+
+  const searchData = useSearchData(api);
+  const [data, isAnyError] = searchData;
+  if (renderDebug) {
+    console.count('RenderedData');
+    console.log(searchData);
+  }
+  // UI tweaks
   useEffect(() => {
-    if (isError && !data) toast.error('Something went wrong fetching search list');
-    return () => {};
-  }, [isError, data]);
+    if (isAnyError) toast.error('Something went wrong loading the projects');
+  }, [isAnyError]);
+
   return (
     <main className='land'>
       <section className='land__content'>
@@ -28,7 +36,7 @@ const ProjectsRe: React.FC = function () {
           height='120px'
         />
         <p className='tagline'>Ending scam &amp; spam in crypto once and for all.</p>
-        <SearchBar projects={data || []} />
+        <SearchBar projects={data} />
       </section>
       <section className='link_buttons'>
         <div className='ui button purple group'>
