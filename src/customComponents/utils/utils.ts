@@ -17,86 +17,7 @@ const asyncGetLocal = (key: string) => {
   });
   return prom;
 };
-// credit:https://stackoverflow.com/questions/42651439/how-to-delay-execution-of-functions-javascript/42667512#42667512
-/* closures all the way down*/
-const queueAsyncCalls = function(){
-  let memoArray = [];
-  let asyncFunc = function(url) {
-  return new Promise((resolve, reject) => {
-    setTimeout(function() {
-      resolve({
-        url: url,
-        data: 'banana'
-      });
-    }, 5000);
-  });
-};
-type FactoryArgType = { delayMs: number; abstractAsyncFunc: Function; memo: Array<NodeJS.Timeout> }
-let delayFactory = function(args: FactoryArgType) {
-  let {
-    delayMs, abstractAsyncFunc,memo
-  } = args;
-  let queuedCalls = [];
-  let executing = false;
-  memo.forEach((time)=> clearTimeout(time));
-  memo.length = 0;
-  let queueCall = function(abstractAsyncArgs) {
-    return new Promise((resolve, reject) => {
 
-      queuedCalls.push({
-        abstractAsyncArgs,
-        resolve,
-        reject
-      });
-
-      if (executing === false) {
-        executing = true;
-        nextCall();
-      }
-    });
-  };
-
-  let execute = function(call) {    
-    console.log(`sending request ${call.abstractAsyncArgs}`);
-
-    abstractAsyncFunc(call.abstractAsyncArgs)
-      .then(call.resolve)
-      .catch(call.reject);
-
-    const timeoutId = setTimeout(nextCall, delayMs);
-    memo.push(timeoutId);
-  };
-
-  let nextCall = function() {
-    if (queuedCalls.length > 0)
-      execute(queuedCalls.shift());
-    else
-      executing = false;
-  };
-
-  return Object.freeze({
-    queueCall
-  });
-};
-
-let myFactory = delayFactory({
-  delayMs: 1000,
-  abstractAsyncFunc: asyncFunc,
-  memo: memoArray
-});
-
-myFactory.queueCall('http://test1')
-  .then(console.log)
-  .catch(console.log);
-
-myFactory.queueCall('http://test2')
-  .then(console.log)
-  .catch(console.log);
-
-myFactory.queueCall('http://test3')
-  .then(console.log)
-  .catch(console.log);
-}
 const sortReviewIDs =  function(a:ReviewID,b:ReviewID){
       const sb  = a.sub(b);
       if (sb.isNeg()) return -1
@@ -106,26 +27,6 @@ const sortReviewIDs =  function(a:ReviewID,b:ReviewID){
 const toPinataFetch = function(link:string){
   return `https://gateway.pinata.cloud/ipfs/${link}`
 }
-/**
- * @description This checks Arrays,Strings, Maps,Sets for empty state and returns true. It returns false If not empty or Constructor not supported
- * @param {*} type
- * @returns {boolean}
- */
-const isEmpty = type => {
-  switch (type) {
-    case type instanceof Array || type instanceof String:
-      if (!type.length) return true;
-
-      return type.every(el => !el);
-    case type instanceof Map || type instanceof Set:
-      if (!type.size) return true;
-      break;
-    case type instanceof AbstractArray:
-      return type.isEmpty;
-    default:
-      return false;
-  }
-};
 
 
 
@@ -202,6 +103,6 @@ function sendTrace(trace: string, browser: string, ...extras: string[]) {
   console.log(browser);
 }
 type errType = { status: boolean; content: string[] };
-export { fetchData, isEmpty, sendTrace, sleep, errorHandled, toPinataFetch, sortReviewIDs as sortAnyNum , asyncCacheLocal,asyncGetLocal};
+export { fetchData, sendTrace, sleep, errorHandled, toPinataFetch, sortReviewIDs as sortAnyNum , asyncCacheLocal,asyncGetLocal};
 export type { errType };
 
