@@ -115,7 +115,7 @@ const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   );
 };
 
-/** @description Houses the projects */
+/** @description Houses the projects -- Refactor to new when ready */
 export const ProjectsView: React.FC<{
   data: NewProjectWithIndex[];
   gallery?: boolean;
