@@ -1,73 +1,12 @@
 import { ApiPromise } from '@polkadot/api';
 import { VoidFn } from '@polkadot/api/types';
-import { Option, StorageKey } from '@polkadot/types';
+import { Option } from '@polkadot/types';
 import { useEffect, useMemo } from 'react';
 import { QueryStatus, useQueries, useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import { ProjectAl, ProjectID } from '../../interfaces';
-import { useSubstrate } from '../../substrate-lib';
-import {
-  ChainProject,
-  Chocolate,
-  NewMetaData,
-  NewProjectWithIndex
-} from '../../typeSystem/jsonTypes';
+import { ChainProject, NewMetaData, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
 import { combineLimit, errorHandled, toPinataFetch } from '../utils';
 
-/**
- * OwnerID shoould be changed to projectAddress in input
- * @description gets the projects and filters them by not proposed, and adds exta data e.g subscan links and also dispatches state update
- */
-const getProjects = async function (
-  projects: Promise<[StorageKey<[ProjectID]>, Option<ProjectAl>][] | undefined>
-): Promise<NewProjectWithIndex[]> {
-  const debug = false;
-  if (debug) console.log(projects);
-  // projects are properly passed here
-  if (!(projects instanceof Promise)) throw new Error('Passed in wrong values');
-  const usable = await projects;
-  if (debug) console.clear();
-  if (debug) console.log(usable);
-  const mutatedProjects = usable?.map(async (each) => {
-    const [id, project] = each;
-
-    // @ts-expect-error AnyJson is an array type in this case.
-    const [[rawId], rawProject] = [id.toHuman(), project.unwrapOrDefault()];
-    if (rawProject.isEmpty) {
-      return null;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const Id: Chocolate['ProjectID'] = rawId;
-    // @ts-expect-error this is te project type returned
-    const secondReturnable: Chocolate['Project'] = rawProject.toHuman();
-    const metaArr = await errorHandled(fetch(toPinataFetch(secondReturnable.metadata)));
-    if (metaArr[1]) throw metaArr[1];
-    const realMeta: NewMetaData = (await metaArr[0].json()) as NewMetaData;
-    realMeta.icon = `https://avatars.dicebear.com/api/initials/${realMeta.name}.svg`;
-    const newRet = { ...secondReturnable, metadata: realMeta };
-    const ret: NewProjectWithIndex = { Id, project: newRet };
-    return ret;
-  });
-  const mut = await Promise.all(mutatedProjects);
-  const cleanProjects = mut.filter((each) => each !== null && each !== undefined);
-  return cleanProjects;
-};
-/** @description  Get all projects as usable jsons and sort by id */
-const useProjects = function (): UseQueryResult<NewProjectWithIndex[], unknown> {
-  const { api } = useSubstrate();
-  // To-do: refactor to useQuery 'chain', 'projects' and useQuery 'ipfs' , 'metadata'
-  // then include utility function to consolidate both types. but we good for now. Collects both
-  async function fetchProjects() {
-    const ret = await getProjects(api.query.chocolateModule.projects.entries());
-    ret.sort((pr1, pr2) => {
-      let x = 1;
-      if (pr1.Id < pr2.Id) x = -1;
-      else if (pr1.Id === pr2.Id) x = 0;
-      return x;
-    });
-    return ret;
-  }
-  return useQuery('projects', fetchProjects);
-};
 /**
  * @description Get the keys of all projects from the chain.
  * Fallback here would be same as next hook. Throw if you haven't memoised and the api isn't available
@@ -186,6 +125,7 @@ const useProjectsWithMetadata = function (projects: [ProjectAl, ProjectID][], sh
 
 // This guy returns an array of booleans indicating success and other states of the query results. Sort of serialising them.
 // Doesn't need to memoise if passer does.
+// Also acts as a trigger for next function by including dataUpdatedAt
 /**  [valids, erred, loadingInitially, statuses] */
 const shouldComputeValid = function <T>(metas: UseQueryResult<T, unknown>[]) {
   // This is a good control for the visual useMemo. We can silently fail, that is allowed for search.
@@ -211,27 +151,34 @@ const shouldComputeValid = function <T>(metas: UseQueryResult<T, unknown>[]) {
 const resArr = function <T>(valids: [T, number][]) {
   // Check if data is defined
   const defined = valids.filter((each) => !!each[0]);
-  // Collect only the project, last updated at simply limits this.
+  // Collect only the project and swap, last updated at simply limits this.
   const readies = defined.map((each) => each[0]);
   return readies;
 };
+
 // Same here for state
 // Now we start applying.
 const allCheck = function (states: QueryStatus[], status: QueryStatus) {
   return states.reduce((prev, current) => prev === true && current === status, true);
 };
+
+// Also, some metadata switcheroo to complete:
+const mockImages = function (pr: NewProjectWithIndex) {
+  pr.project.metadata.icon = `https://avatars.dicebear.com/api/initials/${pr.project.metadata.name}.svg`;
+  return pr;
+};
+
 /**
  * Returns: [projects, isAnyError, isAnyInitiallyLoading, areAllIdle ]
  *
- * Note: I used useMemo in place of useEffect here, it probably won't trigger a rerender so replace with useEffect and useStates
- *  Also, it is the responsibility of the calling component to ensure the api is available. The calling component should also handle the situation where the api is unavailable.
+ * Note: it is the responsibility of the calling component to ensure the api is available. The calling component should also handle the situation where the api is unavailable. Just as this hook will try to.
  * At this hook's end, it'll memoise its return value and return it instead if the api were to become unavailable
  * I'll do that later. But, essentially everyone needs to be able to handle a situation where the api is not available by memoising
  * Rn the wrapper on the app does that, so we're mostly safe.
  */
 // Refactor tip: Refs to the rescue! https://usehooks.com/usePrevious/
-// Use this at the top level so that when the api goes out, we use the previous value.
-// All hooks requiring the substrate api should memoise value and accept a fallback parameter that says whether or not to use that last value.
+// Use this at critical sections so that when the api goes out, we use the previous value.
+// All hooks requiring the substrate api should memoise value and accept a fallback boolean that says whether or not to use that last value.
 // We then return the value of usePrevious instead of failing to use the apiPromise.
 // Also, memoise vigorously in regular functions.
 // Lastly, use[\w] to grep for hooks.
@@ -261,7 +208,7 @@ const useSearchData = function (
   const vMetaArr = useMemo(() => shouldComputeValid(metas), [metas]);
 
   const [validMetas, anyMetaErr, anyMetaInitiallyLoading, metaStates] = vMetaArr;
-  const readyMetas = useMemo(() => resArr(validMetas), [validMetas]);
+  const readyMetas = useMemo(() => resArr(validMetas).map(mockImages), [validMetas]);
 
   // Expect everyone else to memoise.
   // Make more efficient: Ensure it only causes rerenders of parent when arr length >0
@@ -275,4 +222,4 @@ const useSearchData = function (
     allCheck(metaStates, 'idle'),
   ] as [NewProjectWithIndex[], boolean, boolean, boolean];
 };
-export { useProjects, useSearchData };
+export { useSearchData };
