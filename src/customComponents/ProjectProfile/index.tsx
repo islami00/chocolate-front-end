@@ -4,12 +4,12 @@ import { Button, Card, Image, Loader, Modal } from 'semantic-ui-react';
 import { Rating } from '../Projects';
 import { useApp } from '../state';
 import { message } from '../utilities/message';
-import { useAverage, useProject, useProjectMeta, useReviews } from './hooks';
-import { filter } from './majorUtils';
-import './profile.css';
-import { ProfileSum, PrProf, RevReel, SumRev } from './types';
 import { ReviewSingle } from './components/ReviewSingle';
 import { SubmitReviewForm } from './components/SubmitReviewForm';
+import { useAverage, useProject, useProjectMeta, useReviews } from './hooks';
+import { noPrjErr } from './hooks/useProject';
+import './profile.css';
+import { ProfileSum, PrProf, RevReel, SumRev } from './types';
 
 const ProjectProfileSummary: ProfileSum = function (props) {
   const { pQuery, rQuery, project } = props;
@@ -112,8 +112,15 @@ const ReviewReel: RevReel = function (props) {
     </article>
   );
 };
+/**
+ *
+ * @description This component will take over ReviewReel after finishing the useReview top level hook.
+ * It will do a better job at error handling, falling back with the api, and
+ */
+const NewReviewReel = function (props) {};
 const ProjectProfile: PrProf = function (props) {
-  const { data, id } = props;
+  // const debug = !!process.env.DEBUG; //General.
+  const { data, id, rev } = props;
   const { state } = useApp();
   const { userData } = state;
   const { accountAddress: addr } = userData;
@@ -121,8 +128,25 @@ const ProjectProfile: PrProf = function (props) {
   let canReview = true;
   if (data.ownerID.eq(addr)) canReview = false;
   // race!
+  // useReviews will need the id and the addr of the calling project.
+  // First, it'll grab the keys from the chain in a separate hook, mirroring useProjectKeys
+  // Then it'll filter for this Id, return into the body of useReviews to be picked up by useParallelReviews, qKey: ["Reviews",projectID, ownerId].
+  // These parallel reviews fetch the metadata from ipfs and are incrementally rendered by the "shouldCalcValid" and arrKeys checks for the queries.
 
+  // The resulting list can then be rendered by the ReviewReel component.
+  // Generally, for the state machine, rendering priority happens like this: 1. if there's an error depending on the severity, render.
+  // 2. If the error is the api is unavailable, turn on fallback mode for everyone (Arg should be passed from parent since it doesn't touch api directly).
+  // 3. If the error is all queries failed, show a definitive error.
+  // 4. If we're in initial loading state (i.e all idle or loadingInitially), show a final loading component as reviews are loaded in.
+  // 5. If we're done and the list is empty, show good ol' NFound.
+  // 6. Default to rendering the list of review cards
+
+  // Test.
+  // const reviewQ = useReelData(rev);
   const reviewQuery = useReviews(data, id, addr);
+  // const profileQ = useProfileData(rev);
+  // if(debug) console.count('Rendered');
+  // if(debug) console.log('reviewQ, profileQ', reviewQ, profileQ);
   const projectQuery = useProjectMeta(data, id);
   return (
     <main className='profile-wrap'>
@@ -136,28 +160,38 @@ const ProjectProfile: PrProf = function (props) {
   );
 };
 
+/**
+ * This component handles the initial fetch of the project, loading state UI of the ProjectAl, and sorting them. It's an initial page-wide blanket of <NFound/>
+ */
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError } = useProject(id);
-  if (isLoading) return <Loader />;
-  // error handle component
-  if (isError) return <Loader content='something went wrong fetching data from the api' />; // needed data got
-  const four = message('Error, project not found', true);
-  if (data === 0) return four;
-  const re = filter(data);
-  if (re !== 2) {
-    if (re === 0)
-      return (
-        <p>
-          This project has been rejected from the chocolate ecosystem due to being{' '}
-          {data.proposalStatus.reason.toString()}
-        </p>
-      );
-    if (re === 1) return <p>This project is currently proposed</p>;
-    return four;
+  const { data, isLoading, isError, error } = useProject(id);
+
+  // Check for api
+  // Handle initial loading more gracefully <NFound/>!
+  if (!data) {
+    if (isLoading) return <Loader content='Loading..' />;
+    return <Loader content='Fetching data...' />; // Just handle the same way
   }
-  // error handled till here
-  return <ProjectProfile data={data} id={id} />;
+  // error handle component. We assume that the fetch only happens
+  // Not necessarily if(status === "error"). <NFound/>!
+  if (isError) {
+    if (error.message === noPrjErr) return message('Error, project not found', true);
+    return <Loader content='something went wrong fetching data from the api' />; // needed data got
+  }
+  // Currently, we only deal with accepted or not.
+  // ToDO: Fun little "Not found" component that takes a range of fun svgs with these not found messages.
+  // E.g:  <NFound message="Couldn't find the project you wanted" />. The message is optional, that is the default. We could replace it with this.
+  // Layout would be {svg}+ p{messageBlock} or svg+ p{emMessageBlock + br + explanation}
+  if (data[0].proposalStatus.status.isRejected)
+    return (
+      <p>
+        This project has been rejected from the chocolate ecosystem due to being{' '}
+        {data[0].proposalStatus.reason.toString()}
+      </p>
+    );
+  if (data[0].proposalStatus.status.isProposed) return <p>This project is currently proposed</p>;
+  return <ProjectProfile data={data[0]} id={id} rev={data} />;
 };
 
 export default Main;

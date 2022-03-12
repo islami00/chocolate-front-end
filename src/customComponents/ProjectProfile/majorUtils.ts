@@ -1,20 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApiPromise } from '@polkadot/api';
 import { AnyNumber } from '@polkadot/types/types';
-import { ProjectAl, ReviewAl } from '../../interfaces';
+import { ReviewAl } from '../../interfaces';
 import { PinServerRes } from '../../typeSystem/appTypes';
 import { ChainReview, NewMetaData, NewReview, ReviewContent } from '../../typeSystem/jsonTypes';
 import { errorHandled, toPinataFetch } from '../utils';
 
-function filter(project: ProjectAl): 0 | 1 | 2 | void {
-  try {
-    if (project.proposalStatus.status.isRejected) return 0;
-    if (project.proposalStatus.status.isProposed) return 1;
-    if (project.proposalStatus.status.isAccepted) return 2;
-  } catch (error) {
-    return console.error("where's the project dude?");
-  }
-}
 // for use with ipfs cat
 // eslint-disable-next-line no-unused-vars
 const ipfsConfig = {
@@ -102,11 +93,11 @@ const getCid = async function (reviewText: string, rating: number): Promise<GetC
   const cacheable: ReviewContent = { reviewText, rating };
   const endpoint = `${process.env.REACT_APP_PIN_SERVER}/pin`;
   const headers = {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify(cacheable),
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
   };
   const [cid, err] = await errorHandled(fetch(endpoint, headers));
@@ -115,4 +106,4 @@ const getCid = async function (reviewText: string, rating: number): Promise<GetC
   const returnable = ccid?.success;
   return { cid: returnable };
 };
-export { filter, populateReviews, populateMetadata, getCid };
+export { populateReviews, populateMetadata, getCid };
