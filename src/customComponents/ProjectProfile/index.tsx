@@ -3,6 +3,7 @@ import { Redirect, Route, Switch, useParams } from 'react-router-dom';
 import { Button, Card, Image, Loader, Modal } from 'semantic-ui-react';
 import { Rating } from '../Projects';
 import { useApp } from '../state';
+import { loader } from '../utilities';
 import { message } from '../utilities/message';
 import { ReviewSingle } from './components/ReviewSingle';
 import { SubmitReviewForm } from './components/SubmitReviewForm';
@@ -165,24 +166,25 @@ const ProjectProfile: PrProf = function (props) {
  */
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError, error } = useProject(id);
-
-  // Check for api
-  // Handle initial loading more gracefully <NFound/>!
+  const { data, isLoading: isInitiallyLoading, isError, error, isIdle, status } = useProject(id);
+  const isDebug = !!process.env.REACT_APP_DEBUG;
   if (!data) {
-    if (isLoading) return <Loader content='Loading..' />;
-    return <Loader content='Fetching data...' />; // Just handle the same way
+    // Ref: https://react-query.tanstack.com/reference/useQuery
+    // Three states of concern: Idle
+    if (isIdle) {
+      // Only possible in fallback.
+      return loader('Waiting for Chain connection...'); // Make a more subtle loader.
+    }
+    // Loading for the first time,
+    if (isInitiallyLoading) return loader('Fetching project..');
+    // or erred
+    if (isError) {
+      if (error.message === noPrjErr) return message('Error, project not found', true);
+      return message('something went wrong fetching data from the api'); // Make err More subtle, possibly with NFound.
+    }
+    return message('Undefined state, Project profile');
   }
-  // error handle component. We assume that the fetch only happens
-  // Not necessarily if(status === "error"). <NFound/>!
-  if (isError) {
-    if (error.message === noPrjErr) return message('Error, project not found', true);
-    return <Loader content='something went wrong fetching data from the api' />; // needed data got
-  }
-  // Currently, we only deal with accepted or not.
-  // ToDO: Fun little "Not found" component that takes a range of fun svgs with these not found messages.
-  // E.g:  <NFound message="Couldn't find the project you wanted" />. The message is optional, that is the default. We could replace it with this.
-  // Layout would be {svg}+ p{messageBlock} or svg+ p{emMessageBlock + br + explanation}
+  if (isDebug) console.assert(data, 'Data undefined');
   if (data[0].proposalStatus.status.isRejected)
     return (
       <p>
@@ -191,7 +193,7 @@ const Main: React.FC = function () {
       </p>
     );
   if (data[0].proposalStatus.status.isProposed) return <p>This project is currently proposed</p>;
-  return <ProjectProfile data={data[0]} id={id} rev={data} />;
+  return <ProjectProfile data={data[0]} id={data[1].toString()} rev={data} />;
 };
 
 export default Main;
