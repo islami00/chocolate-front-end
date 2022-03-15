@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { ApiPromise } from '@polkadot/api';
 import { VoidFn } from '@polkadot/api/types';
 import { Option } from '@polkadot/types';

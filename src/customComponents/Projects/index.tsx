@@ -80,7 +80,7 @@ const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   const { name } = metadata;
   const { status } = proposalStatus;
   let rateBar = <></>;
-  let toProject = <></>;
+  let toProject: JSX.Element = <></>;
   if (status === 'Accepted') {
     rateBar = <Rating rating={5} fixed />;
     toProject = (

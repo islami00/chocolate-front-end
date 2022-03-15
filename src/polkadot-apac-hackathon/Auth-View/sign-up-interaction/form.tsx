@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import styled from 'styled-components';
+/* eslint-disable import/no-unresolved */
 import { errorHandled } from 'chocolate/customComponents/utils';
+/* eslint-enable import/no-unresolved */
+
 import { useMutation } from 'react-query';
 import toast from 'react-hot-toast';
 
@@ -46,7 +49,6 @@ const doSignUp = async (mut: SignUpMut) => {
 };
 
 const useSignupMutation = (form: SignUpMut, start: boolean) => {
-  const queryKey = ['register', form.uname];
   const mutation = useMutation(doSignUp);
   if (start) {
     mutation.mutate(form, {
@@ -58,9 +60,8 @@ const useSignupMutation = (form: SignUpMut, start: boolean) => {
   return mutation;
 };
 
-export default function Form() {
-  const [token, setToken] = useState(null);
-  const [email, setEmail] = useState('');
+export default function Form(): JSX.Element {
+  const [token, setToken] = useState<string>(null);
   const [form, setForm] = useState({
     uname: '',
     ps: '',
@@ -68,8 +69,8 @@ export default function Form() {
     captcha: '',
   });
   const [startMutation, setStartMutation] = useState(false);
-  const captchaRef = useRef(null);
-  const changeHandler = (e) => {
+  const captchaRef = useRef<HCaptcha>(null);
+  const changeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
@@ -87,16 +88,18 @@ export default function Form() {
     console.log('hCaptcha Token Expired');
   };
 
-  const onError = (err) => {
+  const onError = (err: string) => {
     console.log(`hCaptcha Error: ${err}`);
   };
   const res = useSignupMutation(form, startMutation);
   useEffect(() => {
     if (token && form.ps && form.uname && form.web3Address) {
-      setForm({ ...form, captcha: token });
+      setForm((f) => ({ ...f, captcha: token }));
       setStartMutation(true);
     }
-  }, [token]);
+    // Keep: react-hooks/exhaustive-deps
+    // Possible infinite loop
+  }, [token, form.ps, form.uname, form.web3Address]);
   useEffect(() => {
     if (res.data) {
       if (res.data.success) {
@@ -105,10 +108,9 @@ export default function Form() {
         toast.error('Registration failed');
         res.reset();
       }
-    } else {
-     if(startMutation) setStartMutation(false);
-    }
-  }, [startMutation]);
+    } else if (startMutation) setStartMutation(false);
+    // Possible infinite loop
+  }, [startMutation, res]);
 
   return (
     <form>

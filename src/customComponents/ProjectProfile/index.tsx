@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Redirect, Route, Switch, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { Button, Card, Image, Loader, Modal } from 'semantic-ui-react';
 import { Rating } from '../Projects';
 import { useApp } from '../state';
@@ -82,12 +82,12 @@ const SubmitReview: SumRev = function (props) {
       >
         <Modal.Header>Submit review</Modal.Header>
         <Modal.Content>
-          <Switch>
-            <Route exact path='/project/:id/stage/:stage'>
+          <Routes>
+            <Route path='/project/:id/stage/:stage'>
               <SubmitReviewForm />
             </Route>
-            <Redirect to={`/project/${id}/stage/1`} />
-          </Switch>
+            <Route element={<Navigate to={`/project/${id}/stage/1`} />} />
+          </Routes>
         </Modal.Content>
       </Modal>
     );
@@ -118,10 +118,10 @@ const ReviewReel: RevReel = function (props) {
  * @description This component will take over ReviewReel after finishing the useReview top level hook.
  * It will do a better job at error handling, falling back with the api, and
  */
-const NewReviewReel = function (props) {};
+// const NewReviewReel = function (props) {};
 const ProjectProfile: PrProf = function (props) {
   // const debug = !!process.env.DEBUG; //General.
-  const { data, id, rev } = props;
+  const { data, id } = props;
   const { state } = useApp();
   const { userData } = state;
   const { accountAddress: addr } = userData;
@@ -166,7 +166,7 @@ const ProjectProfile: PrProf = function (props) {
  */
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading: isInitiallyLoading, isError, error, isIdle, status } = useProject(id);
+  const { data, isLoading: isInitiallyLoading, isError, error, isIdle } = useProject(id);
   const isDebug = !!process.env.REACT_APP_DEBUG;
   if (!data) {
     // Ref: https://react-query.tanstack.com/reference/useQuery

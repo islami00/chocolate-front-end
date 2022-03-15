@@ -11,7 +11,8 @@ import {
   NewMetaData,
   NewProjectWithIndex,
   NewReview,
-  ReviewContent
+  ReviewContent,
+  // eslint-disable-next-line import/no-unresolved
 } from 'chocolate/typeSystem/jsonTypes';
 import { useEffect, useMemo } from 'react';
 import { useQueries, useQuery, useQueryClient, UseQueryResult } from 'react-query';
@@ -246,7 +247,7 @@ const useReviewsSubscription = function (
 };
 
 // and find the metdata.
-/** 
+/**
  * Gets metadata associated with reviews.
  * #fallbackCompliant since it doesn't require api. Also, as called in useReviewReels, it works even if reviews array is empty (ui can handle final effect.)
  * */
@@ -284,7 +285,7 @@ const useReviewsWithMetadata = function (reviews: [ReviewAl, ReviewKeyAl][], sho
  *
  * Treat the data as: {qry, isInitiallyLoading, isError,state(check for success)}.
  * main err handling will happen in isInitiallyLoading and isError.
- * This is independent of the api for now, so caching is sufficient. 
+ * This is independent of the api for now, so caching is sufficient.
  * #fallbackCompliant
  */
 export const useProfileData = function (project: [ProjectAl, ProjectID] | undefined) {

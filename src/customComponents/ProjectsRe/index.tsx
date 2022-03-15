@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable import/no-unresolved */
 import { useSubstrate } from 'chocolate/substrate-lib';
+/* eslint-enable import/no-unresolved */
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';

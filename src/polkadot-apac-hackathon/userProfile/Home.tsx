@@ -1,37 +1,18 @@
-import { useSubstrate } from 'chocolate/substrate-lib';
-import { NewReview, User } from 'chocolate/typeSystem/jsonTypes';
-import { useState, useEffect, useReducer } from 'react';
+/* eslint-disable import/no-unresolved */
+import { User } from 'chocolate/typeSystem/jsonTypes';
+/* eslint-enable import/no-unresolved */
 import { UseQueryResult } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { Card, Container, Dropdown, Input, Button, Checkbox, Table, Grid } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import { useChainProjects } from '../common/hooks/useUserReviews';
 import Sidebar from './Sidebar';
 import TableOfReviews from './TableOfReviews';
 
-interface ReviewTableAction {
-  type: 'add' | 'FILTER_PROJECT' | 'FILTER_RATING' | 'FILTER_TIME';
-  projectID?: number;
-  rating?: number;
-  time?: number;
-  review?: NewReview[];
-}
-const reviewTableReducer = (state: NewReview[], action: ReviewTableAction) => {
-  switch (action.type) {
-    case 'add':
-      return [...state, ...(action.review ?? [])];
-    case 'FILTER_PROJECT':
-      return state.filter((review) => review.projectID === action.projectID);
-    case 'FILTER_RATING':
-      return state.filter((review) => Number(review.content.rating) === action.rating);
-    default:
-      return state;
-  }
-};
 interface ProfileTableProps {
   user: UseQueryResult<User, Error>;
 }
 const ProfileTable: React.FC<ProfileTableProps> = (props) => {
-  const { web3Address } = useParams<{ web3Address: string }>();
+  const { web3Address } = useParams<{ web3Address: string }>() as { web3Address: string };
 
   // get all reviews associated with user.
 
