@@ -1,11 +1,13 @@
+/* eslint-disable import/no-unresolved */
 import Login from 'chocolate/polkadot-apac-hackathon/Auth-View/login-interaction';
 import SignUp from 'chocolate/polkadot-apac-hackathon/Auth-View/sign-up-interaction';
 import AuthProvider from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
+/* eslint-enable import/no-unresolved */
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UserProfile from '../../polkadot-apac-hackathon/userProfile';
 import { useSubstrate } from '../../substrate-lib';
 import About from '../About';
@@ -41,37 +43,18 @@ function Main(): JSX.Element {
         <AuthProvider>
           <Router>
             <MenuBar setBack={setBack} />
-            <Switch>
-              <Route exact path='/'>
-                <ProjectsRe />
-              </Route>
-              <Route path='/gallery'>
-                <Gallery />
-              </Route>
-              <Route path='/wall-of-shame'>
-                <WallOfShame />
-              </Route>
-              <Route path='/project/:id'>
-                <ProjectProfile />
-              </Route>
-
-              <Route path='/user/:web3Address'>
-                <UserProfile />
-              </Route>
-              <Route path='/sign-up'>
-                <SignUp />
-              </Route>
-              <Route path='/login'>
-                <Login />
-              </Route>
-              <Route path='/about'>
-                <About />
-              </Route>
-              <Route path='/team'>
-                <Team />
-              </Route>
-              <Route path='*'>{message('404! Not found', true)}</Route>
-            </Switch>
+            <Routes>
+              <Route path='/' element={<ProjectsRe />} />
+              <Route path='/gallery' element={<Gallery />} />
+              <Route path='/wall-of-shame' element={<WallOfShame />} />
+              <Route path='/project/:id' element={<ProjectProfile />} />
+              <Route path='/user/:web3Address' element={<UserProfile />} />
+              <Route path='/sign-up' element={<SignUp />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/about' element={<About />} />
+              <Route path='/team' element={<Team />} />
+              <Route path='*' element={message('404! Not found', true)} />
+            </Routes>
           </Router>
           <Toaster position='bottom-right' />
           {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}

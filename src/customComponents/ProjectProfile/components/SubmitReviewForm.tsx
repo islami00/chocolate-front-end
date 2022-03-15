@@ -1,8 +1,10 @@
 import { useReducer, useEffect } from 'react';
 import { Query, QueryKey, useQueryClient } from 'react-query';
-import { useParams, Redirect, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import _ from 'lodash';
+/* eslint-disable import/no-unresolved */
 import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
+/* eslint-enable import/no-unresolved */
 import { NewMetaData } from '../../../typeSystem/jsonTypes';
 import { SubRev } from '../types';
 import { FormToEnter } from './FormToEnter';
@@ -119,16 +121,12 @@ const SubmitReviewForm: SubRev = function () {
   };
   console.count('SubmitReviewForm');
   const location = useLocation();
-  if (stage >= '2' && !isAuthenticated)
-    return (
-      <Redirect
-        to={{
-          pathname: '/login',
-          state: { from: location },
-        }}
-      />
-    );
-  // render based on stage
+  const navigate = useNavigate();
+  if (stage >= '2' && !isAuthenticated) {
+    navigate('/login', {
+      state: { from: location },
+    });
+  } // render based on stage
   switch (stage) {
     case '1':
       return <FormToEnter {...formProps} />;

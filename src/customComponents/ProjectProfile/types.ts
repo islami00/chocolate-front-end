@@ -1,10 +1,11 @@
 import React from 'react';
 import { UseQueryResult } from 'react-query';
-import { ProjectAl } from '../../interfaces';
+import { ProjectAl, ProjectID } from '../../interfaces';
 import { NewMetaData, NewReview } from '../../typeSystem/jsonTypes';
 
 export type PrProf = React.FC<{
   data: ProjectAl;
+  rev: [ProjectAl, ProjectID];
   id: string;
 }>;
 export type ProfileSum = React.FC<{

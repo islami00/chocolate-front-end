@@ -1,8 +1,10 @@
+// eslint-disable-next-line no-use-before-define
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { calcResults, handleSubmit } from '../majorUtils';
 import { NewProjectWithIndex } from '../../../typeSystem/jsonTypes';
 
+type TimeoutId = ReturnType<typeof setTimeout>;
 // to-do: Make data types generic.
 /** @description A placeholder for project view. Replace as needed */
 const DataSummaryDisplay: React.FC<{ data: NewProjectWithIndex }> = function (props) {
@@ -53,9 +55,8 @@ const SearchBar: React.FC<{ projects: NewProjectWithIndex[] }> = function (props
   const [found, setFound] = useState(false);
   const [results, setResults] = useState<NewProjectWithIndex[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  // eslint-disable-next-line no-undef
-  const blurTimeoutRef = useRef<NodeJS.Timeout>();
-  const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  const blurTimeoutRef = useRef<TimeoutId>();
+  const searchTimeoutRef = useRef<TimeoutId>();
   useEffect(
     () => () => {
       if (blurTimeoutRef.current) {

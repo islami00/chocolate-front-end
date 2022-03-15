@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Redirect, Route, Switch, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { Button, Card, Image, Loader, Modal } from 'semantic-ui-react';
 import { Rating } from '../Projects';
 import { useApp } from '../state';
+import { loader } from '../utilities';
 import { message } from '../utilities/message';
-import { useAverage, useProject, useProjectMeta, useReviews } from './hooks';
-import { filter } from './majorUtils';
-import './profile.css';
-import { ProfileSum, PrProf, RevReel, SumRev } from './types';
 import { ReviewSingle } from './components/ReviewSingle';
 import { SubmitReviewForm } from './components/SubmitReviewForm';
+import { useAverage, useProject, useProjectMeta, useReviews } from './hooks';
+import { noPrjErr } from './hooks/useProject';
+import './profile.css';
+import { ProfileSum, PrProf, RevReel, SumRev } from './types';
 
 const ProjectProfileSummary: ProfileSum = function (props) {
   const { pQuery, rQuery, project } = props;
@@ -81,12 +82,12 @@ const SubmitReview: SumRev = function (props) {
       >
         <Modal.Header>Submit review</Modal.Header>
         <Modal.Content>
-          <Switch>
-            <Route exact path='/project/:id/stage/:stage'>
+          <Routes>
+            <Route path='/project/:id/stage/:stage'>
               <SubmitReviewForm />
             </Route>
-            <Redirect to={`/project/${id}/stage/1`} />
-          </Switch>
+            <Route element={<Navigate to={`/project/${id}/stage/1`} />} />
+          </Routes>
         </Modal.Content>
       </Modal>
     );
@@ -112,7 +113,14 @@ const ReviewReel: RevReel = function (props) {
     </article>
   );
 };
+/**
+ *
+ * @description This component will take over ReviewReel after finishing the useReview top level hook.
+ * It will do a better job at error handling, falling back with the api, and
+ */
+// const NewReviewReel = function (props) {};
 const ProjectProfile: PrProf = function (props) {
+  // const debug = !!process.env.DEBUG; //General.
   const { data, id } = props;
   const { state } = useApp();
   const { userData } = state;
@@ -121,8 +129,25 @@ const ProjectProfile: PrProf = function (props) {
   let canReview = true;
   if (data.ownerID.eq(addr)) canReview = false;
   // race!
+  // useReviews will need the id and the addr of the calling project.
+  // First, it'll grab the keys from the chain in a separate hook, mirroring useProjectKeys
+  // Then it'll filter for this Id, return into the body of useReviews to be picked up by useParallelReviews, qKey: ["Reviews",projectID, ownerId].
+  // These parallel reviews fetch the metadata from ipfs and are incrementally rendered by the "shouldCalcValid" and arrKeys checks for the queries.
 
+  // The resulting list can then be rendered by the ReviewReel component.
+  // Generally, for the state machine, rendering priority happens like this: 1. if there's an error depending on the severity, render.
+  // 2. If the error is the api is unavailable, turn on fallback mode for everyone (Arg should be passed from parent since it doesn't touch api directly).
+  // 3. If the error is all queries failed, show a definitive error.
+  // 4. If we're in initial loading state (i.e all idle or loadingInitially), show a final loading component as reviews are loaded in.
+  // 5. If we're done and the list is empty, show good ol' NFound.
+  // 6. Default to rendering the list of review cards
+
+  // Test.
+  // const reviewQ = useReelData(rev);
   const reviewQuery = useReviews(data, id, addr);
+  // const profileQ = useProfileData(rev);
+  // if(debug) console.count('Rendered');
+  // if(debug) console.log('reviewQ, profileQ', reviewQ, profileQ);
   const projectQuery = useProjectMeta(data, id);
   return (
     <main className='profile-wrap'>
@@ -136,28 +161,39 @@ const ProjectProfile: PrProf = function (props) {
   );
 };
 
+/**
+ * This component handles the initial fetch of the project, loading state UI of the ProjectAl, and sorting them. It's an initial page-wide blanket of <NFound/>
+ */
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError } = useProject(id);
-  if (isLoading) return <Loader />;
-  // error handle component
-  if (isError) return <Loader content='something went wrong fetching data from the api' />; // needed data got
-  const four = message('Error, project not found', true);
-  if (data === 0) return four;
-  const re = filter(data);
-  if (re !== 2) {
-    if (re === 0)
-      return (
-        <p>
-          This project has been rejected from the chocolate ecosystem due to being{' '}
-          {data.proposalStatus.reason.toString()}
-        </p>
-      );
-    if (re === 1) return <p>This project is currently proposed</p>;
-    return four;
+  const { data, isLoading: isInitiallyLoading, isError, error, isIdle } = useProject(id);
+  const isDebug = !!process.env.REACT_APP_DEBUG;
+  if (!data) {
+    // Ref: https://react-query.tanstack.com/reference/useQuery
+    // Three states of concern: Idle
+    if (isIdle) {
+      // Only possible in fallback.
+      return loader('Waiting for Chain connection...'); // Make a more subtle loader.
+    }
+    // Loading for the first time,
+    if (isInitiallyLoading) return loader('Fetching project..');
+    // or erred
+    if (isError) {
+      if (error.message === noPrjErr) return message('Error, project not found', true);
+      return message('something went wrong fetching data from the api'); // Make err More subtle, possibly with NFound.
+    }
+    return message('Undefined state, Project profile');
   }
-  // error handled till here
-  return <ProjectProfile data={data} id={id} />;
+  if (isDebug) console.assert(data, 'Data undefined');
+  if (data[0].proposalStatus.status.isRejected)
+    return (
+      <p>
+        This project has been rejected from the chocolate ecosystem due to being{' '}
+        {data[0].proposalStatus.reason.toString()}
+      </p>
+    );
+  if (data[0].proposalStatus.status.isProposed) return <p>This project is currently proposed</p>;
+  return <ProjectProfile data={data[0]} id={data[1].toString()} rev={data} />;
 };
 
 export default Main;

@@ -1,4 +1,6 @@
+/* eslint-disable import/no-unresolved */
 import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
+/* eslint-enable import/no-unresolved */
 import { useEffect, useRef, useState } from 'react';
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
@@ -159,7 +161,7 @@ const Menu: React.FC<{
   const { setBack } = props;
   const location = useLocation();
   const isMounted = useIsMounted();
-  const match = matchPath(location.pathname, { path: '/', exact: true });
+  const match = matchPath(location.pathname, '/');
   useEffect(() => {
     if (match && isMounted) setBack(true);
     else if (!match && isMounted) setBack(false);

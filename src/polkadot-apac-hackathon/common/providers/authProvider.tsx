@@ -6,7 +6,7 @@ const AuthContext = createContext({
   user: {
     publicKey: '',
   },
-  login: (user: { publicKey: string }) => {},
+  login: (user: { publicKey: string }) => console.log(user),
   logout: () => {},
 });
 interface AuthReducerState {
@@ -69,7 +69,7 @@ const AuthProvider: React.FC = ({ children }) => {
       // else logout from here
       logout();
     }
-  }, [stateAuth]);
+  }, [state.isAuthenticated, stateAuth]);
 
   return (
     <AuthContext.Provider
@@ -79,6 +79,7 @@ const AuthProvider: React.FC = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useAuthService = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

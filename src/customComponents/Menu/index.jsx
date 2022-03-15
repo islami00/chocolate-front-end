@@ -19,7 +19,7 @@ function Menu(props) {
 
   const menuLinks = ['Projects', 'Review', 'Council', 'Wall of Shame'];
   // transform for easy editing of individual links - note: this is the menu for the app component
-  const menuEls = menuLinks.map(linkText => (
+  const menuEls = menuLinks.map((linkText) => (
     <li className={menu.nav_li} key={linkText}>
       <NavLink className='link nav_link' exact to={urlIfy(linkText, 'app')}>
         {linkText}
