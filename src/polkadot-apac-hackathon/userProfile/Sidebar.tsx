@@ -1,9 +1,11 @@
+/* eslint-disable import/no-unresolved */
 import { useChainProjects } from 'chocolate/polkadot-apac-hackathon/common/hooks/useUserReviews';
 import { useSubstrate } from 'chocolate/substrate-lib';
 import { User } from 'chocolate/typeSystem/jsonTypes';
+/* eslint-enable import/no-unresolved */
 import { useEffect, useState } from 'react';
 import { UseQueryResult } from 'react-query';
-import { Card, Container, Image, Button, Icon, Label, Grid } from 'semantic-ui-react';
+import { Card, Container, Image, Button, Label } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
 
 interface SidebarProps {
@@ -41,7 +43,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
       if (userAccount.meta && userAccount.meta.name)
         setUserAggr({ name: userAccount.meta.name as string });
     }
-  }, [keyring]);
+  }, [keyring, web3Address]);
 
   return (
     <Container fluid>

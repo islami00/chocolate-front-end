@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Form } from 'semantic-ui-react';
 import { Rating } from '../../Projects';
 import type { CacheAction } from './SubmitReviewForm';
@@ -42,7 +42,8 @@ const FormToEnter: React.FC<LocalFormProps> = (props) => {
     setRawInput(cachedForm);
   }, [cachedForm]);
   // go to next stage.
-  if (next) return <Redirect to={`/project/${id}/stage/2`} />;
+  const navigate = useNavigate();
+  if (next) navigate(`/project/${id}/stage/2`);
   // ui for form
   // get project for display
   console.count('FormToEnter');

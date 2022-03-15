@@ -53,7 +53,7 @@ function reducer(state, action) {
 const AppContext = React.createContext();
 
 /** @type {React.FC} */
-const AppContextProvider = props => {
+const AppContextProvider = (props) => {
   // filtering props and merge with default param value
   const initState = { ...INIT_STATE };
   const { children } = props;

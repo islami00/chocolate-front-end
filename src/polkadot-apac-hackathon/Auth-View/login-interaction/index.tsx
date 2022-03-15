@@ -1,10 +1,16 @@
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+// eslint-disable-next-line import/no-unresolved
 import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
-import { Redirect, useLocation, useHistory } from 'react-router-dom';
-import { Form } from 'semantic-ui-react';
+import { useNavigate, useLocation, Location as RRLocation } from 'react-router-dom';
+import { Form, FormProps, InputOnChangeData } from 'semantic-ui-react';
 
+interface LoginLocation extends RRLocation {
+  state: {
+    from?: string;
+  };
+}
 interface SignUpMut {
   uname: string;
   ps: string;
@@ -28,12 +34,11 @@ const LOGIN_MUTATION = async (form: SignUpMut) => {
 
   return scc;
 };
-const redirect = (route: string) => <Redirect to={route} />;
 const Login: React.FC = function () {
-  // try to read secret key - jwt
-  const captchaRef = useRef(null);
-  const location = useLocation();
-  const [token, setToken] = useState(null);
+  const captchaRef = useRef<HCaptcha>(null);
+  const navigate = useNavigate();
+  const location = useLocation() as LoginLocation;
+  const [token, setToken] = useState<string>(null);
   const { isAuthenticated } = useAuthService();
   const [form, setForm] = useState({
     uname: '',
@@ -44,16 +49,16 @@ const Login: React.FC = function () {
   useEffect(() => {
     if (token && form.ps && form.uname && form.web3Address) {
       // Token is set, can submit here
-      setForm({ ...form, captcha: token });
+      setForm((f) => ({ ...f, captcha: token }));
     }
-  }, [token]);
+  }, [token, form.ps, form.uname, form.web3Address]);
   const auth = useAuthService();
 
   const loginMutation = useMutation(LOGIN_MUTATION);
   if (loginMutation.status === 'success') {
     auth.login({ publicKey: loginMutation.data.publicKey });
     const redirectUrl = location?.state?.from ?? '/';
-    return redirect(redirectUrl);
+    navigate(redirectUrl);
   }
 
   const onSubmit = () => {
@@ -68,45 +73,42 @@ const Login: React.FC = function () {
     console.log('hCaptcha Token Expired');
   };
 
-  const onError = (err: any) => {
+  const onError = (err: string) => {
     console.log(`hCaptcha Error: ${err}`);
   };
+  // Redirect to last location if signed in, else render sign in component.
 
-  // try to establish session with secret key - jwt
-  // if session is established, redirect to /home
-  // if session is not established, redirect to /signup
-  // else render signup
-
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit: (e: FormEvent<HTMLFormElement>, data: FormProps) => void = (e) => {
     e.preventDefault();
     if (token) loginMutation.mutate(form);
   };
-  const handleChange = (e) => {
+  const handleChange: (e: ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+  if (isAuthenticated) {
+    const redirectUrl = location?.state?.from ?? '/';
+    navigate(redirectUrl);
+  }
   return (
     <div>
-      {!isAuthenticated ? (
-        <Form onSubmit={handleSubmit}>
-          <Form.Input
-            fluid
-            label='Username'
-            name='uname'
-            value={form.uname}
-            onChange={handleChange}
-          />
-          <Form.Input fluid label='Password' name='ps' type='password' value={form.ps} onChange={handleChange} />
-          <Form.Button
-            type='submit'
-            content='Submit'
-            fluid
-            color='purple'
-            onChange={handleChange}
-          />
-        </Form>
-      ) : (
-        redirect(location?.state?.from ?? '/')
-      )}
+      <Form onSubmit={handleSubmit}>
+        <Form.Input
+          fluid
+          label='Username'
+          name='uname'
+          value={form.uname}
+          onChange={handleChange}
+        />
+        <Form.Input
+          fluid
+          label='Password'
+          name='ps'
+          type='password'
+          value={form.ps}
+          onChange={handleChange}
+        />
+        <Form.Button type='submit' content='Submit' fluid color='purple' onChange={handleChange} />
+      </Form>
       <HCaptcha
         // This is testing sitekey, will autopass
         // Make sure to replace

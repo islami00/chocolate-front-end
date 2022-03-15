@@ -17,7 +17,7 @@ const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
   const [readMore, setReadMore] = useState(false);
   const { reviewText, rating } = content;
   const limit = reviewText.length >= 182;
-  let rev;
+  let rev: unknown;
   if (limit) {
     rev = (
       <>

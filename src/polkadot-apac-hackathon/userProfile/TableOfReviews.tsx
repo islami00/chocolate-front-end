@@ -1,4 +1,6 @@
+/* eslint-disable import/no-unresolved */
 import { TableSetReview } from 'chocolate/typeSystem/jsonTypes';
+/* eslint-enable import/no-unresolved */
 import { useEffect, useReducer, useState } from 'react';
 import { UseQueryResult } from 'react-query';
 import {
@@ -6,7 +8,6 @@ import {
   Button,
   Container,
   Dropdown,
-  Grid,
   Icon,
   Table,
   Image,
@@ -78,7 +79,7 @@ const Main: React.FC<{ data: UseQueryResult<TableSetReview[], Error> }> = (props
     setActiveIndex(newIndex);
   };
   return (
-    <Container >
+    <Container>
       <Button.Group color='purple'>
         <Dropdown
           onChange={handleProjectFilterChange}

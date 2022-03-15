@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { Button, Card, Header, Container } from 'semantic-ui-react';
 import { loader, message } from '../../customComponents/utilities';
 import Login from './login-interaction';
@@ -22,7 +22,7 @@ const AuthView: React.FC = function () {
   // redirect to home from login.
   return (
     <Router>
-      <Switch>
+      <Routes>
         <Route path='/'>
           <Container
             textAlign='center'
@@ -50,7 +50,7 @@ const AuthView: React.FC = function () {
         </Route>
 
         <Route path='*'>{message('Page not found', true)}</Route>
-      </Switch>
+      </Routes>
     </Router>
   );
 };
