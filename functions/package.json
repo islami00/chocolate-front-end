@@ -20,6 +20,7 @@
   "dependencies": {
     "@google-cloud/debug-agent": "^5.2.8",
     "@google-cloud/secret-manager": "^3.11.0",
+    "@types/node-fetch": "^2.6.1",
     "cors": "^2.8.5",
     "debug": "^4.3.3",
     "dotenv": "^16.0.0",
