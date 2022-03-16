@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-      - run: yarn install --immutable-cache
+      - run: yarn install --immutable
       - run: yarn lint
       - run: yarn build
   servers:
@@ -28,5 +28,6 @@ jobs:
         with:
           node-version: 14
       - run: cd ${{ matrix.server }}
+      - run: npm install -g npm@7
       - run: npm install
       - run: npm run build
