@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiPromise } from '@polkadot/api';
-import { AnyNumber } from '@polkadot/types/types';
 import { ReviewAl } from '../../interfaces';
 import { PinServerRes } from '../../typeSystem/appTypes';
 import { ChainReview, NewMetaData, NewReview, ReviewContent } from '../../typeSystem/jsonTypes';
@@ -31,54 +29,8 @@ export const getPinataData = async (
   const properRev = { ...personified, content: rev };
   return properRev;
 };
-/**
- * Retrieves the reviews associated with a project, and populates their metadata in the process
- */
-async function populateReviews(
-  // referral: ReviewID[], Referral is project id.
-  id: AnyNumber,
-  api: ApiPromise,
-  userId: string,
-  debug = false
-): Promise<NewReview[]> {
-  function limit<T>(revs: T[]): T[] {
-    const max = revs.length > 10 ? 10 : revs.length;
-    const revsArr = revs.slice(0, max);
-    return revsArr;
-  }
-  //  Setup what we'll limit.
-  // We'll filter by the projectId. Getting keys first makes next step easy.
-  let referral = (await api.query.chocolateModule.reviews.keys())
-    .map((each) => each.args)
-    .filter((value) => value[1].eq(id)); // args decodes.
-  referral = limit(referral);
 
-  if (debug) debugger;
-  // error handled
-  const chainRes = referral.map(async (element) => {
-    const optReview = await api.query.chocolateModule.reviews(...element);
-    const review = optReview.unwrapOr(0);
-    try {
-      if (review === 0) throw new Error('Review does not exist');
-      if (review.proposalStatus.status.isAccepted) return review;
-      if (review.userID.eq(userId)) return review; // Only show accepted && those you can see: proposed.
-    } catch (error) {
-      // send metric to track and return undefined
-      if (debug) console.error(error);
-      return undefined;
-    }
-  });
-
-  const result = await Promise.all(chainRes);
-  const resulting = result.filter((each) => each !== undefined);
-  if (debug) console.log('This was result', result);
-  if (debug) console.log('This is resulting', resulting);
-
-  const contents = resulting.map(getPinataData);
-  const contentResult = Promise.all(contents);
-  return contentResult;
-}
-/** works */
+/** works, replace in useUserReviews before removing */
 async function populateMetadata(cid: string, debug = false): Promise<NewMetaData> {
   if (debug) console.log('got metadata cid', cid);
   // fetch meta from cid.
@@ -106,4 +58,4 @@ const getCid = async function (reviewText: string, rating: number): Promise<GetC
   const returnable = ccid?.success;
   return { cid: returnable };
 };
-export { populateReviews, populateMetadata, getCid };
+export { populateMetadata, getCid };

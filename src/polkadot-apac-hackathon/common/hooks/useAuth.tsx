@@ -3,7 +3,6 @@
 /* eslint-disable import/no-unresolved */
 import { errorHandled } from 'chocolate/customComponents/utils';
 /* eslint-enable import/no-unresolved */
-
 import { useQuery } from 'react-query';
 
 // a more proper impl should poll useAuth for the user object and authenticated state
@@ -46,8 +45,8 @@ export const useAuthState: AuthStateFx = () => {
   };
   const qry = useQuery<AuthState, Error>('auth', fetchServer, {
     refetchOnWindowFocus: true,
-    // access token life??
-    refetchInterval: 15000,
+    // Little fix until auth is down.
+    refetchInterval: Infinity,
   });
   if (qry.isLoading) return { isAuthenticated: false, user: { publicKey: '' } };
   if (qry.isError) console.log(qry.error);

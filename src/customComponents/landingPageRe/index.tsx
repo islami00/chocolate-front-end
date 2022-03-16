@@ -44,12 +44,12 @@ function Main(): JSX.Element {
           <Router>
             <MenuBar setBack={setBack} />
             <Routes>
-              <Route path='/' element={<ProjectsRe />} />
+              <Route index element={<ProjectsRe />} />
               <Route path='/gallery' element={<Gallery />} />
               <Route path='/wall-of-shame' element={<WallOfShame />} />
-              <Route path='/project/:id' element={<ProjectProfile />} />
+              <Route path='/project/:id/*' element={<ProjectProfile />} />
               <Route path='/user/:web3Address' element={<UserProfile />} />
-              <Route path='/sign-up' element={<SignUp />} />
+              <Route path='/signup' element={<SignUp />} />
               <Route path='/login' element={<Login />} />
               <Route path='/about' element={<About />} />
               <Route path='/team' element={<Team />} />
