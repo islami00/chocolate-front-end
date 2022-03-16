@@ -6,3 +6,4 @@ src/*.js
 !src/AccountSelector.js
 src/interfaces
 functions
+src/stories

@@ -269,7 +269,7 @@ const useReviewsWithMetadata = function (reviews: [ReviewAl, ReviewKeyAl][], sho
   return useQueries(
     reviews.map(([v, k]) => ({
       // Same concern about depracation. Use ownerId instead. Don't want to leave old.
-      queryKey: ['Review', 'Metadata', k[1].toJSON(), k[0].toJSON()],
+      queryKey: ['Review', 'Metadata', k[1].toJSON(), k[0].toJSON(), v.content.toJSON()],
       queryFn: () => slowlyRetrieveMeta([v, k]),
       enabled: shouldFire,
       staleTime: Infinity,
@@ -288,7 +288,7 @@ const useReviewsWithMetadata = function (reviews: [ReviewAl, ReviewKeyAl][], sho
  * This is independent of the api for now, so caching is sufficient.
  * #fallbackCompliant
  */
-export const useProfileData = function (project: [ProjectAl, ProjectID] | undefined) {
+export const useProfileData = function (project: [ProjectAl, ProjectID]) {
   // First, fetch the metdata from this. Simple err handling if the main component doesn't already handle all.
   const meta = useProjectWithMetadata(project, !!project);
   return meta;
