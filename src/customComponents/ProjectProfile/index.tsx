@@ -1,24 +1,43 @@
-import { useEffect, useState } from 'react';
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
-import { Button, Card, Image, Loader, Modal } from 'semantic-ui-react';
+// eslint-disable-next-line no-use-before-define
+import React, { useEffect, useState } from 'react';
+import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { Button, Card, Image, Loader, Message, Modal } from 'semantic-ui-react';
 import { Rating } from '../Projects';
 import { useApp } from '../state';
 import { loader } from '../utilities';
 import { message } from '../utilities/message';
 import { ReviewSingle } from './components/ReviewSingle';
 import { SubmitReviewForm } from './components/SubmitReviewForm';
-import { useAverage, useProject, useProjectMeta, useReviews } from './hooks';
-import { noPrjErr } from './hooks/useProject';
+import { useAverage, useProject } from './hooks';
+import { noPrjErr, useProfileData, useReelData } from './hooks/useProject';
 import './profile.css';
 import { ProfileSum, PrProf, RevReel, SumRev } from './types';
 
 const ProjectProfileSummary: ProfileSum = function (props) {
-  const { pQuery, rQuery, project } = props;
-  const { data } = pQuery;
-  const [ave] = useAverage(project, data, rQuery.isSuccess, pQuery.isSuccess, rQuery.data);
-  if (pQuery.isError && !pQuery.data) return <Loader content='Project errror' />; // prettify
-  if (!pQuery.isSuccess) return <Loader content='Project loading' />;
-  const { name, Link: site, description } = data;
+  // Req: Pass in both project and reviews as props
+  const { profileQ, reviews } = props;
+  const { data: profile, isIdle, isLoading: isInitiallyLoading, isError } = profileQ;
+
+  const [ave] = useAverage(profile, profileQ.isSuccess, reviews);
+  // Do proper error handling for each data, useAverage will wait
+  if (!profile) {
+    if (isIdle) {
+      // User still sees loading. Only change/add ctx if fallback
+      return <Loader content='Loading...' />;
+    }
+    if (isInitiallyLoading) {
+      // same as above
+      return <Loader content='Loading...' />;
+    }
+    if (isError) {
+      // Only one is fetch error. For simplicity have a little warning sign. NFound is for large spaces.
+      return <Message error content='Error fetching project' />;
+    }
+    // Catch all
+    return <Message error content='Undefined state ProjectProfileSummary' />;
+  }
+  // Then do necessary displays
+  const { name, Link: site, description } = profile.project.metadata;
   const src = `https://avatars.dicebear.com/api/initials/${name}.svg`;
   return (
     <article className='head-profile'>
@@ -43,8 +62,9 @@ const ProjectProfileSummary: ProfileSum = function (props) {
   );
 };
 
+type Stages = '1' | '2' | '3' | '4';
 const SubmitReview: SumRev = function (props) {
-  const { disabled } = props;
+  const { disabled, proj } = props;
   const [open, setOpen] = useState(false);
   const reason =
     "You cannot submit a review, this is probably because you, or your selected account owns this project or you've been banned";
@@ -52,15 +72,28 @@ const SubmitReview: SumRev = function (props) {
 
   // initial stage for interactive modal. Run only once
   // pathfor interactive modal
-  const params = useParams<{ id: string; stage?: string }>();
+  const params = useParams<{ id: string; '*'?: `/stage/${Stages}` }>();
   const { id } = params;
-  const init = params.stage;
+  const init = /stage\/[1234]/.test(params['*'] ?? '');
+  const navigate = useNavigate();
   useEffect(() => {
-    let interval;
-    if (init) interval = setTimeout(() => setOpen(true), 1000);
+    if (open) {
+      if (!init) {
+        navigate(`/project/${id}/stage/1`);
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    return () => clearTimeout(interval);
-  }, [init]);
+  }, [open]);
+  useEffect(() => {
+    if (init) {
+      if (!open) {
+        // React error that input el is controlled
+        setOpen(true);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (disabled)
     content = (
       <Button color='purple' disabled fluid>
@@ -71,7 +104,10 @@ const SubmitReview: SumRev = function (props) {
     content = (
       <Modal
         closeIcon
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          navigate(`/project/${id}`);
+        }}
         onOpen={() => setOpen(true)}
         open={open}
         trigger={
@@ -83,10 +119,7 @@ const SubmitReview: SumRev = function (props) {
         <Modal.Header>Submit review</Modal.Header>
         <Modal.Content>
           <Routes>
-            <Route path='/project/:id/stage/:stage'>
-              <SubmitReviewForm />
-            </Route>
-            <Route element={<Navigate to={`/project/${id}/stage/1`} />} />
+            <Route path='stage/:stage' element={<SubmitReviewForm proj={proj} />} />
           </Routes>
         </Modal.Content>
       </Modal>
@@ -96,20 +129,51 @@ const SubmitReview: SumRev = function (props) {
 };
 
 const ReviewReel: RevReel = function (props) {
-  const { reelQuery } = props;
-  let renderContent: JSX.Element | JSX.Element[];
-  if (reelQuery.isError && !reelQuery.data) renderContent = <Loader content='Reviews error' />; // prettify
-  if (reelQuery.isLoading) renderContent = <Loader content='loading reviews' />;
-  else {
-    const data = reelQuery.data || [];
-    const newData = data.filter((each) => each !== undefined && each !== null);
-    renderContent = newData.map((each) => <ReviewSingle each={each} key={JSON.stringify(each)} />);
+  /**  [reviews,anyErred, anyInitiallyLoading, allIdle] */
+  const { reelData } = props;
+  // Use NFound to express loading, and error states here.
+  const [reviews, anyErred, anyInitiallyLoading, allIdle] = reelData;
+
+  /** Begin UI states */
+  // Loading intially...
+  let L = null;
+  console.log(reelData);
+
+  if (anyInitiallyLoading) {
+    L = loader('Fetching reviews...');
   }
+  if (allIdle) {
+    // treat same as loading. Special notification if in fallback
+    L = loader('Fetching reviews...');
+  }
+  // Partial error, chance of fallback activating here
+  let E: JSX.Element;
+  if (reviews.length === 0 && anyErred) {
+    // If allErred and none exist, show fail screen. Else, UI will show fallback and we assume that it's fetching
+    // Mutex
+    L = null;
+    E = message('Error fetching reviews');
+  }
+  // Complete error
+  // if(allErred){
+  //   L = () => <></>;
+  //   E = ()=>message("Error fetching reviews"); // Refresh page button.
+  // }
+  // Fallback state
+  // if(isFallback){
+  //   F = () => toggleFallbackUI. Or component can do that itself
+  // }
+  const renderContent = reviews.map((each) => (
+    <ReviewSingle each={each} key={JSON.stringify(each)} />
+  ));
 
   return (
     <article className='review_bttm '>
+      {/* Include banner if in fallback */}
       <h2 className='About review_header card-list'>Reviews</h2>
       <Card.Group className='box_indiv'>{renderContent}</Card.Group>
+      {L ?? ''}
+      {E ?? ''}
     </article>
   );
 };
@@ -120,43 +184,34 @@ const ReviewReel: RevReel = function (props) {
  */
 // const NewReviewReel = function (props) {};
 const ProjectProfile: PrProf = function (props) {
-  // const debug = !!process.env.DEBUG; //General.
-  const { data, id } = props;
+  const debug = !!process.env.REACT_APP_DEBUG;
+  const { data, proj } = props;
   const { state } = useApp();
   const { userData } = state;
   const { accountAddress: addr } = userData;
   // error handle
   let canReview = true;
   if (data.ownerID.eq(addr)) canReview = false;
-  // race!
-  // useReviews will need the id and the addr of the calling project.
-  // First, it'll grab the keys from the chain in a separate hook, mirroring useProjectKeys
-  // Then it'll filter for this Id, return into the body of useReviews to be picked up by useParallelReviews, qKey: ["Reviews",projectID, ownerId].
-  // These parallel reviews fetch the metadata from ipfs and are incrementally rendered by the "shouldCalcValid" and arrKeys checks for the queries.
 
   // The resulting list can then be rendered by the ReviewReel component.
-  // Generally, for the state machine, rendering priority happens like this: 1. if there's an error depending on the severity, render.
+  // Generally, for the state machine, rendering priority happens like this: 1. if there's an error and reviews are unavailable, render err msg.
   // 2. If the error is the api is unavailable, turn on fallback mode for everyone (Arg should be passed from parent since it doesn't touch api directly).
   // 3. If the error is all queries failed, show a definitive error.
   // 4. If we're in initial loading state (i.e all idle or loadingInitially), show a final loading component as reviews are loaded in.
   // 5. If we're done and the list is empty, show good ol' NFound.
   // 6. Default to rendering the list of review cards
 
-  // Test.
-  // const reviewQ = useReelData(rev);
-  const reviewQuery = useReviews(data, id, addr);
-  // const profileQ = useProfileData(rev);
-  // if(debug) console.count('Rendered');
-  // if(debug) console.log('reviewQ, profileQ', reviewQ, profileQ);
-  const projectQuery = useProjectMeta(data, id);
+  // Test. Note: Calculating on the fly isn't efficient, this should be handled onchain.
+  /**  [reviews,anyErred, anyInitiallyLoading, allIdle] */
+  const reviewQ = useReelData(proj);
+  const profileQ = useProfileData(proj);
+  if (debug) console.count('Rendered Project profile');
+  if (debug) console.log('reviewQ, profileQ', reviewQ, profileQ);
   return (
     <main className='profile-wrap'>
-      <ProjectProfileSummary pQuery={projectQuery} project={data} rQuery={reviewQuery} />
-      <SubmitReview
-        isLoading={reviewQuery.isLoading || projectQuery.isLoading}
-        disabled={!canReview}
-      />
-      <ReviewReel reelQuery={reviewQuery} />
+      <ProjectProfileSummary profileQ={profileQ} reviews={reviewQ[0]} />
+      <SubmitReview disabled={!canReview} proj={proj} />
+      <ReviewReel reelData={reviewQ} />
     </main>
   );
 };
@@ -193,7 +248,7 @@ const Main: React.FC = function () {
       </p>
     );
   if (data[0].proposalStatus.status.isProposed) return <p>This project is currently proposed</p>;
-  return <ProjectProfile data={data[0]} id={data[1].toString()} rev={data} />;
+  return <ProjectProfile data={data[0]} id={data[1].toString()} proj={data} />;
 };
 
 export default Main;

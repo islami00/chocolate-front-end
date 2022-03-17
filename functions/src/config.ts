@@ -1,5 +1,5 @@
-import { config } from "firebase-functions";
-import { SecretsReader } from "./gcpSecrets";
+import {config} from "firebase-functions";
+import {SecretsReader} from "./gcpSecrets";
 // Layer in raw dotenv, mostly for local testing.
 import "dotenv/config";
 
@@ -11,18 +11,20 @@ let isGconnect = false;
 let gcpSecretsLoader: SecretsReader;
 
 // checks secrets
-const { PINATA_API_KEY, PINATA_API_SECRET, PINATA_JWT } = process.env;
-if (!PINATA_API_KEY || !PINATA_API_SECRET || !PINATA_JWT)
+const {PINATA_API_KEY, PINATA_API_SECRET, PINATA_JWT} = process.env;
+if (!PINATA_API_KEY || !PINATA_API_SECRET || !PINATA_JWT) {
   throw new Error("Secrets not defined");
+}
 
 // gets gCloud secrets
-const gConnect = async () => {
-  pinataApiKey = await gcpSecretsLoader.GetSecretValue(PINATA_API_KEY);
-  pinataSecretApiKey = await gcpSecretsLoader.GetSecretValue(PINATA_API_SECRET);
-  pinataJWT = await gcpSecretsLoader.GetSecretValue(PINATA_JWT);
+const gConnect = async (): Promise<void> => {
+  pinataApiKey = await gcpSecretsLoader.getSecretValue(PINATA_API_KEY);
+  pinataSecretApiKey = await gcpSecretsLoader.getSecretValue(PINATA_API_SECRET);
+  pinataJWT = await gcpSecretsLoader.getSecretValue(PINATA_JWT);
 };
 
-// NOTE: Env vars would need to be explicitly set in app.yaml or removed and set via dotenv if using RAW with App Engine
+// NOTE: Env vars would need to be explicitly set in app.yaml
+// or removed and set via dotenv if using RAW with App Engine
 if (process.env.NODE_ENV === "test" && process.env.NODE_RAW) {
   // Testing
   pinataApiKey = PINATA_API_KEY;

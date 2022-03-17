@@ -61,13 +61,13 @@ const Login: React.FC = function () {
     navigate(redirectUrl);
   }
 
-  const onSubmit = () => {
-    // this reaches out to the hcaptcha library and runs the
-    // execute function on it. you can use other functions as well
-    // documented in the api:
-    // https://docs.hcaptcha.com/configuration#jsapi
-    captchaRef.current.execute();
-  };
+  // const onSubmit = () => {
+  //   // this reaches out to the hcaptcha library and runs the
+  //   // execute function on it. you can use other functions as well
+  //   // documented in the api:
+  //   // https://docs.hcaptcha.com/configuration#jsapi
+  //   captchaRef.current.execute();
+  // };
 
   const onExpire = () => {
     console.log('hCaptcha Token Expired');

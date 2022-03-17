@@ -1,6 +1,6 @@
-import { Loader, Container } from 'semantic-ui-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Container, Loader } from 'semantic-ui-react';
 import { useCid } from '../hooks';
 import type { CacheAction, Stage1Cache } from './SubmitReviewForm';
 
@@ -20,22 +20,17 @@ const CheckAuthAndGetCid: React.FC<CheckCidProps> = function (props) {
   const [next, setNext] = useState<boolean>(false);
   const navigate = useNavigate();
   useEffect(() => {
-    // dispatch next action if cid is available
-    const isCidAvailable = (!isLoading && !isError) || data;
-    if (isCidAvailable) {
-      const { cid } = data;
-      dispatchCache({ type: 'stage2', stage2: cid, id });
-      // then go to next
-      setNext(true);
+    // dispatch next action only if cid is available
+    if (!data) {
+      return;
     }
+    const { cid } = data;
+    dispatchCache({ type: 'stage2', stage2: cid, id });
+    // then go to next
+    setNext(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, isError, data, id]);
 
-  // if authenticated and cid is available, go to next
-  if (!isAuthenticated) {
-    // merge the signup and sign in pages for better ux
-    navigate('/login');
-  }
   if (next) navigate(`/project/${id}/stage/3`);
 
   return (

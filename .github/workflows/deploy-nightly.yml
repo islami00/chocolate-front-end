@@ -1,0 +1,41 @@
+name: CD - Nightly
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    # nightly releases should only stem from development. No auto checks for now though, only branch protection for nightly env.
+    tags:
+      - v**nightly*
+
+jobs:
+  web-app:
+    if: "! startsWith(github.event.head_commit.message, '[CI Skip]')"
+    environment: nightly
+    runs-on: ubuntu-latest
+    steps:
+      # Repeat build.
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: yarn install --immutable
+      - run: yarn lint
+      - run: |
+          yarn build
+          zip web-app-build-artifacts.zip -r ./build
+      - uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ALIAS }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      # On success, upload artifacts to release
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            web-app-build-artifacts.zip
+            LICENSE
+
+  # create_release:
+  # Create a release from the tag right after.

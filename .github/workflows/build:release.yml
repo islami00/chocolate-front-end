@@ -1,0 +1,30 @@
+# Run on pr to either
+name: Continuous Integration Flow (Build and Test All)
+
+on:
+  pull_request:
+    branches: [master, development]
+    
+jobs:
+  # Try to Build web app and deps
+  web-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: yarn install --immutable
+      - run: yarn lint
+      - run: yarn build
+  servers:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server: [functions, 'polkadot-apac-hackathon/auth-server']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: sh ./scripts/server_ci_build.sh ${{ matrix.server }}
