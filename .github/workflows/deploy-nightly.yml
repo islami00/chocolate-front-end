@@ -12,10 +12,6 @@ jobs:
   web-app:
     if: "! startsWith(github.event.head_commit.message, '[CI Skip]')"
     environment: nightly
-    env:
-      PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ALIAS }}
-      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-
     runs-on: ubuntu-latest
     steps:
       # Repeat build.
@@ -31,6 +27,9 @@ jobs:
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
+        env:
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ALIAS }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       # On success, upload artifacts to release
       - uses: softprops/action-gh-release@v1
         with:
