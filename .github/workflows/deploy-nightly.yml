@@ -4,7 +4,7 @@ name: CD - Nightly
 # events but only for the master branch
 on:
   push:
-    branches: [ 'development' ]
+    # nightly releases should only stem from development. No auto checks for now though, only branch protection for nightly env.
     tags:
       - v**nightly*
 
