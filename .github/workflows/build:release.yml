@@ -1,5 +1,5 @@
 # Run on pr to either
-name: Continuous Integration Flow (Build and Test All)
+name: CI (Build and Test All)
 
 on:
   pull_request:
