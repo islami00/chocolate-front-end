@@ -11,12 +11,12 @@ on:
 jobs:
   web-app:
     if: "! startsWith(github.event.head_commit.message, '[CI Skip]')"
-    runs-on: ubuntu-latest
     environment: nightly
     env:
       PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ALIAS }}
       FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
+    runs-on: ubuntu-latest
     steps:
       # Repeat build.
       - uses: actions/checkout@v2
@@ -25,12 +25,13 @@ jobs:
           node-version: 14
       - run: yarn install --immutable
       - run: yarn lint
-      - run: yarn build
+      - run: |
+          yarn build
+          zip web-app-build-artifacts.zip -r ./build
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
       # On success, upload artifacts to release
-      - run: zip web-app-build-artifacts.zip -r ./build
       - uses: softprops/action-gh-release@v1
       - if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -38,6 +39,5 @@ jobs:
             web-app-build-artifacts.zip
             LICENSE
 
-      # Use env.firebaseProjectAlias
   # create_release:
   # Create a release from the tag right after.
