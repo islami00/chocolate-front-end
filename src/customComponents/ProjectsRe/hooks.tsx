@@ -70,7 +70,7 @@ const useProjectsSubscription = function (api: ApiPromise, keys: ProjectID[], sh
                 }
                 const [project, id] = checkAgainst;
                 // Debug
-                const isDev = process.env.NODE_ENV === 'development';
+                const isDev = process.env.REACT_APP_DEBUG;
                 if (isDev) console.count('Subbed');
                 // Debug End.
                 // Concrete check. project needs to change too.
@@ -135,7 +135,7 @@ const shouldComputeValid = function <T>(metas: UseQueryResult<T, unknown>[]) {
   if (erred) console.error('Some query in the list failed');
   // Show if any q is loading intially to update UI
   const loadingInitially = metas.some((each) => each.isLoading);
-  if (loadingInitially && process.env.DEBUG)
+  if (loadingInitially && process.env.REACT_APP_DEBUG)
     console.log('Some project (or query) is loading for the first time');
   // Return state of all and leave check to others
   const states = metas.map((each) => each.status);

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { Button, Card, Header, Container } from 'semantic-ui-react';
+import { Button, Card, Container } from 'semantic-ui-react';
 import { loader, message } from '../../customComponents/utilities';
 import Login from './login-interaction';
 import SignUp from './sign-up-interaction';

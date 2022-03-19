@@ -77,6 +77,7 @@ const stageCacheReducer = (state: StageCache, action: CacheAction) => {
   }
 };
 const SubmitReviewForm: SubRev = function (props) {
+  const debug = !!process.env.REACT_APP_DEBUG;
   const { proj } = props;
   // get stage from reducer
   const { stage } = useParams<{ stage: string }>();
@@ -107,7 +108,7 @@ const SubmitReviewForm: SubRev = function (props) {
     id,
     cid: cache.stage2,
   };
-  console.count('SubmitReviewForm');
+  if (debug) console.count('SubmitReviewForm');
   const location = useLocation();
 
   if (stage >= '2' && !isAuthenticated) {

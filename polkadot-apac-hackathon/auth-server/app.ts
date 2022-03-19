@@ -25,7 +25,8 @@ app.use(
     origin: [
       'http://localhost:3000',
       'https://chocolate-demo.web.app',
-      'https://8000-chocolatenetwor-chocolat-qnb1x5sione.ws-eu34.gitpod.io',
+      // Dynamically include dev list
+      'https://8000-chocolatenetwor-chocolat-qnb1x5sione.ws-eu38.gitpod.io',
       'http://localhost:8000',
     ],
     credentials: true,
