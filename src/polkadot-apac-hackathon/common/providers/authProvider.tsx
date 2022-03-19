@@ -6,7 +6,8 @@ const AuthContext = createContext({
   user: {
     publicKey: '',
   },
-  login: (user: { publicKey: string }) => console.log(user),
+  login: (user: { publicKey: string }) =>
+    console.error('Login context not initialised properly', user),
   logout: () => {},
 });
 interface AuthReducerState {
@@ -28,13 +29,11 @@ const AuthReducer: Reducer<AuthReducerState, AuthReducerActions> = (state, actio
   switch (action.type) {
     case 'LOGIN':
       return {
-        ...state,
         isAuthenticated: true,
         user: action.payload.user,
       };
     case 'LOGOUT':
       return {
-        ...state,
         isAuthenticated: false,
         user: {
           publicKey: '',
@@ -60,6 +59,8 @@ const AuthProvider: React.FC = ({ children }) => {
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
   };
+  // This is probably what causes the confusion with login state.
+  // Should migrate to jwt based soon
   const stateAuth = useAuthState();
 
   useEffect(() => {
@@ -82,7 +83,8 @@ const AuthProvider: React.FC = ({ children }) => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useAuthService = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
+    // Handle more gracefully.
     throw new Error('useAuthService must be used within a AuthProvider');
   }
   return context;

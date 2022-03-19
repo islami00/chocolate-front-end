@@ -1,155 +1,166 @@
-import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
-import styled from 'styled-components';
 /* eslint-disable import/no-unresolved */
-import { errorHandled } from 'chocolate/customComponents/utils';
-/* eslint-enable import/no-unresolved */
-
-import { useMutation } from 'react-query';
+import { ApiErr, errorHandled } from 'chocolate/customComponents/utils';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useMutation } from 'react-query';
+/* eslint-enable import/no-unresolved */
+import { Link, Location as RRLocation, useLocation } from 'react-router-dom';
+import { Form, FormProps, InputOnChangeData } from 'semantic-ui-react';
 
-const SubmitBtn = styled.div`
-  width: 100px;
-  height: 30px;
-  border-radius: 2px;
-  background-color: #f3f3f3;
-  line-height: 30px;
-  text-align: center;
-  cursor: pointer;
-  margin: 0 auto;
-  margin-top: 10px;
-
-  &:hover {
-    background-color: #d0d0d0;
-  }
-`;
+interface SignupLocation extends RRLocation {
+  state: {
+    from?: string;
+  };
+}
 interface SignUpMut {
   uname: string;
   ps: string;
   web3Address: string;
   captcha: string;
 }
-const doSignUp = async (mut: SignUpMut) => {
-  // validation first
-  const loginEndpoint = 'http://localhost:3000/register';
-  const headers = {
-    'Content-Type': 'application/json',
+const SIGNUP_MUTATION = async function (form: SignUpMut) {
+  const headersList = {
     Accept: 'application/json',
+    'Content-Type': 'application/json',
   };
-  const [res, err] = await errorHandled(
-    fetch(loginEndpoint, {
+  //
+  const res = await errorHandled(
+    fetch(`${process.env.REACT_APP_AUTH_SERVER}/register`, {
       method: 'POST',
-      headers,
-      body: JSON.stringify(mut),
+      body: JSON.stringify(form),
+      headers: headersList,
     })
   );
-  if (err) return { success: false };
-  const json = (await res.json()) as { success: boolean };
-  return json;
+  if (res[1]) throw res[1];
+  const scc = await errorHandled(res[0].json());
+  if (scc[1]) throw scc[1];
+  const result = scc[0] as {
+    success: boolean;
+    publicKey: string | undefined;
+  };
+  return result;
 };
-
-const useSignupMutation = (form: SignUpMut, start: boolean) => {
-  const mutation = useMutation(doSignUp);
-  if (start) {
-    mutation.mutate(form, {
-      onError: (err: Error) => {
-        toast.error(err.message);
-      },
-    });
-  }
-  return mutation;
-};
-
-export default function Form(): JSX.Element {
-  const [token, setToken] = useState<string>(null);
-  const [form, setForm] = useState({
+const isDebug = !!process.env.REACT_APP_DEBUG;
+const SignUp: React.FC = function () {
+  const captchaRef = useRef<HCaptcha>(null);
+  // const navigate = useNavigate();
+  const location = useLocation() as SignupLocation;
+  const redirecturl = location.state?.from ?? '/'; // Handle with query params later.
+  // const [count,dispatch] =  useMachine(); // trigger in a useEffect based on signUpMutation status
+  const [form, setForm] = useState<SignUpMut>({
     uname: '',
     ps: '',
     web3Address: '',
     captcha: '',
   });
-  const [startMutation, setStartMutation] = useState(false);
-  const captchaRef = useRef<HCaptcha>(null);
-  const changeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
-  const onSubmit = () => {
-    // this reaches out to the hcaptcha library and runs the
-    // execute function on it. you can use other functions as well
-    // documented in the api:
-    // https://docs.hcaptcha.com/configuration#jsapi
-    captchaRef.current.execute();
-  };
+  // const auth = useAuthService();
+
+  const signUpMutation = useMutation(SIGNUP_MUTATION);
+  if (signUpMutation.status === 'error') {
+    const err = signUpMutation.error as Error;
+    const stdMsg = JSON.parse(err.message) as ApiErr; // Always. Assured by errorHandled.
+    const maybeMessage = stdMsg.error;
+    if (maybeMessage) toast.error('Error: '.concat(maybeMessage));
+    else toast.error("We can't sign you up right now, please try again later");
+    signUpMutation.reset();
+  }
+  if (signUpMutation.status === 'success') {
+    // if (count === 5) {
+    //   const redirecturl = location.state.from ?? '/';
+    //   navigate('/login', { state: { from: redirecturl } });
+    // }
+    // Return redirect component, counter should have been started.
+    return (
+      <p>
+        You've successfully signed in, you will be redirected automatically to the login page to
+        credentials you signed up with in 5 seconds.
+        <br /> If you're not automatically redirected, use this{' '}
+        <Link to='/login' state={{ from: redirecturl }}>
+          link
+        </Link>
+      </p>
+    );
+  }
+
+  // const onSubmit = () => {
+  //   // this reaches out to the hcaptcha library and runs the
+  //   // execute function on it. you can use other functions as well
+  //   // documented in the api:
+  //   // https://docs.hcaptcha.com/configuration#jsapi
+  //   captchaRef.current.execute();
+  // };
 
   const onExpire = () => {
-    console.log('hCaptcha Token Expired');
+    setForm((F) => ({ ...F, captcha: '' }));
+    if (isDebug) console.log('hCaptcha Token Expired');
   };
 
   const onError = (err: string) => {
-    console.log(`hCaptcha Error: ${err}`);
+    setForm((F) => ({ ...F, captcha: '' }));
+    if (isDebug) console.log(`hCaptcha Error: ${err}`);
   };
-  const res = useSignupMutation(form, startMutation);
-  useEffect(() => {
-    if (token && form.ps && form.uname && form.web3Address) {
-      setForm((f) => ({ ...f, captcha: token }));
-      setStartMutation(true);
+  const handleSubmit: (e: FormEvent<HTMLFormElement>, data: FormProps) => void = (e) => {
+    e.preventDefault();
+    if (!form.captcha) {
+      captchaRef.current.execute();
+      return;
     }
-    // Keep: react-hooks/exhaustive-deps
-    // Possible infinite loop
-  }, [token, form.ps, form.uname, form.web3Address]);
-  useEffect(() => {
-    if (res.data) {
-      if (res.data.success) {
-        toast.success('Successfully registered');
-      } else {
-        toast.error('Registration failed');
-        res.reset();
-      }
-    } else if (startMutation) setStartMutation(false);
-    // Possible infinite loop
-  }, [startMutation, res]);
-
+    signUpMutation.mutate(form);
+  };
+  const handleChange: (e: ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void = (
+    _e,
+    data
+  ) => {
+    if (isDebug) console.log(data, data.value);
+    setForm((F) => ({ ...F, [data.name]: data.value }));
+  };
+  const handleVerify: (token: string) => void = (token) => {
+    setForm((F) => ({ ...F, captcha: token }));
+  };
+  // Shouldn't happen
+  // // Redirect to last location if signed in before coming here.
+  // if (isAuthenticated) {
+  //   const redirectUrl = location.state?.from ?? '/';
+  //   navigate(redirectUrl);
+  // }
   return (
-    <form>
-      <input
-        required
-        type='username'
-        value={form.uname}
-        name='uname'
-        placeholder='Username'
-        onChange={changeHandler}
-      />
-      <input
-        required
-        type='password'
-        value={form.ps}
-        name='ps'
-        placeholder='Password'
-        onChange={changeHandler}
-      />
-      <input
-        required
-        type='text'
-        value={form.web3Address}
-        name='web3Address'
-        placeholder='web3Address'
-        onChange={changeHandler}
-      />
-
-      <SubmitBtn onClick={onSubmit}>Submit</SubmitBtn>
+    <div>
+      <Form onSubmit={handleSubmit}>
+        <Form.Input
+          fluid
+          label='Username'
+          name='uname'
+          value={form.uname}
+          onChange={handleChange}
+        />
+        <Form.Input
+          fluid
+          label='Password'
+          name='ps'
+          type='password'
+          value={form.ps}
+          onChange={handleChange}
+        />
+        <Form.Input
+          required
+          type='text'
+          value={form.web3Address}
+          name='web3Address'
+          placeholder='web3Address'
+          onChange={handleChange}
+        />
+        <Form.Button type='submit' content='Submit' fluid color='purple' onChange={handleChange} />
+      </Form>
       <HCaptcha
-        // This is testing sitekey, will autopass
-        // Make sure to replace
-        sitekey='dad203ef-ed62-47f3-965f-baa67b9dbbac'
-        onVerify={setToken}
+        sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY ?? ''}
+        onVerify={handleVerify}
         onError={onError}
         onExpire={onExpire}
         ref={captchaRef}
       />
-      {token && <div>Success! Token: {token}</div>}
-    </form>
+    </div>
   );
-}
+};
+
+export default SignUp;

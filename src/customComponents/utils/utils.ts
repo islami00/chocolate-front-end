@@ -1,7 +1,7 @@
 /* eslint-disable */
 // Utility - by call order in app
 // prettier-ignore
-import { AbstractArray } from '@polkadot/types/codec/AbstractArray';
+import { isJsonObject } from '@polkadot/util';
 import { ReviewID } from 'chocolate/interfaces';
 // construct promise wrapper around localstorage
 const asyncCacheLocal = (key: string, value: string) =>
@@ -57,7 +57,7 @@ function get_browser() {
     };
   }
 //  Thanks to: https://stackoverflow.com/a/16938481/16071410
-
+/** eslint-enable */
 async function fetchData<Type>(
   url: string,
   setload?: Function,
@@ -81,6 +81,19 @@ async function fetchData<Type>(
   return null;
 }
 
+// Share this interface
+/** 
+ * The server can choose to send a json payload along with errors as they happen, the payload must follow this format to ensure the client can catch it 
+ * Update to defined once all server routes are updated to send this format over.
+ * */
+export interface ApiErr{
+  error?: string;
+}
+/** 
+ * Unwraps promise in mutex tuple
+ * Error format(at least, for fetch() promises):  {error: "Server said : Status: ${status} StatusText: ${statusText} ErrorMessage: ${serverErrorMsg}"}. 
+ * Expanded in ApiErr.
+ **/
 async function errorHandled<type = Response>(
   prom: Promise<type>
   ): Promise<[type, null] | [null, Error]> {
@@ -88,12 +101,18 @@ async function errorHandled<type = Response>(
     const response = await prom;
     
     if (response instanceof Response && !response.ok) {
-      throw new Error(`Server said : ${response.status}! ${response.statusText}`);
+      // See if any json payload
+      const bod = await response.text();
+      // Default err.
+      const defaultMsg: ApiErr =  {error: `Status: ${response.status} StatusText: ${response.statusText} message: ${bod}`};
+      if(isJsonObject(bod)) throw new Error(bod); // hoping server passed standard error json. Could validate.
+      else throw new Error(JSON.stringify(defaultMsg));
+      
     }
-
     return [response, null];
   } catch (error) {
-    if(!(error instanceof Error)){return [null, new Error(`Unknown error ${JSON.stringify(error)}`)]}
+    const unknownErr: ApiErr = {error:`An Unknown error occurred ${JSON.stringify(error)}` }
+    if(!(error instanceof Error)) return [null, new Error(JSON.stringify(unknownErr))];
     return [null, error];
   }
 }
@@ -103,6 +122,6 @@ function sendTrace(trace: string, browser: string, ...extras: string[]) {
   console.log(browser);
 }
 type errType = { status: boolean; content: string[] };
-export { fetchData, sendTrace, sleep, errorHandled, toPinataFetch, sortReviewIDs as sortAnyNum , asyncCacheLocal,asyncGetLocal};
+export { fetchData, sendTrace, sleep, errorHandled, toPinataFetch, sortReviewIDs as sortAnyNum, asyncCacheLocal, asyncGetLocal };
 export type { errType };
 
