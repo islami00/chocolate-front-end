@@ -1,4 +1,5 @@
-import { createContext, Reducer, useEffect, useContext, useReducer } from 'react';
+import { createContext, Reducer, useContext, useEffect, useReducer } from 'react';
+import toast from 'react-hot-toast';
 import { useAuthState } from '../hooks/useAuth';
 
 const AuthContext = createContext({
@@ -9,6 +10,8 @@ const AuthContext = createContext({
   login: (user: { publicKey: string }) =>
     console.error('Login context not initialised properly', user),
   logout: () => {},
+  // Use this to run the user skeleton. State handled by auth query's initial run.
+  isInitiallyLoading: true,
 });
 interface AuthReducerState {
   isAuthenticated: boolean;
@@ -62,20 +65,31 @@ const AuthProvider: React.FC = ({ children }) => {
     dispatch({ type: 'LOGOUT' });
   };
   // Provide a loading state so UI can react more.
-  const stateAuth = useAuthState();
+  const stateQ = useAuthState();
 
   useEffect(() => {
-    if (stateAuth.isAuthenticated) {
-      login(stateAuth.user);
-    } else if (!stateAuth.isAuthenticated) {
-      // else logout from here
+    if (!stateQ.data) {
+      if (stateQ.status === 'error') {
+        // Infinite loading if on initial run stateQ errs, show users something.
+        toast.error('Something went wrong logging you in, please refresh your browser');
+      }
+      return;
+    }
+    if (stateQ.data.isAuthenticated) {
+      login(stateQ.data.user);
+    } else if (!stateQ.data.isAuthenticated) {
       logout();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateAuth.isAuthenticated]);
+  }, [stateQ.data, stateQ.status]);
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated: state.isAuthenticated, user: state.user, login, logout }}
+      value={{
+        isAuthenticated: state.isAuthenticated,
+        user: state.user,
+        login,
+        logout,
+        isInitiallyLoading: stateQ.isLoading,
+      }}
     >
       {children}
     </AuthContext.Provider>

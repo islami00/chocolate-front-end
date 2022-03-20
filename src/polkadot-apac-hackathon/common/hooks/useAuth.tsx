@@ -3,7 +3,7 @@
 /* eslint-disable import/no-unresolved */
 import { ApiErr, errorHandled } from 'chocolate/customComponents/utils';
 /* eslint-enable import/no-unresolved */
-import { useQuery } from 'react-query';
+import { useQuery, UseQueryResult } from 'react-query';
 
 interface AuthRes {
   success: boolean;
@@ -19,7 +19,7 @@ export interface AuthState {
     publicKey: string;
   };
 }
-type AuthStateFx = () => AuthState;
+type AuthStateFx = () => UseQueryResult<AuthState, Error>;
 /**
  * This hook buttresses the authProvider by providing some state and initialisation logic external to the login page.
  * Basically, It pings the server to see if the user is logged in.
@@ -27,39 +27,37 @@ type AuthStateFx = () => AuthState;
 export const useAuthState: AuthStateFx = () => {
   const authCheckEndpoint = `${process.env.REACT_APP_AUTH_SERVER}/auth/check`;
   const fetchServer = async function () {
+    const unauthorized = { isAuthenticated: false, user: { publicKey: '' } };
     const headers = {
       Accept: 'application/json',
     };
     const res = await errorHandled(
       fetch(authCheckEndpoint, { method: 'GET', headers, credentials: 'include' })
     );
-    // User logged out, throw.
-    if (res[1]) throw res[1];
+    if (res[1]) {
+      const msg = res[1].message;
+      const errorObj = JSON.parse(msg) as ApiErr; // Should be an object of that shape. Reevaluate errorHandled if otherwise.
+      console.assert(!errorObj.code, `code passed successfully ${JSON.stringify(errorObj)}`);
+      // Case 1: logged out.
+      if (errorObj.code === 401) {
+        return unauthorized;
+      }
+      // Else, undefined state. Throw.
+      throw res[1];
+    }
     const succ = await errorHandled<AuthRes>(res[0].json());
-    if (succ[1]) throw succ[1];
-    return succ[0];
+    if (succ[1]) throw succ[1]; // Undefined state.
+    // Case 2:  Logged in.
+    return { isAuthenticated: succ[0].success, user: succ[0].user };
   };
-  const qry = useQuery<AuthRes, Error>('auth', fetchServer, {
+  const qry = useQuery<AuthState, Error>('auth', fetchServer, {
     // Refresh instead.
     refetchOnWindowFocus: false,
-    // Only run once.
     retry: 3,
     refetchInterval: false,
     // Override default err
     onError: () => {},
   });
-  // Include loading state and have data checked manually.
-  const unauthorizedRes = { isAuthenticated: false, user: { publicKey: '' } };
-  // Means user is not logged in initially
-  if (!qry.data) return unauthorizedRes;
-  // Means checked failed at some point.
-  if (qry.isError) {
-    const err = JSON.parse(qry.error.message) as ApiErr;
-    if (err.error === 'Unauthorized') {
-      // User is properly logged out.
-      return unauthorizedRes;
-    }
-  }
-  const { data } = qry;
-  return { user: data.user, isAuthenticated: data.success };
+
+  return qry;
 };

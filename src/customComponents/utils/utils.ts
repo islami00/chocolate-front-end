@@ -85,9 +85,11 @@ async function fetchData<Type>(
 /** 
  * The server can choose to send a json payload along with errors as they happen, the payload must follow this format to ensure the client can catch it 
  * Update to defined once all server routes are updated to send this format over.
+ * ToDo: Create a custom error class that exposes these params via config.
  * */
 export interface ApiErr{
   error?: string;
+  code?: number;
 }
 /** 
  * Unwraps promise in mutex tuple
@@ -101,11 +103,15 @@ async function errorHandled<type = Response>(
     const response = await prom;
     
     if (response instanceof Response && !response.ok) {
-      // See if any json payload
-      const bod = await response.text();
-      // Default err.
-      const defaultMsg: ApiErr =  {error: `Status: ${response.status} StatusText: ${response.statusText} message: ${bod}`};
-      if(isJsonObject(bod)) throw new Error(bod); // hoping server passed standard error json. Could validate.
+      let bod = await response.text();
+      const defaultMsg: ApiErr =  {error: `StatusText: ${response.statusText} message: ${bod}`, code:response.status};
+      // See if any json. Append code if so, along with json.
+      if(isJsonObject(bod)) {
+        const json  = JSON.parse(bod) as ApiErr;
+        json.code =  response.status;
+        bod = JSON.stringify(json);
+        throw new Error(bod); 
+      }
       else throw new Error(JSON.stringify(defaultMsg));
       
     }
