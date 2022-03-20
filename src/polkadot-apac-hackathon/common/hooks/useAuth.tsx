@@ -52,7 +52,8 @@ export const useAuthState: AuthStateFx = () => {
   };
   const qry = useQuery<AuthState, Error>('auth', fetchServer, {
     // Refresh instead.
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    staleTime: 1000 * 60 * 30, // session time to refresh.
     retry: 3,
     refetchInterval: false,
     // Override default err

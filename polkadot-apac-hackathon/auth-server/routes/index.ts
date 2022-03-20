@@ -1,6 +1,6 @@
 import passport from 'passport';
 import express from 'express';
-import { loginPostController, registerPostController } from '../controllers/UserControllers';
+import { loginPostController, registerPostController, registerPostValidator, sanitiseBodyFields } from '../controllers/UserControllers';
 const router = express.Router();
 
 // https://expressjs.com/en/guide/error-handling.html
@@ -26,8 +26,9 @@ const isAuthHandler: express.RequestHandler = (req, res, next) => {
 
 router.post('/login', passport.authenticate('local'), loginPostController);
 
-router.post('/register', registerPostController);
+router.post('/register',sanitiseBodyFields(['uname','web3Address']),registerPostValidator, registerPostController);
 router.get('/auth/check', isAuthHandler,(req,res,next)=>{
+  req.session?.touch(); // Refresh
   res.json({
     success: true,
     user: {
