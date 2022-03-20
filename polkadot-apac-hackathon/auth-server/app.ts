@@ -17,21 +17,38 @@ import { errorHandled } from './utils/regUtils';
  * -------------- GENERAL SETUP ----------------
  */
 const app = express();
+// Cors
+const isDev = process.env.NODE_ENV === 'test' && process.env.NODE_RAW === 'true';
+let corsList: string[];
+if(isDev){
+  corsList =  [
+      'http://localhost:3000',
+      'https://chocolate-demo.web.app',
+      'https://chocolate-web-app-nightly.web.app',
+      // Dynamically include dev list
+      'https://8000-chocolatenetwor-chocolat-qnb1x5sione.ws-eu38.gitpod.io',
+      'http://localhost:8000',
+    ];
+} else{
+  corsList = [
+    'http://localhost:3000',
+    'https://chocolate-demo.web.app',
+    'https://chocolate-web-app-nightly.web.app',
+    // Dynamically include dev list
+    'http://localhost:8000',
+  ]
+}
 /*
  * express middles - logger is necessarry for development
  */
 app.use(
+  // https://github.com/pillarjs/understanding-csrf 
   cors({
-    origin: [
-      'http://localhost:3000',
-      'https://chocolate-demo.web.app',
-      // Dynamically include dev list
-      'https://8000-chocolatenetwor-chocolat-qnb1x5sione.ws-eu38.gitpod.io',
-      'http://localhost:8000',
-    ],
+    origin: corsList,
     credentials: true,
   })
 );
+// Config continue
 app.use(logger('dev'));
 app.use(json());
 app.use(urlencoded({ extended: false }));
@@ -64,28 +81,27 @@ app.use(async (req, res, next) => {
       resave: false,
       saveUninitialized: true,
       store,
-      // despite passport, we still manage our own cookies so we can set as needed.
-      // secure by default
       cookie: {
-        // specify samesite=false and secure for cross origin
-        sameSite: 'none',
-        secure: process.env.NODE_ENV === 'production', // set to true in production for https sec
+        // strict means only same-origin. cors should protect post for json endpoints.
+        sameSite: 'lax',
+        secure: true, 
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
+        
       },
     });
     memo.middle = middleWare;
   }
   middleWare(req, res, next);
 });
-
+// This has to be set so application knows it is behind a proxy such as in gitpod env. Not sure about google either -- review security.
+app.set('trust proxy', 1);
 app.use(passport.initialize());
 app.use(passport.session());
 
 /**
  * -------------- ROUTES ----------------
  */
-
 // Imports all of the routes from ./routes/index.js as handlers for "/".
 // Nesting can happen at the index router since this kicks control of "/" to it.
 app.use(indexRouter);

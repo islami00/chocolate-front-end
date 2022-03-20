@@ -2,10 +2,13 @@
 import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
 /* eslint-enable import/no-unresolved */
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { UseMutateFunction, useMutation } from 'react-query';
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import AccountSelector from '../../AccountSelector';
 import WalletPurple from '../../assets/wallet-purple.svg';
 import { useAccounts, useSubstrate } from '../../substrate-lib/SubstrateContext';
+import { errorHandled } from '../utils';
 import './index.css';
 import './wallet.css';
 
@@ -75,9 +78,43 @@ const HandleWallet = function () {
   }
   return <WalletModal />;
 };
-
+interface LogoutResult {
+  success: boolean;
+}
+const LOGOUT_MUTATION = async function () {
+  const res = await errorHandled(
+    fetch(`${process.env.REACT_APP_AUTH_SERVER}/logout`, { method: 'POST', credentials: 'include' })
+  );
+  if (res[1]) throw res[1];
+  const json = await errorHandled<LogoutResult>(res[0].json());
+  if (json[1]) throw json[1];
+  return json[0];
+};
 function Navlinks() {
-  const { isAuthenticated } = useAuthService();
+  const { isAuthenticated, logout } = useAuthService();
+  // Get logout mutation.
+  const logoutMutation = useMutation(LOGOUT_MUTATION);
+  // Move to authButtons
+  if (logoutMutation.error) {
+    // Sth went wrong logging out.
+    toast.error('Something went wrong logging you out.');
+    logoutMutation.reset();
+  }
+  useEffect(() => {
+    if (logoutMutation.status === 'success') {
+      logout();
+      logoutMutation.reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [logoutMutation.status]);
+  console.count('rendered');
+  const handleLogout = function (
+    doLogout: UseMutateFunction<LogoutResult, unknown, void, unknown>
+  ) {
+    return function () {
+      doLogout();
+    };
+  };
   return (
     <nav className='nav-links'>
       <Link to='/' className='nav-link nav-link__home'>
@@ -104,12 +141,30 @@ function Navlinks() {
             CHOC Token
           </Link>
         </li>
-        {!isAuthenticated && (
+        {/* Abstract to authBtns component */}
+        {isAuthenticated ? (
           <li>
-            <Link className='nav-link' to='/login'>
-              Login
-            </Link>
+            <button
+              type='button'
+              onClick={handleLogout(logoutMutation.mutate)}
+              className='ui button purple nav-link'
+            >
+              Logout
+            </button>
           </li>
+        ) : (
+          <>
+            <li>
+              <Link className='nav-link' to='/login'>
+                Login
+              </Link>
+            </li>
+            <li>
+              <Link className='nav-link' to='/signup'>
+                Sign up
+              </Link>
+            </li>
+          </>
         )}
       </ul>
     </nav>

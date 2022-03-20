@@ -1,12 +1,12 @@
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 /* eslint-disable import/no-unresolved */
-import { errorHandled } from 'chocolate/customComponents/utils';
+import { ApiErr, errorHandled } from 'chocolate/customComponents/utils';
 import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
 /* eslint-enable import/no-unresolved */
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
-import { Location as RRLocation, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Location as RRLocation, Navigate, useLocation } from 'react-router-dom';
 import { Form, FormProps, InputOnChangeData } from 'semantic-ui-react';
 
 interface LoginLocation extends RRLocation {
@@ -28,6 +28,7 @@ const LOGIN_MUTATION = async function (form: SignInMut) {
   const res = await errorHandled(
     fetch(`${process.env.REACT_APP_AUTH_SERVER}/login`, {
       method: 'POST',
+      credentials: 'include',
       body: JSON.stringify(form),
       headers: headersList,
     })
@@ -55,11 +56,12 @@ const Login: React.FC = function () {
 
   const loginMutation = useMutation(LOGIN_MUTATION);
   if (loginMutation.status === 'error') {
-    // Strip out message
     const err = loginMutation.error as Error;
-    const maybeMessage = err.message.split('ErrorMessage: ')?.[1];
+    const stdMsg = JSON.parse(err.message) as ApiErr;
+    const maybeMessage = stdMsg.error;
     if (maybeMessage) toast.error('Error: '.concat(maybeMessage));
-    else toast.error("We can't sign you in right now, please try again later");
+    else toast.error("We can't log you in right now, please try again later");
+    loginMutation.reset();
   }
   useEffect(() => {
     if (loginMutation.status === 'success') {

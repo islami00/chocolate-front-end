@@ -113,7 +113,9 @@ async function errorHandled<type = Response>(
   } catch (error) {
     const unknownErr: ApiErr = {error:`An Unknown error occurred ${JSON.stringify(error)}` }
     if(!(error instanceof Error)) return [null, new Error(JSON.stringify(unknownErr))];
-    return [null, error];
+    let err =  error;
+    if(!isJsonObject(error.message)) err =  new Error(JSON.stringify({error: JSON.stringify(err.message)}));
+    return [null, err];
   }
 }
 

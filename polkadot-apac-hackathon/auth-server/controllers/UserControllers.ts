@@ -17,13 +17,16 @@ interface RegisterRequest extends express.Request {
 interface RegisterRequestHandler extends express.RequestHandler {
   (req: RegisterRequest, res: express.Response, next: express.NextFunction): Promise<void>;
 }
+interface ApiErr{
+  error?: string;
+}
 export const registerPostController: RegisterRequestHandler = async (
   req: RegisterRequest,
   res,
   next
 ) => {
   if (typeof req.body.ps !== 'string') {
-    res.status(400).send('invalid password');
+    res.status(400).json({error: 'invalid password'});
     return;
   }
   // validate first - input then user struct
@@ -34,7 +37,7 @@ export const registerPostController: RegisterRequestHandler = async (
   const validUname = validator.isAlphanumeric(uname);
   if (!validUname) {
      res.status(400);
-     res.json('Invalid username');
+     res.json({error: 'Invalid username'});
      return;
   }
   // Hopefully express catches this.

@@ -1,4 +1,4 @@
-import { createContext, Reducer, useContext, useEffect, useReducer } from 'react';
+import { createContext, Reducer, useEffect, useContext, useReducer } from 'react';
 import { useAuthState } from '../hooks/useAuth';
 
 const AuthContext = createContext({
@@ -43,7 +43,7 @@ const AuthReducer: Reducer<AuthReducerState, AuthReducerActions> = (state, actio
       return state;
   }
 };
-
+/** This provider manages login state of a user on the app, independent of the server. It only stores the user object and no mutations. */
 const AuthProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, {
     isAuthenticated: false,
@@ -57,21 +57,22 @@ const AuthProvider: React.FC = ({ children }) => {
   };
 
   const logout = () => {
+    // Log user out on server too.
+    // Not implemented yet for manual logout. WIP.
     dispatch({ type: 'LOGOUT' });
   };
-  // This is probably what causes the confusion with login state.
-  // Should migrate to jwt based soon
+  // Provide a loading state so UI can react more.
   const stateAuth = useAuthState();
 
   useEffect(() => {
-    if (stateAuth.isAuthenticated && !state.isAuthenticated) {
+    if (stateAuth.isAuthenticated) {
       login(stateAuth.user);
-    } else if (state.isAuthenticated && !stateAuth.isAuthenticated) {
+    } else if (!stateAuth.isAuthenticated) {
       // else logout from here
       logout();
     }
-  }, [state.isAuthenticated, stateAuth]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stateAuth.isAuthenticated]);
   return (
     <AuthContext.Provider
       value={{ isAuthenticated: state.isAuthenticated, user: state.user, login, logout }}
