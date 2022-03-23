@@ -1,41 +1,85 @@
 name: CD - Nightly
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
-    # nightly releases should only stem from development. No auto checks for now though, only branch protection for nightly env.
+    # nightly releases should only stem from related tags. No auto checks for now though, only branch protection for nightly env.
     tags:
-      - v**nightly*
+      - v*.*.*-nightly*
 
 jobs:
   web-app:
     if: "! startsWith(github.event.head_commit.message, '[CI Skip]')"
     environment: nightly
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_ENV: nightly
     steps:
-      # Repeat build.
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+      # Repeat Build Setup. Separate terminal outs.
       - run: yarn install --immutable
       - run: yarn lint
-      - run: |
+      # Configure app specially for nightly env
+      - name: Configure, build, and zip.
+        run: |
+          node ./scripts/frontend_env_set.cjs
           yarn build
-          zip web-app-build-artifacts.zip -r ./build
-      - uses: w9jds/firebase-action@master
+          zip web-app-nightly-build-artifacts.zip -r ./build
+      - name: Deploy to firebase hosting
+        uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
           PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ALIAS }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       # On success, upload artifacts to release
-      - uses: softprops/action-gh-release@v1
+      # Supports continuous upload. https://github.com/softprops/action-gh-release/blob/master/CHANGELOG.md#018.  Use this in server flow too.
+      - name: Upload artifacts to release
+        uses: softprops/action-gh-release@v1
         with:
           files: |
-            web-app-build-artifacts.zip
+            web-app-nightly-build-artifacts.zip
             LICENSE
-
-  # create_release:
-  # Create a release from the tag right after.
+  servers:
+    # Oidc perms.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server: ['polkadot-apac-hackathon/auth-server']
+    # All scripts run in server wd.
+    defaults:
+      run:
+        working-directory: ${{ matrix.server }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      # Build
+      - run: | 
+          npm install -g npm@7
+          sh ./scripts/gcloud.sh
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: $SERVER_WORKLOAD_IDENTITY_PROVIDER
+          service_account: $SERVER_SERVICE_ACCOUNT
+        env:
+          SERVER_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.SERVER_WORKLOAD_IDENTITY_PROVIDER }}
+          SERVER_SERVICE_ACCOUNT: ${{ secrets.SERVER_SERVICE_ACCOUNT }}
+      # Might fail. Deploy auth server, zip binaries
+      - run: npm run publish-code -- -q
+        working-directory: ${{ matrix.server }}/lib
+      - run: zip auth-server-nightly-build-artifacts.zip -r ./lib
+      # Should update previous release
+      - name: Upload server artifacts to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            auth-server-nightly-build-artifacts.zip

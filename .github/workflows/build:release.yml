@@ -27,4 +27,5 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+          # Sticking with minimal version fn, nx run:many affected --tags should solve this. https://github.com/nrwl/nx/issues/2675
       - run: sh ./scripts/server_ci_build.sh ${{ matrix.server }}
