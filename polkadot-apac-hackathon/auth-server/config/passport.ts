@@ -11,12 +11,9 @@ const customFields: IStrategyOptionsWithRequest = {
 const verifyCallBackLocal: VerifyFunctionWithRequest = (_, username, password, done) => {
   // find by uname
   // Replace later with substrate accountId as that will be our new primary key
-  // To-do: add validate middleware for input before find
   if (typeof password !== 'string') {
     return done(null, false, { message: 'Password is not a string' });
   }
-  const isAlpha = validator.isAlphanumeric(username);
-  const isStrongPs = validator.isStrongPassword(password);
   UserPromise.then(async _User=>{
     const user = await _User.findOne({ profile: { username } });
     if (!user) {

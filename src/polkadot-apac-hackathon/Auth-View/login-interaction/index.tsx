@@ -1,9 +1,12 @@
 import HCaptcha from '@hcaptcha/react-hcaptcha';
-// eslint-disable-next-line import/no-unresolved
+/* eslint-disable import/no-unresolved */
+import { ApiErr, errorHandled } from 'chocolate/customComponents/utils';
 import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
+/* eslint-enable import/no-unresolved */
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
-import { useNavigate, useLocation, Location as RRLocation } from 'react-router-dom';
+import { Location as RRLocation, Navigate, useLocation } from 'react-router-dom';
 import { Form, FormProps, InputOnChangeData } from 'semantic-ui-react';
 
 interface LoginLocation extends RRLocation {
@@ -11,55 +14,61 @@ interface LoginLocation extends RRLocation {
     from?: string;
   };
 }
-interface SignUpMut {
+interface SignInMut {
   uname: string;
   ps: string;
-  web3Address: string;
   captcha: string;
 }
-const LOGIN_MUTATION = async (form: SignUpMut) => {
+const LOGIN_MUTATION = async function (form: SignInMut) {
   const headersList = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   };
-
-  const scc = (await fetch(`${process.env.REACT_APP_AUTH_SERVER}/login`, {
-    method: 'POST',
-    body: JSON.stringify(form),
-    headers: headersList,
-  }).then((response) => response.json())) as {
+  //
+  const res = await errorHandled(
+    fetch(`${process.env.REACT_APP_AUTH_SERVER}/login`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(form),
+      headers: headersList,
+    })
+  );
+  if (res[1]) throw res[1];
+  const scc = await errorHandled(res[0].json());
+  if (scc[1]) throw scc[1];
+  const result = scc[0] as {
     success: boolean;
     publicKey: string | undefined;
   };
-
-  return scc;
+  return result;
 };
 const Login: React.FC = function () {
   const captchaRef = useRef<HCaptcha>(null);
-  const navigate = useNavigate();
   const location = useLocation() as LoginLocation;
-  const [token, setToken] = useState<string>(null);
+  const redirectUrl = location.state?.from ?? '/';
   const { isAuthenticated } = useAuthService();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<SignInMut>({
     uname: '',
     ps: '',
-    web3Address: '',
     captcha: '',
   });
-  useEffect(() => {
-    if (token && form.ps && form.uname && form.web3Address) {
-      // Token is set, can submit here
-      setForm((f) => ({ ...f, captcha: token }));
-    }
-  }, [token, form.ps, form.uname, form.web3Address]);
   const auth = useAuthService();
 
   const loginMutation = useMutation(LOGIN_MUTATION);
-  if (loginMutation.status === 'success') {
-    auth.login({ publicKey: loginMutation.data.publicKey });
-    const redirectUrl = location?.state?.from ?? '/';
-    navigate(redirectUrl);
+  if (loginMutation.status === 'error') {
+    const err = loginMutation.error as Error;
+    const stdMsg = JSON.parse(err.message) as ApiErr;
+    const maybeMessage = stdMsg.error;
+    if (maybeMessage) toast.error('Error: '.concat(maybeMessage));
+    else toast.error("We can't log you in right now, please try again later");
+    loginMutation.reset();
   }
+  useEffect(() => {
+    if (loginMutation.status === 'success') {
+      auth.login({ publicKey: loginMutation.data.publicKey });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loginMutation.status, loginMutation.data]);
 
   // const onSubmit = () => {
   //   // this reaches out to the hcaptcha library and runs the
@@ -70,24 +79,34 @@ const Login: React.FC = function () {
   // };
 
   const onExpire = () => {
+    setForm((F) => ({ ...F, captcha: '' }));
     console.log('hCaptcha Token Expired');
   };
 
   const onError = (err: string) => {
+    setForm((F) => ({ ...F, captcha: '' }));
     console.log(`hCaptcha Error: ${err}`);
   };
-  // Redirect to last location if signed in, else render sign in component.
-
   const handleSubmit: (e: FormEvent<HTMLFormElement>, data: FormProps) => void = (e) => {
     e.preventDefault();
-    if (token) loginMutation.mutate(form);
+    if (!form.captcha) {
+      captchaRef.current.execute();
+      return;
+    }
+    loginMutation.mutate(form);
   };
-  const handleChange: (e: ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange: (e: ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void = (
+    _e,
+    data
+  ) => {
+    setForm((F) => ({ ...F, [data.name]: data.value }));
   };
+  const handleVerify: (token: string) => void = (token) => {
+    setForm((F) => ({ ...F, captcha: token }));
+  };
+  // Redirect to last location if signed in
   if (isAuthenticated) {
-    const redirectUrl = location?.state?.from ?? '/';
-    navigate(redirectUrl);
+    return <Navigate to={redirectUrl} />;
   }
   return (
     <div>
@@ -112,8 +131,8 @@ const Login: React.FC = function () {
       <HCaptcha
         // This is testing sitekey, will autopass
         // Make sure to replace
-        sitekey='dad203ef-ed62-47f3-965f-baa67b9dbbac'
-        onVerify={setToken}
+        sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY ?? ''}
+        onVerify={handleVerify}
         onError={onError}
         onExpire={onExpire}
         ref={captchaRef}

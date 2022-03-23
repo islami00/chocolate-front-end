@@ -23,6 +23,7 @@
     "debug": "^4.3.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-mongo-sanitize": "^2.2.0",
     "express-session": "^1.17.0",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.1",

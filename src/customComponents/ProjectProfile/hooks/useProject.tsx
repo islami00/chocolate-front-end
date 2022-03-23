@@ -87,7 +87,7 @@ const useSingleProject = function (api: ApiPromise, id: string, shouldFire: bool
     return [proj.unwrapOrDefault(), key] as [ProjectAl, ProjectID];
   };
   // Use process.env
-  const debug = !!process.env.DEBUG;
+  const debug = !!process.env.REACT_APP_DEBUG;
   const u = new U32(api.registry, id);
   if (debug) console.log(u.toJSON());
   return useQuery<[ProjectAl, ProjectID], Error>({
@@ -175,8 +175,12 @@ export const noRevErr = 'Review not found';
  */
 const useParallelReviews = function (api: ApiPromise, keys: ReviewKeyAl[], shouldFire: boolean) {
   const getOne = async function (key: ReviewKeyAl) {
-    console.count('ReviewAl');
-    console.log('key', key);
+    const debug = !!process.env.REACT_APP_DEBUG;
+
+    if (debug) {
+      console.count('ReviewAl');
+      console.log('key', key);
+    }
     const rev = await api.query.chocolateModule.reviews(key[0], key[1]);
     // Short err handle. Doesn't matter in the scope of things though.
     if (rev.isNone) {
@@ -209,7 +213,7 @@ const useReviewsSubscription = function (
   keys: ReviewKeyAl[],
   shouldFire: boolean
 ) {
-  const isDebug = !!process.env.DEBUG;
+  const isDebug = !!process.env.REACT_APP_DEBUG;
   const queryClient = useQueryClient();
   useEffect(() => {
     let unsub: VoidFn;
