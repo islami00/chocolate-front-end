@@ -49,3 +49,4 @@ const userModel = db.model('User', schema);
 7. After deploying, everything should be fine now. Double check the app has access to secrets by making a request to it.
 
 For some reason, I had to enable cloud build for this. Not so sure how valid this is though. Same went for the default project. so I guess it's necessary for app engine.
+> Instead of using a service account key, you could instead use workload identity federation. I was able to get this working thanks to this [guide](https://www.padok.fr/en/blog/github-action-gcp-identity). On the gui, the tutorial is pretty straight forward, except for setting up the workload as a member of the service account. For this, you'll need to go to the service account you created under service accounts, and add a principal whose email is the "member" part, with the `workloadUser` permission. 

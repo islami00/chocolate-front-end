@@ -63,16 +63,14 @@ jobs:
       # Build
       - run: | 
           npm install -g npm@7
+          npm install
           sh ./scripts/gcloud.sh
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v0
         with:
-          workload_identity_provider: $SERVER_WORKLOAD_IDENTITY_PROVIDER
-          service_account: $SERVER_SERVICE_ACCOUNT
-        env:
-          SERVER_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.SERVER_WORKLOAD_IDENTITY_PROVIDER }}
-          SERVER_SERVICE_ACCOUNT: ${{ secrets.SERVER_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.SERVER_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVER_SERVICE_ACCOUNT }}
       # Might fail. Deploy auth server, zip binaries
       - run: npm run publish-code -- -q
         working-directory: ${{ matrix.server }}/lib
