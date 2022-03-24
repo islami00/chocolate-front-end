@@ -43,11 +43,12 @@ jobs:
             web-app-nightly-build-artifacts.zip
             LICENSE
   servers:
+    runs-on: ubuntu-latest
+    environment: nightly
     # Oidc perms.
     permissions:
       contents: 'read'
       id-token: 'write'
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         server: ['polkadot-apac-hackathon/auth-server']
