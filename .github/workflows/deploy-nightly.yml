@@ -2,11 +2,13 @@ name: CD - Nightly
 
 on:
   push:
+    branches:
+      - "development"
     # nightly releases should only stem from related tags. No auto checks for now though, only branch protection for nightly env.
-    tags:
-      - v*.*.*-nightly*
+    # tags:
+      # - v*.*.*-nightly*
   workflow_dispatch:
-  
+
 
 jobs:
   web-app:
