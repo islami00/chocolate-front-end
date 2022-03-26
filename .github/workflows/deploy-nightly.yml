@@ -33,8 +33,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: web-app-nightly-build
-          files: |
-            web-app-nightly-build.tar
+          path: web-app-nightly-build.tar
       - name: Deploy to firebase hosting
         uses: w9jds/firebase-action@master
         with:
@@ -71,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: '${{ env.ARTIFACT_NAME }}'
-          path: ./server-*.tar
+          path: ${{ matrix.server }}/server-*.tar
         # Placed last due to credential export.
       - name: Authenticate to Google Cloud
         id: auth

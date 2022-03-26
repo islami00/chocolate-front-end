@@ -8,19 +8,19 @@ const prCWD = path.resolve(__dirname, '../');
 const here = path.basename(prCWD);
 process.chdir(prCWD);
 // Get env, and tag
-const env = process.env.DEPLOY_ENV;
+const env = process.env.DEPLOY_ENV ? `-${process.env.DEPLOY_ENV}` : '';
 const ref = process.env.GITHUB_REF;
 console.log('Producing tar artifact for ', ref);
-let ver;
+let ver = '';
 if (ref) {
   const refArr = ref.split('/');
-  ver = refArr[refArr.length - 1];
+  ver = `-${refArr[refArr.length - 1]}`;
 }
 
 // Then do tar.
 (async function main() {
   // tar
-  const { stderr, stdout } = await execPromise(`tar -cvf server-${here}-${ver}-${env}.tar ./lib`);
+  const { stderr, stdout } = await execPromise(`tar -cvf server-${here}${ver}${env}.tar ./lib`);
   console.log(stdout);
   if (stderr) {
     throw new Error(stderr);
