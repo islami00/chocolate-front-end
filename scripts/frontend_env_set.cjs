@@ -6,11 +6,7 @@ const process = require('process');
 
 (async function main() {
   const env = process.env.DEPLOY_ENV;
-  if (!env) {
-    process.emitWarning('Deploy env not specified');
-    process.exitCode = 1;
-    return;
-  }
+  console.log('Deploying to env', env);
   if (env === 'nightly') {
     // Use path to resolve relative to script dir
     const nightlyEnv = await readFile(path.resolve(__dirname, '../.env.nightly'), {
