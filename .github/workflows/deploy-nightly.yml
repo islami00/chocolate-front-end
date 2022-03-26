@@ -89,9 +89,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Download artifacts
         uses: actions/download-artifact@v3
+        with:
+          path: github-downloaded-artifacts
       - name: Create release with artifacts
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            ./server-*.tar
-            ./web-*.tar
+          files: github-downloaded-artifacts/**/*.tar
