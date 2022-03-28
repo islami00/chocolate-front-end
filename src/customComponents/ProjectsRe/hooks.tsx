@@ -27,7 +27,11 @@ const useProjectKeys = function (api: ApiPromise) {
  * Fallback here would be to reject if api is unavailable and we haven't memoised.
  * Else we simply return memoised value.
  *  */
-const useParallelProjects = function (api: ApiPromise, keys: ProjectID[], shouldFire: boolean) {
+export const useParallelProjects = function (
+  api: ApiPromise,
+  keys: ProjectID[],
+  shouldFire: boolean
+) {
   // We require a ready api. This should be handled at the top level of any component that needs substrate
   const getOne = async function (key: ProjectID) {
     const proj = await api.query.chocolateModule.projects(key);
@@ -49,7 +53,11 @@ const useParallelProjects = function (api: ApiPromise, keys: ProjectID[], should
 /**  Then deal with websockets
  * Fallback here would be shouldFire && !fallback
  */
-const useProjectsSubscription = function (api: ApiPromise, keys: ProjectID[], shouldFire: boolean) {
+export const useProjectsSubscription = function (
+  api: ApiPromise,
+  keys: ProjectID[],
+  shouldFire: boolean
+) {
   const queryClient = useQueryClient();
   //  Subscribe once, more efficient with connections.
   useEffect(() => {
@@ -97,7 +105,10 @@ const useProjectsSubscription = function (api: ApiPromise, keys: ProjectID[], sh
 // Then get json metadata
 // Doesn't require api. SHould be fine so long as dependent memoises
 // This one's should fire depends on useParallelProjects
-const useProjectsWithMetadata = function (projects: [ProjectAl, ProjectID][], shouldFire: boolean) {
+export const useProjectsWithMetadata = function (
+  projects: [ProjectAl, ProjectID][],
+  shouldFire: boolean
+) {
   const retrieveMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
     // Get metadata
     const res = await errorHandled(fetch(toPinataFetch(pr.metadata.toJSON())));
@@ -162,7 +173,7 @@ const allCheck = function (states: QueryStatus[], status: QueryStatus) {
 };
 
 // Also, some metadata switcheroo to complete:
-const mockImages = function (pr: NewProjectWithIndex) {
+export const mockImages = function (pr: NewProjectWithIndex) {
   pr.project.metadata.icon = `https://avatars.dicebear.com/api/initials/${pr.project.metadata.name}.svg`;
   return pr;
 };

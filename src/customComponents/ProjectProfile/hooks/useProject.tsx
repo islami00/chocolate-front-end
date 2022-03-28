@@ -12,6 +12,7 @@ import {
   NewProjectWithIndex,
   NewReview,
   ReviewContent,
+  ReviewKeyAl,
   // eslint-disable-next-line import/no-unresolved
 } from 'chocolate/typeSystem/jsonTypes';
 import { useEffect, useMemo } from 'react';
@@ -21,7 +22,6 @@ import { useSubstrate } from '../../../substrate-lib';
 import { allCheck, resArr, shouldComputeValid } from '../../ProjectsRe/hooks';
 import { combineLimit, errorHandled, toPinataFetch } from '../../utils';
 
-type ReviewKeyAl = [AccountId, ProjectID];
 /**
  * Then deal with websockets
  * Fallback here would be shouldFire && !fallback
@@ -173,7 +173,11 @@ export const noRevErr = 'Review not found';
  * Presumably, shouldFire would satisfy fallbackCompliance as that would disable the query, avoiding retries from err.
  * #fallbackCompliant. If the queries never fire, the others will wait. If the queries have fired, they won't retry if erred. Else it's up to the others to handle fallout
  */
-const useParallelReviews = function (api: ApiPromise, keys: ReviewKeyAl[], shouldFire: boolean) {
+export const useParallelReviews = function (
+  api: ApiPromise,
+  keys: ReviewKeyAl[],
+  shouldFire: boolean
+) {
   const getOne = async function (key: ReviewKeyAl) {
     const debug = !!process.env.REACT_APP_DEBUG;
 
@@ -208,7 +212,7 @@ const useParallelReviews = function (api: ApiPromise, keys: ReviewKeyAl[], shoul
  * Also, same dep as earlier.
  * This time, include api in useEffect dependency for realtime updates.
  */
-const useReviewsSubscription = function (
+export const useReviewsSubscription = function (
   api: ApiPromise,
   keys: ReviewKeyAl[],
   shouldFire: boolean
@@ -255,7 +259,10 @@ const useReviewsSubscription = function (
  * Gets metadata associated with reviews.
  * #fallbackCompliant since it doesn't require api. Also, as called in useReviewReels, it works even if reviews array is empty (ui can handle final effect.)
  * */
-const useReviewsWithMetadata = function (reviews: [ReviewAl, ReviewKeyAl][], shouldFire: boolean) {
+export const useReviewsWithMetadata = function (
+  reviews: [ReviewAl, ReviewKeyAl][],
+  shouldFire: boolean
+) {
   const retrieveMeta = async function ([rev]: [ReviewAl, ReviewKeyAl]) {
     // Get metadata
     const res = await errorHandled(fetch(toPinataFetch(rev.content.toJSON())));
