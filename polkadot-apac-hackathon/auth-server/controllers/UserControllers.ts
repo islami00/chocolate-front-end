@@ -22,7 +22,6 @@ interface ApiErr {
 }
 /** Only allow alphanumerics with underscores and dashes used as word separators. No dots. Max len 20chars.*/
 const isUsername = function (uname: string) {
-  
   return (
     validator.isLength(uname, { max: 30, min: 1 }) &&
     validator.matches(uname, /^[A-Za-z][A-Za-z0-9]*(?:(_*|-*)[A-Za-z0-9]+)*$/)
@@ -30,15 +29,20 @@ const isUsername = function (uname: string) {
 };
 /**
  *  Creates middleware that escapes specific fields
- * ToDo: Move sanitisation to expressValidator */
-export const sanitiseBodyFields = function(fields: string[]){
-  return function(req,res,next){
-    // Sanitise for dom
-    fields.forEach((field)=>req.body[field] = validator.escape(field))
-    // Sanitise for db.
-    next();
-  } as RequestHandler
-}
+ * ToDo: Move sanitisation to expressValidator
+ * Setup express validator for whitelisting these instead.
+ *  */
+export const sanitiseBodyFields = function (fields: string[]) {
+  return function (req, res, next) {
+    try {
+      // Sanitise for dom
+      fields.forEach((field) => (req.body[field] = validator.escape(req.body[field])));
+      next();
+    } catch (error) {
+      next(error);
+    }
+  } as RequestHandler;
+};
 
 export const registerPostValidator: RegisterRequestHandler = async function (
   req: RegisterRequest,
