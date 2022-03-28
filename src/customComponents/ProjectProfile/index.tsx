@@ -136,8 +136,9 @@ const ReviewReel: RevReel = function (props) {
 
   /** Begin UI states */
   // Loading intially...
+  const debug = !!process.env.REACT_APP_DEBUG;
   let L = null;
-  console.log(reelData);
+  if (debug) console.log(reelData);
 
   if (anyInitiallyLoading) {
     L = loader('Fetching reviews...');

@@ -43,6 +43,7 @@ const LOGIN_MUTATION = async function (form: SignInMut) {
   return result;
 };
 const Login: React.FC = function () {
+  const debug = !!process.env.REACT_APP_DEBUG;
   const captchaRef = useRef<HCaptcha>(null);
   const location = useLocation() as LoginLocation;
   const redirectUrl = location.state?.from ?? '/';
@@ -80,12 +81,11 @@ const Login: React.FC = function () {
 
   const onExpire = () => {
     setForm((F) => ({ ...F, captcha: '' }));
-    console.log('hCaptcha Token Expired');
   };
 
   const onError = (err: string) => {
     setForm((F) => ({ ...F, captcha: '' }));
-    console.log(`hCaptcha Error: ${err}`);
+    if (debug) console.log(`hCaptcha Error: ${err}`);
   };
   const handleSubmit: (e: FormEvent<HTMLFormElement>, data: FormProps) => void = (e) => {
     e.preventDefault();

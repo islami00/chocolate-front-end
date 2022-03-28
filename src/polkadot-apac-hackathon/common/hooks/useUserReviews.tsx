@@ -50,7 +50,7 @@ const consolidateMetas = function (revMetas: NewReview[], prMetas: NewProjectWit
   if (debug) console.log('revMetas prMetas', revMetas, prMetas);
   const merged = revMetas
     .map((each) => {
-      console.log('each', each);
+      if (debug) console.log('each', each);
       // Map to table rev
       // Find associated project
       const relatedPr = prMetas.find((v) => v.Id === each.projectID); // Careful for overflow. Both are strings actually.
