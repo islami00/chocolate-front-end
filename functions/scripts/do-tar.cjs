@@ -8,7 +8,7 @@ const prCWD = path.resolve(__dirname, '../');
 const here = path.basename(prCWD);
 process.chdir(prCWD);
 // Get env, and tag
-const env = process.env.DEPLOY_ENV ? `-${process.env.DEPLOY_ENV }`: '';
+const env = process.env.DEPLOY_ENV ? `-${process.env.DEPLOY_ENV}` : '';
 const ref = process.env.GITHUB_REF;
 console.log('Producing tar artifact for ', ref);
 let ver = '';
@@ -34,6 +34,13 @@ if (ref) {
   console.log(varOut);
   if (varErr) {
     throw new Error(varErr);
+  }
+  const { stderr: var2Err, stdout: var2Out } = await execPromise(
+    `echo "APP_VERSION=${ver}" >> $GITHUB_ENV`
+  );
+  console.log(var2Out);
+  if (var2Err) {
+    throw new Error(var2Err);
   }
 })().catch((err) => {
   process.emitWarning(err);
