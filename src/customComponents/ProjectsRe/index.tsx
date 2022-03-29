@@ -10,18 +10,12 @@ import { SearchBar } from './components/SearchBar';
 import { useSearchData } from './hooks';
 import './project.css';
 
-// 24.
-const renderDebug = false;
 /** @description Redo of the projects page */
 const ProjectsRe: React.FC = function () {
   const { api } = useSubstrate();
 
   const searchData = useSearchData(api);
   const [data, isAnyError] = searchData;
-  if (renderDebug) {
-    console.count('RenderedData');
-    console.log(searchData);
-  }
   // UI tweaks
   useEffect(() => {
     if (isAnyError) toast.error('Something went wrong loading the projects');

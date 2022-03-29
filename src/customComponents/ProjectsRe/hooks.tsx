@@ -7,6 +7,8 @@ import { QueryStatus, useQueries, useQuery, useQueryClient, UseQueryResult } fro
 import { ProjectAl, ProjectID } from '../../interfaces';
 import { ChainProject, NewMetaData, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
 import { errorHandled, limitedPinataFetch } from '../utils';
+
+const isDebug = process.env.REACT_APP_DEBUG === 'true';
 /**
  * @description Get the keys of all projects from the chain.
  * Fallback here would be same as next hook. Throw if you haven't memoised and the api isn't available
@@ -68,24 +70,17 @@ export const useProjectsSubscription = function (
           // We assume the returned values match the keys
           keys.forEach((key, index) => {
             const ithProject = prs[index].unwrapOrDefault();
-
             queryClient.setQueryData<[ProjectAl, ProjectID]>(
               ['Project', key.toJSON()],
               (checkAgainst) => {
                 if (!checkAgainst) {
-                  console.error('Set query data before initial query', key.toJSON(), ithProject);
+                  if (isDebug)
+                    console.error('Set query data before initial query', key.toJSON(), ithProject);
                   return [ithProject, key.toJSON()];
                 }
                 const [project, id] = checkAgainst;
-                // Debug
-                const isDev = process.env.REACT_APP_DEBUG;
-                if (isDev) console.count('Subbed');
-                // Debug End.
                 // Concrete check. project needs to change too.
                 if (key.eq(id) && !project.eq(ithProject)) {
-                  // Debug
-                  if (isDev) console.log('Ne', project, ithProject);
-                  // Debug end
                   return [ithProject, id];
                 }
                 return [project, id];
@@ -94,7 +89,7 @@ export const useProjectsSubscription = function (
           });
         })
         .then((v) => (unsub = v))
-        .catch(console.error);
+        .catch((e) => isDebug && console.error(e));
     return () => unsub && unsub();
 
     // More suited to gallery page where real time data is needed.
@@ -142,11 +137,9 @@ export const useProjectsWithMetadata = function (
 /**  [valids, erred, loadingInitially, statuses] */
 const shouldComputeValid = function <T>(metas: UseQueryResult<T, unknown>[]) {
   const erred = metas.some((each) => each.isError);
-  if (erred) console.error('Some query in the list failed');
+  if (erred && isDebug) console.error('Some query in the list failed');
   // Show if any q is loading intially to update UI
   const loadingInitially = metas.some((each) => each.isLoading);
-  if (loadingInitially && process.env.REACT_APP_DEBUG)
-    console.log('Some project (or query) is loading for the first time');
   // Return state of all and leave check to others
   const states = metas.map((each) => each.status);
   const valids = metas.map((each) => [each.data, each.dataUpdatedAt] as [T, number]);

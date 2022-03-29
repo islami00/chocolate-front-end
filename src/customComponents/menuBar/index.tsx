@@ -107,7 +107,6 @@ function Navlinks() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logoutMutation.status]);
-  console.count('rendered');
   const handleLogout = function (
     doLogout: UseMutateFunction<LogoutResult, unknown, void, unknown>
   ) {

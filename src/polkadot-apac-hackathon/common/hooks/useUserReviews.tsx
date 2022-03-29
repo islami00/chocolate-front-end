@@ -46,11 +46,8 @@ const useRelatedKeys = function (api: ApiPromise, web3Address: AccountId | strin
  * How to represent waiting??
  */
 const consolidateMetas = function (revMetas: NewReview[], prMetas: NewProjectWithIndex[]) {
-  const debug = !!process.env.REACT_APP_DEBUG;
-  if (debug) console.log('revMetas prMetas', revMetas, prMetas);
   const merged = revMetas
     .map((each) => {
-      if (debug) console.log('each', each);
       // Map to table rev
       // Find associated project
       const relatedPr = prMetas.find((v) => v.Id === each.projectID); // Careful for overflow. Both are strings actually.

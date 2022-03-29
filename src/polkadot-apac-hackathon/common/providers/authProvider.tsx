@@ -2,13 +2,14 @@ import { createContext, Reducer, useContext, useEffect, useReducer } from 'react
 import toast from 'react-hot-toast';
 import { useAuthState } from '../hooks/useAuth';
 
+const isDebug = process.env.REACT_APP_DEBUG === 'true';
 const AuthContext = createContext({
   isAuthenticated: false,
   user: {
     publicKey: '',
   },
   login: (user: { publicKey: string }) =>
-    console.error('Login context not initialised properly', user),
+    isDebug && console.error('Login context not initialised properly', user),
   logout: () => {},
   // Use this to run the user skeleton. State handled by auth query's initial run.
   isInitiallyLoading: true,

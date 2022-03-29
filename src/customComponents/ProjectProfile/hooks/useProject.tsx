@@ -22,6 +22,8 @@ import { useSubstrate } from '../../../substrate-lib';
 import { allCheck, resArr, shouldComputeValid } from '../../ProjectsRe/hooks';
 import { errorHandled, limitedPinataFetch } from '../../utils';
 
+const isDebug = process.env.REACT_APP_DEBUG === 'true';
+
 /**
  * Then deal with websockets
  * Fallback here would be shouldFire && !fallback
@@ -47,7 +49,8 @@ const useProjectSubscription = function (
             ['Project', key.toJSON()],
             (checkAgainst) => {
               if (!checkAgainst) {
-                console.error('Set query data before initial query', key.toJSON(), ithProject);
+                if (isDebug)
+                  console.error('Set query data before initial query', key.toJSON(), ithProject);
                 return [ithProject, key.toJSON()];
               }
               const [project, id] = checkAgainst;
@@ -60,7 +63,7 @@ const useProjectSubscription = function (
           );
         })
         .then((v) => (unsub = v))
-        .catch(console.error);
+        .catch((e) => isDebug && console.error(e));
     }
     return () => unsub && unsub();
 
@@ -86,10 +89,8 @@ const useSingleProject = function (api: ApiPromise, id: string, shouldFire: bool
     // Returning key allows us to track project later
     return [proj.unwrapOrDefault(), key] as [ProjectAl, ProjectID];
   };
-  // Use process.env
-  const debug = !!process.env.REACT_APP_DEBUG;
+
   const u = new U32(api.registry, id);
-  if (debug) console.log(u.toJSON());
   return useQuery<[ProjectAl, ProjectID], Error>({
     queryKey: ['Project', u.toJSON()],
     queryFn: () => getOne(u),
@@ -179,12 +180,6 @@ export const useParallelReviews = function (
   shouldFire: boolean
 ) {
   const getOne = async function (key: ReviewKeyAl) {
-    const debug = !!process.env.REACT_APP_DEBUG;
-
-    if (debug) {
-      console.count('ReviewAl');
-      console.log('key', key);
-    }
     const rev = await api.query.chocolateModule.reviews(key[0], key[1]);
     // Short err handle. Doesn't matter in the scope of things though.
     if (rev.isNone) {
@@ -217,7 +212,6 @@ export const useReviewsSubscription = function (
   keys: ReviewKeyAl[],
   shouldFire: boolean
 ) {
-  const isDebug = !!process.env.REACT_APP_DEBUG;
   const queryClient = useQueryClient();
   useEffect(() => {
     let unsub: VoidFn;
@@ -231,15 +225,13 @@ export const useReviewsSubscription = function (
               ['Review', key[1].toJSON(), key[0].toJSON()],
               (checkAgainst) => {
                 if (!checkAgainst) {
-                  console.error('Set query data before initial query', key, ithReview);
+                  if (isDebug) console.error('Set query data before initial query', key, ithReview);
                   return [ithReview, key];
                 }
                 const [review, id] = checkAgainst;
-                if (isDebug) console.count('Subbed');
                 // Concrete check. Keys should match and the struct should change.
                 const shouldUpdate = key[0].eq(id[0]) && key[1].eq(id[1]) && !review.eq(ithReview);
                 if (shouldUpdate) {
-                  if (isDebug) console.log('Ne', review, ithReview);
                   return [ithReview, id];
                 }
                 return [review, id];
@@ -248,7 +240,7 @@ export const useReviewsSubscription = function (
           });
         })
         .then((v) => (unsub = v))
-        .catch(console.error);
+        .catch((e) => isDebug && console.error(e));
     return () => unsub && unsub();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, keys.length, shouldFire]);

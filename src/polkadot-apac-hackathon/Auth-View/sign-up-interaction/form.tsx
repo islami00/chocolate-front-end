@@ -93,12 +93,11 @@ const SignUp: React.FC = function () {
 
   const onExpire = () => {
     setForm((F) => ({ ...F, captcha: '' }));
-    if (isDebug) console.log('hCaptcha Token Expired');
   };
 
   const onError = (err: string) => {
     setForm((F) => ({ ...F, captcha: '' }));
-    if (isDebug) console.log(`hCaptcha Error: ${err}`);
+    if (isDebug) console.error(`hCaptcha Error: ${err}`);
   };
   const handleSubmit: (e: FormEvent<HTMLFormElement>, data: FormProps) => void = (e) => {
     e.preventDefault();
@@ -112,7 +111,6 @@ const SignUp: React.FC = function () {
     _e,
     data
   ) => {
-    if (isDebug) console.log(data, data.value);
     setForm((F) => ({ ...F, [data.name]: data.value }));
   };
   const handleVerify: (token: string) => void = (token) => {

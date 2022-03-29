@@ -20,15 +20,13 @@ const SubmitReviewTx: React.FC<{ id: string; cid: string }> = (props) => {
   const [event, setEvents] = useState<EventRecord[]>();
   const [completed, setCompleted] = useState<boolean>(undefined);
   const [error, setError] = useState<boolean>(undefined);
-  const debug = false;
   const { keyringState, keyring } = useSubstrate();
   useLoadAccounts(run, setRun);
   const { data: txFee } = useReviewSend({ id, cid }, userData.accountAddress);
   useEffect(() => {
-    if (debug) console.log(event);
     if (/finalized/i.exec(status)) setCompleted(true);
     else if (/failed/i.exec(status)) setError(true);
-  }, [event, status, debug]);
+  }, [event, status]);
   if (!userData.accountAddress && !keyring)
     return (
       <div>

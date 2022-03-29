@@ -16,7 +16,6 @@ export interface LocalFormProps {
 }
 type FormEventTypes = React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>;
 const FormToEnter: React.FC<LocalFormProps> = (props) => {
-  const debug = !!process.env.REACT_APP_DEBUG;
   const { dispatchCache, id, cachedForm } = props;
   const [rawInput, setRawInput] = useState<RawFormData>(cachedForm);
   // next step
@@ -46,7 +45,6 @@ const FormToEnter: React.FC<LocalFormProps> = (props) => {
   if (next) navigate(`/project/${id}/stage/2`);
   // ui for form
   // get project for display
-  if (debug) console.count('FormToEnter');
   const { projectName } = props;
   return (
     <Form onSubmit={handleSubmit}>

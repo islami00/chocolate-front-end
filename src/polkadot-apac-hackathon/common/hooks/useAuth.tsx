@@ -5,6 +5,7 @@ import { ApiErr, errorHandled } from 'chocolate/customComponents/utils';
 /* eslint-enable import/no-unresolved */
 import { useQuery, UseQueryResult } from 'react-query';
 
+const isDebug = process.env.REACT_APP_DEBUG === 'true';
 interface AuthRes {
   success: boolean;
   user: {
@@ -37,7 +38,11 @@ export const useAuthState: AuthStateFx = () => {
     if (res[1]) {
       const msg = res[1].message;
       const errorObj = JSON.parse(msg) as ApiErr; // Should be an object of that shape. Reevaluate errorHandled if otherwise.
-      console.assert(!errorObj.code, `code passed successfully ${JSON.stringify(errorObj)}`);
+      if (isDebug)
+        console.assert(
+          !errorObj.code,
+          `Error obj is as expected with code passed ${JSON.stringify(errorObj)}`
+        );
       // Case 1: logged out.
       if (errorObj.code === 401) {
         return unauthorized;
