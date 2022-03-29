@@ -20,7 +20,7 @@ import { useQueries, useQuery, useQueryClient, UseQueryResult } from 'react-quer
 import { ProjectAl, ProjectID, ReviewAl } from '../../../interfaces';
 import { useSubstrate } from '../../../substrate-lib';
 import { allCheck, resArr, shouldComputeValid } from '../../ProjectsRe/hooks';
-import { combineLimit, errorHandled, toPinataFetch } from '../../utils';
+import { errorHandled, limitedPinataFetch } from '../../utils';
 
 /**
  * Then deal with websockets
@@ -115,7 +115,24 @@ export default function useProject(id: string): UseQueryResult<[ProjectAl, Proje
   // Return og interface. Caller should handle undef.
   return project;
 }
+// Removed to try and fix err. Issue: Same endpoint being queried accross multiple fxs, hence breaking rate limit.
+// Fix: Include some randomness so the queries go out of sync
+const retrieveProjectMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
+  // Get metadata
+  const res = await errorHandled(limitedPinataFetch(pr.metadata.toJSON()));
+  if (res[1]) throw res[1];
+  const json = await errorHandled<NewMetaData>(res[0].json());
+  if (json[1]) throw json[1];
 
+  //  Merge metadata in.
+  // First, json stringify (This should be handled by a wrapper class)
+  const prString = pr.toHuman() as unknown as ChainProject;
+  const nPr = {
+    Id: id.toHuman(),
+    project: { ...prString, metadata: json[0] },
+  } as NewProjectWithIndex;
+  return nPr;
+};
 /**
  *
  * The shouldFire here depends on useSingleProject.
@@ -123,27 +140,10 @@ export default function useProject(id: string): UseQueryResult<[ProjectAl, Proje
  * Project with metadata must wait for Project to fetch. I.e shouldFire = data.status === "success", or in this case, !!data
  */
 const useProjectWithMetadata = function ([v, k]: [ProjectAl, ProjectID], shouldFire: boolean) {
-  const retrieveMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
-    // Get metadata
-    const res = await errorHandled(fetch(toPinataFetch(pr.metadata.toJSON())));
-    if (res[1]) throw res[1];
-    const json = await errorHandled<NewMetaData>(res[0].json());
-    if (json[1]) throw json[1];
-
-    //  Merge metadata in.
-    // First, json stringify (This should be handled by a wrapper class)
-    const prString = pr.toHuman() as unknown as ChainProject;
-    const nPr = {
-      Id: id.toHuman(),
-      project: { ...prString, metadata: json[0] },
-    } as NewProjectWithIndex;
-    return nPr;
-  };
-  const slowlyRetrieveMeta = combineLimit(retrieveMeta, 1000, 3);
   return useQuery({
     // Concern: Using metadata CID could produce redundant queries if changes happen frequently.
     queryKey: ['Project', 'Metadata', k.toJSON(), v.metadata.toJSON()],
-    queryFn: () => slowlyRetrieveMeta([v, k]),
+    queryFn: () => retrieveProjectMeta([v, k]),
     enabled: shouldFire,
     staleTime: Infinity,
   });
@@ -253,8 +253,22 @@ export const useReviewsSubscription = function (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, keys.length, shouldFire]);
 };
-
 // and find the metdata.
+
+/**  Fetch fx for next hook. Extracted to try and fix sync err. */
+const retrieveReviewMeta = async function ([rev]: [ReviewAl, ReviewKeyAl]) {
+  // Get metadata
+  const res = await errorHandled(limitedPinataFetch(rev.content.toJSON()));
+  if (res[1]) throw res[1];
+  const json = await errorHandled<ReviewContent>(res[0].json());
+  if (json[1]) throw json[1];
+
+  //  Merge metadata in.
+  // First, json stringify (This should be handled by a wrapper class)
+  const revString = rev.toHuman() as unknown as ChainReview;
+  const nRv = { ...revString, content: json[0] } as NewReview;
+  return nRv;
+};
 /**
  * Gets metadata associated with reviews.
  * #fallbackCompliant since it doesn't require api. Also, as called in useReviewReels, it works even if reviews array is empty (ui can handle final effect.)
@@ -263,25 +277,11 @@ export const useReviewsWithMetadata = function (
   reviews: [ReviewAl, ReviewKeyAl][],
   shouldFire: boolean
 ) {
-  const retrieveMeta = async function ([rev]: [ReviewAl, ReviewKeyAl]) {
-    // Get metadata
-    const res = await errorHandled(fetch(toPinataFetch(rev.content.toJSON())));
-    if (res[1]) throw res[1];
-    const json = await errorHandled<ReviewContent>(res[0].json());
-    if (json[1]) throw json[1];
-
-    //  Merge metadata in.
-    // First, json stringify (This should be handled by a wrapper class)
-    const revString = rev.toHuman() as unknown as ChainReview;
-    const nRv = { ...revString, content: json[0] } as NewReview;
-    return nRv;
-  };
-  const slowlyRetrieveMeta = combineLimit(retrieveMeta, 1000, 3);
   return useQueries(
     reviews.map(([v, k]) => ({
       // Same concern about depracation. Use ownerId instead. Don't want to leave old.
       queryKey: ['Review', 'Metadata', k[1].toJSON(), k[0].toJSON(), v.content.toJSON()],
-      queryFn: () => slowlyRetrieveMeta([v, k]),
+      queryFn: () => retrieveReviewMeta([v, k]),
       enabled: shouldFire,
       staleTime: Infinity,
     }))

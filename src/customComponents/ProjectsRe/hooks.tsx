@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { QueryStatus, useQueries, useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import { ProjectAl, ProjectID } from '../../interfaces';
 import { ChainProject, NewMetaData, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
-import { combineLimit, errorHandled, toPinataFetch } from '../utils';
+import { errorHandled, limitedPinataFetch } from '../utils';
 /**
  * @description Get the keys of all projects from the chain.
  * Fallback here would be same as next hook. Throw if you haven't memoised and the api isn't available
@@ -102,6 +102,22 @@ export const useProjectsSubscription = function (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keys.length, shouldFire]);
 };
+const retrieveProjectsMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
+  // Get metadata
+  const res = await errorHandled(limitedPinataFetch(pr.metadata.toJSON()));
+  if (res[1]) throw res[1];
+  const json = await errorHandled<NewMetaData>(res[0].json());
+  if (json[1]) throw json[1];
+
+  //  Merge metadata in.
+  // First, json stringify (This should be handled by a wrapper class)
+  const prString = pr.toHuman() as unknown as ChainProject;
+  const nPr = {
+    Id: id.toHuman(),
+    project: { ...prString, metadata: json[0] },
+  } as NewProjectWithIndex;
+  return nPr;
+};
 // Then get json metadata
 // Doesn't require api. SHould be fine so long as dependent memoises
 // This one's should fire depends on useParallelProjects
@@ -109,27 +125,10 @@ export const useProjectsWithMetadata = function (
   projects: [ProjectAl, ProjectID][],
   shouldFire: boolean
 ) {
-  const retrieveMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
-    // Get metadata
-    const res = await errorHandled(fetch(toPinataFetch(pr.metadata.toJSON())));
-    if (res[1]) throw res[1];
-    const json = await errorHandled<NewMetaData>(res[0].json());
-    if (json[1]) throw json[1];
-
-    //  Merge metadata in.
-    // First, json stringify (This should be handled by a wrapper class)
-    const prString = pr.toHuman() as unknown as ChainProject;
-    const nPr = {
-      Id: id.toHuman(),
-      project: { ...prString, metadata: json[0] },
-    } as NewProjectWithIndex;
-    return nPr;
-  };
-  const slowlyRetrieveMeta = combineLimit(retrieveMeta, 1000, 3);
   return useQueries(
     projects.map(([v, k]) => ({
       queryKey: ['Project', 'Metadata', k.toJSON(), v.metadata.toJSON()],
-      queryFn: () => slowlyRetrieveMeta([v, k]),
+      queryFn: () => retrieveProjectsMeta([v, k]),
       enabled: shouldFire,
       staleTime: Infinity,
     }))
