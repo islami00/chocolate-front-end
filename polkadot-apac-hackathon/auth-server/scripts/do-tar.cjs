@@ -12,9 +12,11 @@ const env = process.env.DEPLOY_ENV ? `-${process.env.DEPLOY_ENV}` : '';
 const ref = process.env.GITHUB_REF;
 console.log('Producing tar artifact for ', ref);
 let ver = '';
+let verEnv = '';
 if (ref) {
   const refArr = ref.split('/');
-  ver = `-${refArr[refArr.length - 1]}`;
+  verEnv = `${refArr[refArr.length - 1]}`;
+  ver = `-${verEnv}`;
 }
 
 // Then do tar.
@@ -36,7 +38,7 @@ if (ref) {
     throw new Error(varErr);
   }
   const { stderr: var2Err, stdout: var2Out } = await execPromise(
-    `echo "APP_VERSION=${ver}" >> $GITHUB_ENV`
+    `echo "APP_VERSION=${verEnv}" >> $GITHUB_ENV`
   );
   console.log(var2Out);
   if (var2Err) {
