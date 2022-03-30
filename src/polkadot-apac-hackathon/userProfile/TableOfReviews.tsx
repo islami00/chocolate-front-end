@@ -3,7 +3,6 @@ import { TableSetReview } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
 import { useEffect, useReducer, useState } from 'react';
 import {
-  Accordion,
   Button,
   Container,
   Dropdown,
@@ -45,7 +44,7 @@ const tableReducer = (state: TableSetReview[], action: TableReducerAction) => {
 const Main: React.FC<{ data: [TableSetReview[], boolean, boolean, boolean] }> = (props) => {
   const { data } = props;
   const [searchData, isAnyDataErr, isAnyDataInitiallyLoading, isEitherDataIdle] = data;
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [filterProjectName, setFilterProjectName] = useState(0);
   const [filterRating, setFilterRating] = useState(0);
   const [state, dispatch] = useReducer(tableReducer, searchData);
@@ -58,6 +57,7 @@ const Main: React.FC<{ data: [TableSetReview[], boolean, boolean, boolean] }> = 
       return <div>Error...</div>;
     }
     if (isEitherDataIdle) {
+      // slower speed
       return <div>Idle...</div>;
     }
   }
@@ -124,79 +124,67 @@ const Main: React.FC<{ data: [TableSetReview[], boolean, boolean, boolean] }> = 
 
       <Transition.Group animation='fadeIn' duration={500}>
         <Table verticalAlign='top' padded striped>
-          {state
-            ? state.map((review, i) => {
-                let label;
-                switch (review.proposalStatus.status) {
-                  case 'Accepted':
-                    label = (
-                      <Label color='green' horizontal>
-                        Accepted
-                      </Label>
-                    );
-                    break;
-                  case 'Proposed':
-                    label = (
-                      <Label color='orange' horizontal>
-                        Proposed
-                      </Label>
-                    );
-                    break;
-                  case 'Rejected':
-                    label = (
-                      <Label color='red' horizontal>
-                        Rejected
-                      </Label>
-                    );
-                    break;
-                  default:
-                    label = (
-                      <Label color='blue' horizontal>
-                        Pending
-                      </Label>
-                    );
-                    break;
-                }
-
-                return (
-                  <>
-                    <Table.Row key={review.projectID} onClick={(e) => handleClick(e, { index: i })}>
-                      <Table.Cell>
-                        <Image src={`${review.project.metadata.icon}`} size='mini' rounded />
-                      </Table.Cell>
-                      <Table.Cell>
-                        <Accordion>
-                          <Accordion.Title
-                            icon='arrow'
-                            active={activeIndex === i}
-                            index={i}
-                            onClick={handleClick}
-                          >
-                            {review.project.metadata.name}
-                          </Accordion.Title>
-                        </Accordion>
-                      </Table.Cell>
-                      <Table.Cell textAlign='right'>
-                        <Rating fixed rating={review.content.rating} />
-                      </Table.Cell>
-                      <Table.Cell>{label}</Table.Cell>
-                      <Table.Cell collapsing textAlign='right'>
-                        <Button icon onClick={(e) => handleClick(e, { index: i })}>
-                          <Icon name={`chevron ${activeIndex === i ? 'up' : 'down'}`} />
-                        </Button>
+          <Table.Body>
+            {state.map((review, i) => {
+              let label;
+              switch (review.proposalStatus.status) {
+                case 'Accepted':
+                  label = (
+                    <Label color='green' horizontal>
+                      Accepted
+                    </Label>
+                  );
+                  break;
+                case 'Proposed':
+                  label = (
+                    <Label color='orange' horizontal>
+                      Proposed
+                    </Label>
+                  );
+                  break;
+                case 'Rejected':
+                  label = (
+                    <Label color='red' horizontal>
+                      Rejected
+                    </Label>
+                  );
+                  break;
+                default:
+                  label = (
+                    <Label color='blue' horizontal>
+                      Pending
+                    </Label>
+                  );
+                  break;
+              }
+              return (
+                <>
+                  <Table.Row key={review.projectID} onClick={(e) => handleClick(e, { index: i })}>
+                    <Table.Cell>
+                      <Image src={`${review.project.metadata.icon}`} size='mini' rounded />
+                    </Table.Cell>
+                    <Table.Cell>{review.project.metadata.name}</Table.Cell>
+                    <Table.Cell textAlign='right'>
+                      <Rating fixed rating={review.content.rating} />
+                    </Table.Cell>
+                    <Table.Cell>{label}</Table.Cell>
+                    <Table.Cell collapsing textAlign='right'>
+                      <Button icon onClick={(e) => handleClick(e, { index: i })}>
+                        <Icon name={`chevron ${activeIndex === i ? 'up' : 'down'}`} />
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                  {activeIndex === i ? (
+                    <Table.Row>
+                      <Table.Cell colSpan={5}>
+                        <p>{review.content.reviewText}</p>
                       </Table.Cell>
                     </Table.Row>
-                    {activeIndex === i ? (
-                      <Table.Row>
-                        <Table.Cell colSpan={5}>
-                          <p>{review.content.reviewText}</p>
-                        </Table.Cell>
-                      </Table.Row>
-                    ) : null}
-                  </>
-                );
-              })
-            : ''}
+                  ) : null}
+                </>
+              );
+            })}
+          </Table.Body>
         </Table>
       </Transition.Group>
     </Container>

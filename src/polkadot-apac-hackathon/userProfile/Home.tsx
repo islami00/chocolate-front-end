@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { User } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
-import { UseQueryResult } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { Grid } from 'semantic-ui-react';
 import { useUserReviews } from '../common/hooks/useUserReviews';
@@ -9,7 +8,7 @@ import Sidebar from './Sidebar';
 import TableOfReviews from './TableOfReviews';
 
 interface ProfileTableProps {
-  user: UseQueryResult<User, Error>;
+  user: User;
 }
 const ProfileTable: React.FC<ProfileTableProps> = (props) => {
   const { web3Address } = useParams<{ web3Address: string }>();
@@ -19,7 +18,7 @@ const ProfileTable: React.FC<ProfileTableProps> = (props) => {
   const { user } = props;
   return (
     <Grid padded='vertically' style={{ paddingTop: '20px' }}>
-      <Grid.Column floated='left' width={4} doubling>
+      <Grid.Column floated='left' width={4}>
         <Sidebar user={user} />
       </Grid.Column>
       <Grid.Column floated='right' stretched width={10}>

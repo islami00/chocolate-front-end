@@ -3,13 +3,12 @@ import { useSubstrate } from 'chocolate/substrate-lib';
 import { User } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
 import { useEffect, useState } from 'react';
-import { UseQueryResult } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { Button, Card, Container, Image, Label } from 'semantic-ui-react';
 import { useUserReviews } from '../common/hooks/useUserReviews';
 
 interface SidebarProps {
-  user: UseQueryResult<User, Error>;
+  user: User;
 }
 
 const SideBarStat: React.FC<{
@@ -63,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
               </Label>
               {/* Make stats available via easier means e.g store onchain or in other metadata */}
               <SideBarStat content='No. of Reviews' stat={search[0].length.toString()} />
-              <SideBarStat content='Points' stat={user.data?.rankPoints?.toString() ?? '0'} />
+              <SideBarStat content='Points' stat={user.rankPoints?.toString() ?? '0'} />
             </Card.Content>
           </Card>
         </Card.Content>
@@ -72,16 +71,9 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
             size='big'
             compact
             href={`https://twitter.com/${userAggr.name}`}
-            link
             icon='twitter square'
           />
-          <Button
-            compact
-            size='big'
-            href={`https://discord.com/${userAggr.name}`}
-            link
-            icon='discord'
-          />
+          <Button compact size='big' href={`https://discord.com/${userAggr.name}`} icon='discord' />
         </Card.Content>
       </Card>
     </Container>

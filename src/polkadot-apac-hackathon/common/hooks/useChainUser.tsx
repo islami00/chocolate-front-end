@@ -6,6 +6,9 @@ import { User } from '../../../typeSystem/jsonTypes';
 
 const findUser = async (api: ApiPromise, web3Address: string) => {
   const user = await api.query.usersModule.users(web3Address);
+  if (user.isNone) {
+    throw new Error(JSON.stringify({ error: 'User does not exist' }));
+  }
   const chainUser = user.unwrapOrDefault();
   const jsonUser = chainUser.toJSON() as unknown as User;
   return jsonUser;
