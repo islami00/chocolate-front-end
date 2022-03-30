@@ -77,7 +77,7 @@ jobs:
           workload_identity_provider: ${{ secrets.SERVER_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: '${{ secrets.AUTH_SA_NAME }}@${{ secrets.PROJECT_ID }}.iam.gserviceaccount.com'
       - name: Publish to gcp
-        run: npm run publish-code -- --version=${{ env.APP_VERSION }} -q
+        run: npm run publish-code -- --version=${{ env.APP_VERSION_GCLOUD }} -q
         working-directory: ${{ matrix.server }}/lib
   
   # Finally create release with artifacts 

@@ -13,9 +13,12 @@ const ref = process.env.GITHUB_REF;
 console.log('Producing tar artifact for ', ref);
 let ver = '';
 let verEnv = '';
+let gVerEnv = '';
 if (ref) {
   const refArr = ref.split('/');
   verEnv = `${refArr[refArr.length - 1]}`;
+  // Ret format: viii-nightly-mm-dd-yy[1234]
+  gVerEnv = verEnv.replace(/\./g, '').replace(/\+/g, '--');
   ver = `-${verEnv}`;
 }
 
@@ -30,15 +33,12 @@ if (ref) {
   //   Then set gh artifact env var.
   // https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runsstepsenv
   // https://github.com/actions/upload-artifact/issues/22#issuecomment-873445944
-  const { stderr: varErr, stdout: varOut } = await execPromise(
-    `echo "ARTIFACT_NAME=${here}" >> $GITHUB_ENV`
-  );
-  console.log(varOut);
-  if (varErr) {
-    throw new Error(varErr);
-  }
   const { stderr: var2Err, stdout: var2Out } = await execPromise(
-    `echo "APP_VERSION=${verEnv}" >> $GITHUB_ENV`
+    `
+    echo "ARTIFACT_NAME=${here}" >> $GITHUB_ENV &&
+    echo "APP_VERSION=${verEnv}" >> $GITHUB_ENV && 
+    echo "APP_VERSION_GCLOUD=${gVerEnv}" >> $GITHUB_ENV
+    `
   );
   console.log(var2Out);
   if (var2Err) {
