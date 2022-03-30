@@ -2,17 +2,15 @@
 import { TableSetReview } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
 import { useEffect, useReducer, useState } from 'react';
-import { UseQueryResult } from 'react-query';
 import {
-  Accordion,
   Button,
   Container,
   Dropdown,
   Icon,
-  Table,
   Image,
-  Transition,
   Label,
+  Table,
+  Transition,
 } from 'semantic-ui-react';
 import { Rating } from '../../customComponents/Projects';
 
@@ -37,23 +35,37 @@ const tableReducer = (state: TableSetReview[], action: TableReducerAction) => {
   }
 };
 
-/** Cells are reviews  */
-/** A table with headers being our filter buttons */
-const Main: React.FC<{ data: UseQueryResult<TableSetReview[], Error> }> = (props) => {
+/**
+ * A table with headers being our filter buttons
+ * Cells are reviews
+ * Props come from useYourReviews return val:
+ * [TableSetReview[], anyMetaErr,anyMetaInitiallyLoading,isEitherCompletelyIdle]
+ * */
+const Main: React.FC<{ data: [TableSetReview[], boolean, boolean, boolean] }> = (props) => {
   const { data } = props;
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [searchData, isAnyDataErr, isAnyDataInitiallyLoading, isEitherDataIdle] = data;
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [filterProjectName, setFilterProjectName] = useState(0);
   const [filterRating, setFilterRating] = useState(0);
-  const [state, dispatch] = useReducer(tableReducer, data.data ?? []);
+  const [state, dispatch] = useReducer(tableReducer, searchData);
   // intialise reducer
   useEffect(() => {
-    dispatch({ type: 'INITIALISE', payload: data.data });
-  }, [data.data]);
-  if (data.status === 'loading') {
+    dispatch({ type: 'INITIALISE', payload: searchData });
+  }, [searchData]);
+  if (searchData.length === 0) {
+    if (isAnyDataErr) {
+      return <div>Error...</div>;
+    }
+    if (isEitherDataIdle) {
+      // slower speed
+      return <div>Idle...</div>;
+    }
+  }
+  if (isAnyDataInitiallyLoading) {
     return <div>Loading...</div>;
   }
 
-  const filterProjects = data.data.map((review) => ({
+  const filterProjects = searchData.map((review) => ({
     name: 'project',
     key: review.projectID,
     text: review.project.metadata.name,
@@ -62,13 +74,13 @@ const Main: React.FC<{ data: UseQueryResult<TableSetReview[], Error> }> = (props
   // filter reducer
   const handleProjectFilterChange = (_, _data: { value: number }) => {
     setFilterProjectName(_data.value);
-    dispatch({ type: 'INITIALISE', payload: data.data });
+    dispatch({ type: 'INITIALISE', payload: searchData });
     dispatch({ type: 'FILTER_PROJECT_NAME', projectID: _data.value });
   };
 
   const handleRatingFilterChange = (_, _data: { value: number }) => {
     setFilterRating(_data.value);
-    dispatch({ type: 'INITIALISE', payload: data.data });
+    dispatch({ type: 'INITIALISE', payload: searchData });
     dispatch({ type: 'FILTER_REVIEW_RATING', rating: _data.value });
   };
 
@@ -112,79 +124,67 @@ const Main: React.FC<{ data: UseQueryResult<TableSetReview[], Error> }> = (props
 
       <Transition.Group animation='fadeIn' duration={500}>
         <Table verticalAlign='top' padded striped>
-          {state
-            ? state.map((review, i) => {
-                let label;
-                switch (review.proposalStatus.status) {
-                  case 'Accepted':
-                    label = (
-                      <Label color='green' horizontal>
-                        Accepted
-                      </Label>
-                    );
-                    break;
-                  case 'Proposed':
-                    label = (
-                      <Label color='orange' horizontal>
-                        Proposed
-                      </Label>
-                    );
-                    break;
-                  case 'Rejected':
-                    label = (
-                      <Label color='red' horizontal>
-                        Rejected
-                      </Label>
-                    );
-                    break;
-                  default:
-                    label = (
-                      <Label color='blue' horizontal>
-                        Pending
-                      </Label>
-                    );
-                    break;
-                }
-
-                return (
-                  <>
-                    <Table.Row key={review.projectID} onClick={(e) => handleClick(e, { index: i })}>
-                      <Table.Cell>
-                        <Image src={`${review.project.metadata.icon}`} size='mini' rounded />
-                      </Table.Cell>
-                      <Table.Cell>
-                        <Accordion>
-                          <Accordion.Title
-                            icon='arrow'
-                            active={activeIndex === i}
-                            index={i}
-                            onClick={handleClick}
-                          >
-                            {review.project.metadata.name}
-                          </Accordion.Title>
-                        </Accordion>
-                      </Table.Cell>
-                      <Table.Cell textAlign='right'>
-                        <Rating fixed rating={review.content.rating} />
-                      </Table.Cell>
-                      <Table.Cell>{label}</Table.Cell>
-                      <Table.Cell collapsing textAlign='right'>
-                        <Button icon onClick={(e) => handleClick(e, { index: i })}>
-                          <Icon name={`chevron ${activeIndex === i ? 'up' : 'down'}`} />
-                        </Button>
+          <Table.Body>
+            {state.map((review, i) => {
+              let label;
+              switch (review.proposalStatus.status) {
+                case 'Accepted':
+                  label = (
+                    <Label color='green' horizontal>
+                      Accepted
+                    </Label>
+                  );
+                  break;
+                case 'Proposed':
+                  label = (
+                    <Label color='orange' horizontal>
+                      Proposed
+                    </Label>
+                  );
+                  break;
+                case 'Rejected':
+                  label = (
+                    <Label color='red' horizontal>
+                      Rejected
+                    </Label>
+                  );
+                  break;
+                default:
+                  label = (
+                    <Label color='blue' horizontal>
+                      Pending
+                    </Label>
+                  );
+                  break;
+              }
+              return (
+                <>
+                  <Table.Row key={review.projectID} onClick={(e) => handleClick(e, { index: i })}>
+                    <Table.Cell>
+                      <Image src={`${review.project.metadata.icon}`} size='mini' rounded />
+                    </Table.Cell>
+                    <Table.Cell>{review.project.metadata.name}</Table.Cell>
+                    <Table.Cell textAlign='right'>
+                      <Rating fixed rating={review.content.rating} />
+                    </Table.Cell>
+                    <Table.Cell>{label}</Table.Cell>
+                    <Table.Cell collapsing textAlign='right'>
+                      <Button icon onClick={(e) => handleClick(e, { index: i })}>
+                        <Icon name={`chevron ${activeIndex === i ? 'up' : 'down'}`} />
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                  {activeIndex === i ? (
+                    <Table.Row>
+                      <Table.Cell colSpan={5}>
+                        <p>{review.content.reviewText}</p>
                       </Table.Cell>
                     </Table.Row>
-                    {activeIndex === i ? (
-                      <Table.Row>
-                        <Table.Cell colSpan={5}>
-                          <p>{review.content.reviewText}</p>
-                        </Table.Cell>
-                      </Table.Row>
-                    ) : null}
-                  </>
-                );
-              })
-            : ''}
+                  ) : null}
+                </>
+              );
+            })}
+          </Table.Body>
         </Table>
       </Transition.Group>
     </Container>

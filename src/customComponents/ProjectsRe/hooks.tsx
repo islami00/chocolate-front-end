@@ -6,7 +6,9 @@ import { useEffect, useMemo } from 'react';
 import { QueryStatus, useQueries, useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import { ProjectAl, ProjectID } from '../../interfaces';
 import { ChainProject, NewMetaData, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
-import { combineLimit, errorHandled, toPinataFetch } from '../utils';
+import { errorHandled, limitedPinataFetch } from '../utils';
+
+const isDebug = process.env.REACT_APP_DEBUG === 'true';
 /**
  * @description Get the keys of all projects from the chain.
  * Fallback here would be same as next hook. Throw if you haven't memoised and the api isn't available
@@ -27,7 +29,11 @@ const useProjectKeys = function (api: ApiPromise) {
  * Fallback here would be to reject if api is unavailable and we haven't memoised.
  * Else we simply return memoised value.
  *  */
-const useParallelProjects = function (api: ApiPromise, keys: ProjectID[], shouldFire: boolean) {
+export const useParallelProjects = function (
+  api: ApiPromise,
+  keys: ProjectID[],
+  shouldFire: boolean
+) {
   // We require a ready api. This should be handled at the top level of any component that needs substrate
   const getOne = async function (key: ProjectID) {
     const proj = await api.query.chocolateModule.projects(key);
@@ -49,7 +55,11 @@ const useParallelProjects = function (api: ApiPromise, keys: ProjectID[], should
 /**  Then deal with websockets
  * Fallback here would be shouldFire && !fallback
  */
-const useProjectsSubscription = function (api: ApiPromise, keys: ProjectID[], shouldFire: boolean) {
+export const useProjectsSubscription = function (
+  api: ApiPromise,
+  keys: ProjectID[],
+  shouldFire: boolean
+) {
   const queryClient = useQueryClient();
   //  Subscribe once, more efficient with connections.
   useEffect(() => {
@@ -60,24 +70,17 @@ const useProjectsSubscription = function (api: ApiPromise, keys: ProjectID[], sh
           // We assume the returned values match the keys
           keys.forEach((key, index) => {
             const ithProject = prs[index].unwrapOrDefault();
-
             queryClient.setQueryData<[ProjectAl, ProjectID]>(
               ['Project', key.toJSON()],
               (checkAgainst) => {
                 if (!checkAgainst) {
-                  console.error('Set query data before initial query', key.toJSON(), ithProject);
+                  if (isDebug)
+                    console.error('Set query data before initial query', key.toJSON(), ithProject);
                   return [ithProject, key.toJSON()];
                 }
                 const [project, id] = checkAgainst;
-                // Debug
-                const isDev = process.env.REACT_APP_DEBUG;
-                if (isDev) console.count('Subbed');
-                // Debug End.
                 // Concrete check. project needs to change too.
                 if (key.eq(id) && !project.eq(ithProject)) {
-                  // Debug
-                  if (isDev) console.log('Ne', project, ithProject);
-                  // Debug end
                   return [ithProject, id];
                 }
                 return [project, id];
@@ -86,7 +89,7 @@ const useProjectsSubscription = function (api: ApiPromise, keys: ProjectID[], sh
           });
         })
         .then((v) => (unsub = v))
-        .catch(console.error);
+        .catch((e) => isDebug && console.error(e));
     return () => unsub && unsub();
 
     // More suited to gallery page where real time data is needed.
@@ -94,31 +97,33 @@ const useProjectsSubscription = function (api: ApiPromise, keys: ProjectID[], sh
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keys.length, shouldFire]);
 };
+const retrieveProjectsMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
+  // Get metadata
+  const res = await errorHandled(limitedPinataFetch(pr.metadata.toJSON()));
+  if (res[1]) throw res[1];
+  const json = await errorHandled<NewMetaData>(res[0].json());
+  if (json[1]) throw json[1];
+
+  //  Merge metadata in.
+  // First, json stringify (This should be handled by a wrapper class)
+  const prString = pr.toHuman() as unknown as ChainProject;
+  const nPr = {
+    Id: id.toHuman(),
+    project: { ...prString, metadata: json[0] },
+  } as NewProjectWithIndex;
+  return nPr;
+};
 // Then get json metadata
 // Doesn't require api. SHould be fine so long as dependent memoises
 // This one's should fire depends on useParallelProjects
-const useProjectsWithMetadata = function (projects: [ProjectAl, ProjectID][], shouldFire: boolean) {
-  const retrieveMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
-    // Get metadata
-    const res = await errorHandled(fetch(toPinataFetch(pr.metadata.toJSON())));
-    if (res[1]) throw res[1];
-    const json = await errorHandled<NewMetaData>(res[0].json());
-    if (json[1]) throw json[1];
-
-    //  Merge metadata in.
-    // First, json stringify (This should be handled by a wrapper class)
-    const prString = pr.toHuman() as unknown as ChainProject;
-    const nPr = {
-      Id: id.toHuman(),
-      project: { ...prString, metadata: json[0] },
-    } as NewProjectWithIndex;
-    return nPr;
-  };
-  const slowlyRetrieveMeta = combineLimit(retrieveMeta, 1000, 3);
+export const useProjectsWithMetadata = function (
+  projects: [ProjectAl, ProjectID][],
+  shouldFire: boolean
+) {
   return useQueries(
     projects.map(([v, k]) => ({
       queryKey: ['Project', 'Metadata', k.toJSON(), v.metadata.toJSON()],
-      queryFn: () => slowlyRetrieveMeta([v, k]),
+      queryFn: () => retrieveProjectsMeta([v, k]),
       enabled: shouldFire,
       staleTime: Infinity,
     }))
@@ -132,11 +137,9 @@ const useProjectsWithMetadata = function (projects: [ProjectAl, ProjectID][], sh
 /**  [valids, erred, loadingInitially, statuses] */
 const shouldComputeValid = function <T>(metas: UseQueryResult<T, unknown>[]) {
   const erred = metas.some((each) => each.isError);
-  if (erred) console.error('Some query in the list failed');
+  if (erred && isDebug) console.error('Some query in the list failed');
   // Show if any q is loading intially to update UI
   const loadingInitially = metas.some((each) => each.isLoading);
-  if (loadingInitially && process.env.REACT_APP_DEBUG)
-    console.log('Some project (or query) is loading for the first time');
   // Return state of all and leave check to others
   const states = metas.map((each) => each.status);
   const valids = metas.map((each) => [each.data, each.dataUpdatedAt] as [T, number]);
@@ -162,7 +165,7 @@ const allCheck = function (states: QueryStatus[], status: QueryStatus) {
 };
 
 // Also, some metadata switcheroo to complete:
-const mockImages = function (pr: NewProjectWithIndex) {
+export const mockImages = function (pr: NewProjectWithIndex) {
   pr.project.metadata.icon = `https://avatars.dicebear.com/api/initials/${pr.project.metadata.name}.svg`;
   return pr;
 };

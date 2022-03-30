@@ -35,6 +35,13 @@ if (ref) {
   if (varErr) {
     throw new Error(varErr);
   }
+  const { stderr: var2Err, stdout: var2Out } = await execPromise(
+    `echo "APP_VERSION=${ver}" >> $GITHUB_ENV`
+  );
+  console.log(var2Out);
+  if (var2Err) {
+    throw new Error(var2Err);
+  }
 })().catch((err) => {
   process.emitWarning(err);
   process.exitCode = 1;

@@ -13,6 +13,8 @@ import { noPrjErr, useProfileData, useReelData } from './hooks/useProject';
 import './profile.css';
 import { ProfileSum, PrProf, RevReel, SumRev } from './types';
 
+const isDebug = process.env.REACT_APP_DEBUG === 'true';
+
 const ProjectProfileSummary: ProfileSum = function (props) {
   // Req: Pass in both project and reviews as props
   const { profileQ, reviews } = props;
@@ -137,7 +139,6 @@ const ReviewReel: RevReel = function (props) {
   /** Begin UI states */
   // Loading intially...
   let L = null;
-  console.log(reelData);
 
   if (anyInitiallyLoading) {
     L = loader('Fetching reviews...');
@@ -184,7 +185,6 @@ const ReviewReel: RevReel = function (props) {
  */
 // const NewReviewReel = function (props) {};
 const ProjectProfile: PrProf = function (props) {
-  const debug = !!process.env.REACT_APP_DEBUG;
   const { data, proj } = props;
   const { state } = useApp();
   const { userData } = state;
@@ -205,8 +205,6 @@ const ProjectProfile: PrProf = function (props) {
   /**  [reviews,anyErred, anyInitiallyLoading, allIdle] */
   const reviewQ = useReelData(proj);
   const profileQ = useProfileData(proj);
-  if (debug) console.count('Rendered Project profile');
-  if (debug) console.log('reviewQ, profileQ', reviewQ, profileQ);
   return (
     <main className='profile-wrap'>
       <ProjectProfileSummary profileQ={profileQ} reviews={reviewQ[0]} />
@@ -222,7 +220,6 @@ const ProjectProfile: PrProf = function (props) {
 const Main: React.FC = function () {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading: isInitiallyLoading, isError, error, isIdle } = useProject(id);
-  const isDebug = !!process.env.REACT_APP_DEBUG;
   if (!data) {
     // Ref: https://react-query.tanstack.com/reference/useQuery
     // Three states of concern: Idle
@@ -239,7 +236,7 @@ const Main: React.FC = function () {
     }
     return message('Undefined state, Project profile');
   }
-  if (isDebug) console.assert(data, 'Data undefined');
+  if (isDebug) console.assert(data, 'Data undefined in project profile main');
   if (data[0].proposalStatus.status.isRejected)
     return (
       <p>

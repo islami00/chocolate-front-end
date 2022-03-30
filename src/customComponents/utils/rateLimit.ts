@@ -5,7 +5,10 @@
 // Rate limit: https://thoughtspile.github.io/2018/07/07/rate-limit-promises/
 
 import _ from 'lodash';
-import { sleep as resolveAfter } from './utils';
+
+function resolveAfter(ms: number): Promise<unknown> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 // From my limited understanding,
 // First we define concurrency limit which serialises processes into batches of 1.
 // First serialise
@@ -86,4 +89,4 @@ const combineLimit = function <T extends (...args: any[]) => any>(
   return limitConcurrency(rateLimit(fn, windowMs, maxIn), maxIn);
 };
 
-export { combineLimit };
+export { combineLimit, resolveAfter as sleep };

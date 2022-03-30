@@ -28,7 +28,7 @@ interface UserTypeInterface {
   web3Address: string;
   web3nonce: number;
 
-  tokens: Array<any>;
+  tokens: Types.Array<any>;
 
   profile: {
     username: string;

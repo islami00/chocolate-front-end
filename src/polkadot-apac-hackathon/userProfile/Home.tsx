@@ -1,29 +1,24 @@
 /* eslint-disable import/no-unresolved */
 import { User } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
-import { UseQueryResult } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { Grid } from 'semantic-ui-react';
-import { useChainProjects } from '../common/hooks/useUserReviews';
+import { useUserReviews } from '../common/hooks/useUserReviews';
 import Sidebar from './Sidebar';
 import TableOfReviews from './TableOfReviews';
 
 interface ProfileTableProps {
-  user: UseQueryResult<User, Error>;
+  user: User;
 }
 const ProfileTable: React.FC<ProfileTableProps> = (props) => {
-  const { web3Address } = useParams<{ web3Address: string }>() as { web3Address: string };
-
+  const { web3Address } = useParams<{ web3Address: string }>();
   // get all reviews associated with user.
+  const search = useUserReviews(web3Address);
 
-  const search = useChainProjects(web3Address);
-  // setup the ui structure.
-  // two grids. One floated left, the other right. The left grid will house user deets, right grid with table.
-  // size accordingly
   const { user } = props;
   return (
     <Grid padded='vertically' style={{ paddingTop: '20px' }}>
-      <Grid.Column floated='left' width={4} doubling>
+      <Grid.Column floated='left' width={4}>
         <Sidebar user={user} />
       </Grid.Column>
       <Grid.Column floated='right' stretched width={10}>

@@ -9,6 +9,7 @@ import { useMutation } from 'react-query';
 import { Location as RRLocation, Navigate, useLocation } from 'react-router-dom';
 import { Form, FormProps, InputOnChangeData } from 'semantic-ui-react';
 
+const isDebug = process.env.REACT_APP_DEBUG === 'true';
 interface LoginLocation extends RRLocation {
   state: {
     from?: string;
@@ -80,12 +81,11 @@ const Login: React.FC = function () {
 
   const onExpire = () => {
     setForm((F) => ({ ...F, captcha: '' }));
-    console.log('hCaptcha Token Expired');
   };
 
   const onError = (err: string) => {
     setForm((F) => ({ ...F, captcha: '' }));
-    console.log(`hCaptcha Error: ${err}`);
+    if (isDebug) console.error(`hCaptcha Error: ${err}`);
   };
   const handleSubmit: (e: FormEvent<HTMLFormElement>, data: FormProps) => void = (e) => {
     e.preventDefault();

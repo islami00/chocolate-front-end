@@ -1,15 +1,14 @@
 /* eslint-disable import/no-unresolved */
-import { useChainProjects } from 'chocolate/polkadot-apac-hackathon/common/hooks/useUserReviews';
 import { useSubstrate } from 'chocolate/substrate-lib';
 import { User } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
 import { useEffect, useState } from 'react';
-import { UseQueryResult } from 'react-query';
-import { Card, Container, Image, Button, Label } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
+import { Button, Card, Container, Image, Label } from 'semantic-ui-react';
+import { useUserReviews } from '../common/hooks/useUserReviews';
 
 interface SidebarProps {
-  user: UseQueryResult<User, Error>;
+  user: User;
 }
 
 const SideBarStat: React.FC<{
@@ -34,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
   const [userAggr, setUserAggr] = useState({ name: 'Anonymous' });
   // try to grab user from keyring
   const { web3Address } = useParams<{ web3Address: string }>();
-  const search = useChainProjects(web3Address);
+  const search = useUserReviews(web3Address);
 
   const { keyring } = useSubstrate();
   useEffect(() => {
@@ -61,11 +60,9 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
                 {/* assuming we store this meta on chain */}
                 {userAggr.name !== 'Anonymous' ? 'Joined' : 'Not Joined'}
               </Label>
-              <SideBarStat
-                content='No. of Reviews'
-                stat={search.data ? search.data.length.toString() : 'loading..'}
-              />
-              <SideBarStat content='Points' stat={user.data?.rankPoints?.toString() ?? '0'} />
+              {/* Make stats available via easier means e.g store onchain or in other metadata */}
+              <SideBarStat content='No. of Reviews' stat={search[0].length.toString()} />
+              <SideBarStat content='Points' stat={user.rankPoints?.toString() ?? '0'} />
             </Card.Content>
           </Card>
         </Card.Content>
@@ -74,16 +71,9 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
             size='big'
             compact
             href={`https://twitter.com/${userAggr.name}`}
-            link
             icon='twitter square'
           />
-          <Button
-            compact
-            size='big'
-            href={`https://discord.com/${userAggr.name}`}
-            link
-            icon='discord'
-          />
+          <Button compact size='big' href={`https://discord.com/${userAggr.name}`} icon='discord' />
         </Card.Content>
       </Card>
     </Container>
