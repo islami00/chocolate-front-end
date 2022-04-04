@@ -15,7 +15,7 @@ const ipfsConfig = {
 type GetCidReturns = { cid: string };
 const getCid = async function (reviewText: string, rating: number): Promise<GetCidReturns> {
   const cacheable: ReviewContent = { reviewText, rating };
-  const endpoint = `${process.env.REACT_APP_PIN_SERVER}/pin`;
+  const endpoint = `${process.env.REACT_APP_PIN_SERVER.replace(/"/g, '')}/pin`; // Env var issue
   const headers = {
     method: 'POST',
     body: JSON.stringify(cacheable),

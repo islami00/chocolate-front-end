@@ -4,7 +4,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { VoidFn } from '@polkadot/api/types';
 import { Option, U32 } from '@polkadot/types';
-import { AccountId } from '@polkadot/types/interfaces';
 import {
   ChainProject,
   ChainReview,
@@ -161,7 +160,10 @@ const useReviewKeys = function (api: ApiPromise, id: ProjectID) {
     const keys = await api.query.chocolateModule.reviews.keys();
     return keys.map((key) => key.args).filter((each) => each[1].eq(id));
   };
-  return useQuery(['Review Keys', id.toJSON()], serKeys);
+  return useQuery(['Review Keys', id.toJSON()], serKeys, {
+    // Reasonably, every block-time
+    refetchInterval: 6500,
+  });
 };
 
 // Share
