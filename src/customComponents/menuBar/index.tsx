@@ -121,23 +121,8 @@ function Navlinks() {
       </Link>
       <ul className='nav-links-ul'>
         <li>
-          <Link className='nav-link' to='/about'>
-            About
-          </Link>
-        </li>
-        <li>
-          <Link className='nav-link' to='/team'>
-            Team
-          </Link>
-        </li>
-        <li>
           <Link className='nav-link' to='/gallery'>
             Projects
-          </Link>
-        </li>
-        <li>
-          <Link className='nav-link' to='/choc'>
-            CHOC Token
           </Link>
         </li>
         {/* Abstract to authBtns component */}

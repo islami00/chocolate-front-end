@@ -4,12 +4,12 @@ import { List } from 'semantic-ui-react';
 /** this is a faux event view, update this when events are understood better */
 const EventView: React.FC<{ event: EventRecord[] }> = function (props) {
   const { event } = props;
-  const view = event?.map((record) => {
+  const view = event?.map((record, i) => {
     const { event: localEvent, phase } = record;
     const types = localEvent.typeDef;
     const text = [<> </>];
     text.push(
-      <p key={JSON.stringify(localEvent.section)}>
+      <p key={`${JSON.stringify(localEvent.section)}${i}`}>
         {`\t${localEvent.section}:${localEvent.method}:: (phase=${phase.toHuman().toString()})`}
       </p>
     );
@@ -19,7 +19,7 @@ const EventView: React.FC<{ event: EventRecord[] }> = function (props) {
 
     localEvent.data.forEach((data, index) => {
       text.push(
-        <p key={JSON.stringify(types)}>
+        <p key={`${JSON.stringify(types)}${index}`}>
           {`\t\t\t${types[index].type}: ${String(data.toHuman())}`}{' '}
         </p>
       );

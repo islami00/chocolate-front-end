@@ -10,12 +10,10 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UserProfile from '../../polkadot-apac-hackathon/userProfile';
 import { useSubstrate } from '../../substrate-lib';
-import About from '../About';
 import Gallery from '../Gallery';
 import MenuBar from '../menuBar';
 import ProjectProfile from '../ProjectProfile';
 import ProjectsRe from '../ProjectsRe';
-import Team from '../Team';
 import { loader, message } from '../utilities';
 import WallOfShame from '../WallOfShame';
 import './landing.css';
@@ -51,8 +49,6 @@ function Main(): JSX.Element {
               <Route path='/user/:web3Address' element={<UserProfile />} />
               <Route path='/signup' element={<SignUp />} />
               <Route path='/login' element={<Login />} />
-              <Route path='/about' element={<About />} />
-              <Route path='/team' element={<Team />} />
               <Route path='*' element={message('404! Not found', true)} />
             </Routes>
           </Router>
