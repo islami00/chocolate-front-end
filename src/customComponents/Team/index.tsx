@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
-
+// To-do : Rework to static site.
 interface MemberProps {
   name: string;
   image: string;
