@@ -51,6 +51,8 @@ export { EventView };
 // eslint-disable-next-line
 function findAnyMetaErr(t: DispatchError) {
   const metaErr = t.registry.findMetaError(
+    // Inner object.entries returns [["ErrName", errObj]].
+    // [0] strips to ["ErrName", errObj] , grab errObj with [1].
     Object.entries(Object.entries(t.toJSON())[0][1])
       .map((e) => [e[0], new BN(e[1] as number)] as [string, BN])
       .reduce(
