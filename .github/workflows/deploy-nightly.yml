@@ -5,8 +5,6 @@ on:
     # releases should only stem from related tags. No auto checks for now though, only branch protection for nightly env.
     tags:
       - v*.*.*
-    branches:
-      - "development"
 
 jobs:
   config-env:
@@ -64,7 +62,7 @@ jobs:
       id-token: 'write'
     strategy:
       matrix:
-        server: ['polkadot-apac-hackathon/auth-server']
+        server: ['polkadot-apac-hackathon/auth-server','functions']
     # All scripts run in server wd.
     defaults:
       run:
