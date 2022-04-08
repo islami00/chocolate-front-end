@@ -1,4 +1,4 @@
-name: CD - All
+name: CD (Deploy All)
 
 on:
   push:
