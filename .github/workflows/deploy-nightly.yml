@@ -1,10 +1,12 @@
-name: CD - Nightly
+name: CD - All
 
 on:
   push:
     # releases should only stem from related tags. No auto checks for now though, only branch protection for nightly env.
     tags:
       - v*.*.*
+    branches:
+      - "development"
 
 jobs:
   config-env:
