@@ -8,15 +8,13 @@ const prCWD = path.resolve(__dirname, '../');
 const here = path.basename(prCWD);
 process.chdir(prCWD);
 // Get env, and tag
-const env = process.env.DEPLOY_ENV ? `-${process.env.DEPLOY_ENV}` : '';
 const ref = process.env.GITHUB_REF;
 console.log('Producing tar artifact for ', ref);
 let ver = '';
-let verEnv = '';
 let gVerEnv = '';
 if (ref) {
   const refArr = ref.split('/');
-  verEnv = `${refArr[refArr.length - 1]}`;
+  const verEnv = `${refArr[refArr.length - 1]}`;
   // Ret format: viii-nightly-mm-dd-yy[1234]
   gVerEnv = verEnv.replace(/\./g, '').replace(/\+/g, '--');
   ver = `-${verEnv}`;
@@ -25,7 +23,9 @@ if (ref) {
 // Then do tar.
 (async function main() {
   // tar
-  const { stderr, stdout } = await execPromise(`tar -cvf server-${here}${ver}${env}.tar ./lib`);
+  const { stderr, stdout } = await execPromise(
+    `tar -cvf servers-${here}${ver}.tar ./lib`
+  );
   console.log(stdout);
   if (stderr) {
     throw new Error(stderr);
@@ -36,7 +36,6 @@ if (ref) {
   const { stderr: var2Err, stdout: var2Out } = await execPromise(
     `
     echo "ARTIFACT_NAME=${here}" >> $GITHUB_ENV &&
-    echo "APP_VERSION=${verEnv}" >> $GITHUB_ENV && 
     echo "APP_VERSION_GCLOUD=${gVerEnv}" >> $GITHUB_ENV
     `
   );
