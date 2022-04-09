@@ -1,11 +1,11 @@
 import { EventRecord } from '@polkadot/types/interfaces';
-import { Button, Header, Container, Loader } from 'semantic-ui-react';
-import { useState, useEffect } from 'react';
-import { useApp } from '../../state';
-import { useSubstrate } from '../../../substrate-lib';
-import { useLoadAccounts } from '../../menuBar';
-import { TxButton } from '../../../substrate-lib/components';
+import { useEffect, useState } from 'react';
+import { Button, Container, Header } from 'semantic-ui-react';
 import AccountSelector from '../../../AccountSelector';
+import { useSubstrate } from '../../../substrate-lib';
+import { TxButton } from '../../../substrate-lib/components';
+import { useLoadAccounts } from '../../menuBar';
+import { useApp } from '../../state';
 import { useReviewSend } from '../hooks/useReviewSend';
 import { EventView } from './EventView';
 import { FinalNotif } from './FinalNotif';
@@ -18,17 +18,15 @@ const SubmitReviewTx: React.FC<{ id: string; cid: string }> = (props) => {
   const { userData } = state;
   const [run, setRun] = useState(false);
   const [event, setEvents] = useState<EventRecord[]>();
-  const [completed, setCompleted] = useState<boolean>(undefined);
-  const [error, setError] = useState<boolean>(undefined);
-  const debug = false;
   const { keyringState, keyring } = useSubstrate();
+  const [stat, setStat] = useState<'sending' | 'error' | 'finalized'>(undefined);
   useLoadAccounts(run, setRun);
   const { data: txFee } = useReviewSend({ id, cid }, userData.accountAddress);
   useEffect(() => {
-    if (debug) console.log(event);
-    if (/finalized/i.exec(status)) setCompleted(true);
-    else if (/failed/i.exec(status)) setError(true);
-  }, [event, status, debug]);
+    if (/(sending)|(ready)|(inBlock)/i.exec(status)) setStat('sending');
+    else if (/finalized/i.exec(status)) setStat('finalized');
+    else if (/failed/i.exec(status)) setStat('error');
+  }, [event, status]);
   if (!userData.accountAddress && !keyring)
     return (
       <div>
@@ -66,14 +64,13 @@ const SubmitReviewTx: React.FC<{ id: string; cid: string }> = (props) => {
         }}
       />
       <details placeholder='Events'>{event?.length > 0 && <EventView event={event} />}</details>
-      {status && !completed && !error && <Loader content={status} />}
-      {(completed || error) && (
-        <FinalNotif
-          status={status}
-          completed={completed ? true : undefined}
-          error={error ? true : undefined}
-        />
-      )}
+      {/* What we need, but not yet. 
+      {stat === 'sending' && (
+        <Dimmer active>
+          <Loader inverted content={status} />
+        </Dimmer>
+      )} */}
+      <FinalNotif status={status} state={stat} />
     </div>
   );
 };

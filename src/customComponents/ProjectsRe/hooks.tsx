@@ -1,63 +1,219 @@
-import { Option, StorageKey } from '@polkadot/types';
-import { useQuery, UseQueryResult } from 'react-query';
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { ApiPromise } from '@polkadot/api';
+import { VoidFn } from '@polkadot/api/types';
+import { Option } from '@polkadot/types';
+import { useEffect, useMemo } from 'react';
+import { QueryStatus, useQueries, useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import { ProjectAl, ProjectID } from '../../interfaces';
-import { useSubstrate } from '../../substrate-lib';
-import { Chocolate, NewMetaData, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
-import { errorHandled, toPinataFetch } from '../utils';
+import { ChainProject, NewMetaData, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { errorHandled, limitedPinataFetch } from '../utils';
+
+const isDebug = process.env.REACT_APP_DEBUG === 'true';
+/**
+ * @description Get the keys of all projects from the chain.
+ * Fallback here would be same as next hook. Throw if you haven't memoised and the api isn't available
+ * Else return memo. Let react query handle retries.
+ *
+ */
+const useProjectKeys = function (api: ApiPromise) {
+  const serKeys = async () => {
+    const keys = await api.query.chocolateModule.projects.keys();
+    return keys.map((id) => id.args[0]);
+  };
+  return useQuery('project keys', serKeys);
+};
+
+// Get the project using useQueries, then update with WS.
+/**
+ * QueryKey is ["Project",ProjectID]
+ * Fallback here would be to reject if api is unavailable and we haven't memoised.
+ * Else we simply return memoised value.
+ *  */
+export const useParallelProjects = function (
+  api: ApiPromise,
+  keys: ProjectID[],
+  shouldFire: boolean
+) {
+  // We require a ready api. This should be handled at the top level of any component that needs substrate
+  const getOne = async function (key: ProjectID) {
+    const proj = await api.query.chocolateModule.projects(key);
+    // Returning key allows us to track project later
+    return [proj.unwrapOrDefault(), key] as [ProjectAl, ProjectID];
+  };
+
+  const projects = useQueries(
+    keys.map((each) => ({
+      queryKey: ['Project', each.toJSON()],
+      queryFn: () => getOne(each),
+      enabled: shouldFire,
+      // We'll refetch
+      staleTime: Infinity,
+    }))
+  );
+  return projects;
+};
+/**  Then deal with websockets
+ * Fallback here would be shouldFire && !fallback
+ */
+export const useProjectsSubscription = function (
+  api: ApiPromise,
+  keys: ProjectID[],
+  shouldFire: boolean
+) {
+  const queryClient = useQueryClient();
+  //  Subscribe once, more efficient with connections.
+  useEffect(() => {
+    let unsub: VoidFn;
+    if (shouldFire)
+      api.query.chocolateModule.projects
+        .multi<Option<ProjectAl>>(keys, (prs) => {
+          // We assume the returned values match the keys
+          keys.forEach((key, index) => {
+            const ithProject = prs[index].unwrapOrDefault();
+            queryClient.setQueryData<[ProjectAl, ProjectID]>(
+              ['Project', key.toJSON()],
+              (checkAgainst) => {
+                if (!checkAgainst) {
+                  if (isDebug)
+                    console.error('Set query data before initial query', key.toJSON(), ithProject);
+                  return [ithProject, key.toJSON()];
+                }
+                const [project, id] = checkAgainst;
+                // Concrete check. project needs to change too.
+                if (key.eq(id) && !project.eq(ithProject)) {
+                  return [ithProject, id];
+                }
+                return [project, id];
+              }
+            );
+          });
+        })
+        .then((v) => (unsub = v))
+        .catch((e) => isDebug && console.error(e));
+    return () => unsub && unsub();
+
+    // More suited to gallery page where real time data is needed.
+    // Reasonable deps , length tracks new adds, shouldfire waits for first fetch. Realtime reqs of searchbar aren't much.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keys.length, shouldFire]);
+};
+const retrieveProjectsMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
+  // Get metadata
+  const res = await errorHandled(limitedPinataFetch(pr.metadata.toJSON()));
+  if (res[1]) throw res[1];
+  const json = await errorHandled<NewMetaData>(res[0].json());
+  if (json[1]) throw json[1];
+
+  //  Merge metadata in.
+  // First, json stringify (This should be handled by a wrapper class)
+  const prString = pr.toHuman() as unknown as ChainProject;
+  const nPr = {
+    Id: id.toHuman(),
+    project: { ...prString, metadata: json[0] },
+  } as NewProjectWithIndex;
+  return nPr;
+};
+// Then get json metadata
+// Doesn't require api. SHould be fine so long as dependent memoises
+// This one's should fire depends on useParallelProjects
+export const useProjectsWithMetadata = function (
+  projects: [ProjectAl, ProjectID][],
+  shouldFire: boolean
+) {
+  return useQueries(
+    projects.map(([v, k]) => ({
+      queryKey: ['Project', 'Metadata', k.toJSON(), v.metadata.toJSON()],
+      queryFn: () => retrieveProjectsMeta([v, k]),
+      enabled: shouldFire,
+      staleTime: Infinity,
+    }))
+  );
+};
+
+// This returns , alongside the query data, an array of booleans and statuses indicating success and other states of the query results.
+// Sort of serialising them.
+// Doesn't need to memoise if passer does.
+// Also acts as a trigger for next function that checks data by including dataUpdatedAt
+/**  [valids, erred, loadingInitially, statuses] */
+const shouldComputeValid = function <T>(metas: UseQueryResult<T, unknown>[]) {
+  const erred = metas.some((each) => each.isError);
+  if (erred && isDebug) console.error('Some query in the list failed');
+  // Show if any q is loading intially to update UI
+  const loadingInitially = metas.some((each) => each.isLoading);
+  // Return state of all and leave check to others
+  const states = metas.map((each) => each.status);
+  const valids = metas.map((each) => [each.data, each.dataUpdatedAt] as [T, number]);
+  return [valids, erred, loadingInitially, states] as [
+    typeof valids,
+    boolean,
+    boolean,
+    typeof states
+  ];
+};
+
+const resArr = function <T>(valids: [T, number][]) {
+  // Check if data is defined
+  const defined = valids.filter((each) => !!each[0]);
+  // Collect only the project and swap, last updated at simply limits this.
+  const readies = defined.map((each) => each[0]);
+  return readies;
+};
+
+// Same here for state
+const allCheck = function (states: QueryStatus[], status: QueryStatus) {
+  return states.reduce((prev, current) => prev === true && current === status, true);
+};
+
+// Also, some metadata switcheroo to complete:
+export const mockImages = function (pr: NewProjectWithIndex) {
+  pr.project.metadata.icon = `https://avatars.dicebear.com/api/initials/${pr.project.metadata.name}.svg`;
+  return pr;
+};
 
 /**
- * OwnerID shoould be changed to projectAddress in input
- * @description gets the projects and filters them by not proposed, and adds exta data e.g subscan links and also dispatches state update
+ * Returns: [projects, isAnyError, isAnyInitiallyLoading, areAllIdle ]
+ *
+ * Note: Everyone should ensure they can with stand API being unavailable by memoising.
+ * At this hook's end, it'll memoise its return value and return it instead if the api were to become unavailable
  */
-const getProjects = async function (
-  projects: Promise<[StorageKey<[ProjectID]>, Option<ProjectAl>][] | undefined>
-): Promise<NewProjectWithIndex[]> {
-  const debug = false;
-  if (debug) console.log(projects);
-  // projects are properly passed here
-  if (!(projects instanceof Promise)) throw new Error('Passed in wrong values');
-  const usable = await projects;
-  if (debug) console.clear();
-  if (debug) console.log(usable);
-  const mutatedProjects = usable?.map(async (each) => {
-    const [id, project] = each;
+// Refactor tip: Refs to the rescue! https://usehooks.com/usePrevious/
+// Use this at critical sections so that when the api goes out, we use the previous value.
+// All hooks requiring the substrate api should memoise value and accept a fallback boolean that says whether or not to use that last value.
+// We then return the value of usePrevious instead of failing to use the apiPromise.
+// Also, memoise vigorously in regular functions.
+const useSearchData = function (
+  api: ApiPromise
+): [NewProjectWithIndex[], boolean, boolean, boolean] {
+  // Start project loop
+  const { data: keys, status } = useProjectKeys(api);
+  const parallelProjects = useParallelProjects(api, keys ?? [], status === 'success');
+  const parallels = useMemo(() => shouldComputeValid(parallelProjects), [parallelProjects]);
+  // Check defined
+  const validParallels = parallels[0];
+  const readyParallels = useMemo(() => resArr(validParallels), [validParallels]);
+  // Ideally this subscription should come after every project has completed too and we have keys
+  useProjectsSubscription(
+    api,
+    keys ?? [],
+    status === 'success' && allCheck(parallels[3], 'success')
+  );
+  // Metas should give enough time for parallel projects to complete fetching
+  const metas = useProjectsWithMetadata(readyParallels, allCheck(parallels[3], 'success'));
+  // Same routine for qs
+  const vMetaArr = useMemo(() => shouldComputeValid(metas), [metas]);
+  const [validMetas, anyMetaErr, anyMetaInitiallyLoading, metaStates] = vMetaArr;
+  const readyMetas = useMemo(() => resArr(validMetas).map(mockImages), [validMetas]);
 
-    // @ts-expect-error AnyJson is an array type in this case.
-    const [[rawId], rawProject] = [id.toHuman(), project.unwrapOrDefault()];
-    if (rawProject.isEmpty) {
-      return null;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const Id: Chocolate['ProjectID'] = rawId;
-    // @ts-expect-error this is te project type returned
-    const secondReturnable: Chocolate['Project'] = rawProject.toHuman();
-    const [meta, error] = await errorHandled(fetch(toPinataFetch(secondReturnable.metadata)));
-    if (error) throw error;
-    const realMeta: NewMetaData = (await meta.json()) as NewMetaData;
-    realMeta.icon = `https://avatars.dicebear.com/api/initials/${realMeta.name}.svg`;
-    const newRet = { ...secondReturnable, metadata: realMeta };
-    const ret: NewProjectWithIndex = { Id, project: newRet };
-    return ret;
-  });
-  const mut = await Promise.all(mutatedProjects);
-  const cleanProjects = mut.filter((each) => each !== null && each !== undefined);
-  return cleanProjects;
+  // Expect everyone else to memoise.
+  // Make more efficient: Ensure it only causes rerenders of parent when arr length >0
+  // Currently renders about 24 times, but as expected, it keeps outer ui in the loop of what is going on in the hook for interactive updates.
+  // Otherwise, only renders 2 times after to refresh page data on refocus
+  return [
+    readyMetas,
+    anyMetaErr,
+    anyMetaInitiallyLoading,
+    // UI reacts when metadata available
+    allCheck(metaStates, 'idle'),
+  ] as [NewProjectWithIndex[], boolean, boolean, boolean];
 };
-/** @description  Get all projects as usable jsons and sort by id */
-const useProjects = function (): UseQueryResult<NewProjectWithIndex[], unknown> {
-  const { api } = useSubstrate();
-  // To-do: refactor to useQuery 'chain', 'projects' and useQuery 'ipfs' , 'metadata'
-  // then include utility function to consolidate both types. but we good for now. Collects both
-  async function fetchProjects() {
-    const ret = await getProjects(api.query.chocolateModule.projects.entries());
-    ret.sort((pr1, pr2) => {
-      let x = 1;
-      if (pr1.Id < pr2.Id) x = -1;
-      else if (pr1.Id === pr2.Id) x = 0;
-      return x;
-    });
-    return ret;
-  }
-  return useQuery('projects', fetchProjects);
-};
-export { useProjects };
+export { useSearchData, shouldComputeValid, resArr, allCheck };

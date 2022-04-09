@@ -1,15 +1,17 @@
-import { useReducer, useEffect } from 'react';
-import { Query, QueryKey, useQueryClient } from 'react-query';
-import { useParams, Redirect, useLocation } from 'react-router-dom';
-import _ from 'lodash';
+/* eslint-disable import/no-unresolved */
 import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
-import { NewMetaData } from '../../../typeSystem/jsonTypes';
+import _ from 'lodash';
+import { useEffect, useReducer } from 'react';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { asyncCacheLocal } from '../../utils';
+import { useProfileData } from '../hooks/useProject';
+/* eslint-enable import/no-unresolved */
 import { SubRev } from '../types';
+import { CheckAuthAndGetCid, CheckCidProps } from './CheckAuthAndGetCid';
+import type { LocalFormProps } from './FormToEnter';
 import { FormToEnter } from './FormToEnter';
 import { SubmitReviewTx as SubmitToChain } from './SubmitReviewTx';
-import type { LocalFormProps } from './FormToEnter';
-import { CheckAuthAndGetCid, CheckCidProps } from './CheckAuthAndGetCid';
-import { asyncCacheLocal } from '../../utils';
+
 // cache reducer types
 export interface Stage1Cache {
   [x: string]: unknown;
@@ -75,34 +77,23 @@ const stageCacheReducer = (state: StageCache, action: CacheAction) => {
       return state;
   }
 };
-// small type for cache project
-type GetPrMetFx = (id: string) => Query<NewMetaData, unknown, NewMetaData, QueryKey>;
-const useCachedProjectMeta: GetPrMetFx = (id) => {
-  const queryKey = ['project', 'meta', id];
-  const qClient = useQueryClient();
-  const cachedProj = qClient.getQueryCache().find<NewMetaData>(queryKey);
-  return cachedProj;
-};
-const SubmitReviewForm: SubRev = function () {
+const SubmitReviewForm: SubRev = function (props) {
+  const { proj } = props;
   // get stage from reducer
-  // instead of stage reducer, use param to get stage
   const { stage } = useParams<{ stage: string }>();
   // get cid from cache
-
   const [cache, dispatchCache] = useReducer(stageCacheReducer, InitialCache);
-
-  // overarching deets 1. pass in auth deets to each
   const { isAuthenticated } = useAuthService();
   // stage1 deets
-  const { id } = useParams<{ id: string }>();
+  const id = proj[1].toHuman();
   useEffect(() => {
     dispatchCache({ type: 'initialise', id });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const cachedProject = useCachedProjectMeta(id);
+  const profileQ = useProfileData(proj);
   const formProps: LocalFormProps = {
     id,
-    projectName: cachedProject.state.data?.name,
+    projectName: profileQ.data?.project.metadata.name,
     dispatchCache,
     cachedForm: cache.stage1,
   };
@@ -117,17 +108,11 @@ const SubmitReviewForm: SubRev = function () {
     id,
     cid: cache.stage2,
   };
-  console.count('SubmitReviewForm');
   const location = useLocation();
-  if (stage >= '2' && !isAuthenticated)
-    return (
-      <Redirect
-        to={{
-          pathname: '/login',
-          state: { from: location },
-        }}
-      />
-    );
+
+  if (stage >= '2' && !isAuthenticated) {
+    return <Navigate to='/login' state={{ from: location }} />;
+  }
   // render based on stage
   switch (stage) {
     case '1':

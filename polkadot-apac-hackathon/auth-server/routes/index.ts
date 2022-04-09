@@ -1,6 +1,6 @@
 import passport from 'passport';
 import express from 'express';
-import { loginPostController, registerPostController } from '../controllers/UserControllers';
+import { loginPostController, registerPostController, registerPostValidator, sanitiseBodyFields } from '../controllers/UserControllers';
 const router = express.Router();
 
 // https://expressjs.com/en/guide/error-handling.html
@@ -10,22 +10,25 @@ const errorHandler: express.ErrorRequestHandler = function (err, req, res, next)
   console.error(err.message);
   // respond with 500 "Internal Server Error", instead of default stack trace
   res.status(500);
-  res.json(err.stack);
+  // Extended err for client to log.
+  res.json({error: 'Something went wrong processing your request on the server, please try again later'});
 };;
 const isAuthHandler: express.RequestHandler = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
   res.status(401);
+  // Review this code and message in places with fine-grained access control
   res.json({
-    message: 'Unauthorized',
+    error: 'Unauthorized',
   });
 };
 
 router.post('/login', passport.authenticate('local'), loginPostController);
 
-router.post('/register', registerPostController);
+router.post('/register',sanitiseBodyFields(['uname','web3Address']),registerPostValidator, registerPostController);
 router.get('/auth/check', isAuthHandler,(req,res,next)=>{
+  req.session?.touch(); // Refresh
   res.json({
     success: true,
     user: {
@@ -35,9 +38,13 @@ router.get('/auth/check', isAuthHandler,(req,res,next)=>{
   next();
 });
 // Visiting this route logs the user out
-router.get('/logout', (req, res, next) => {
+router.post('/logout', (req, res, next) => {
+  // https://github.com/jaredhanson/passport/issues/246
   req.logout();
-  res.redirect('/');
+  req.session?.destroy((err)=>{
+    if(err) return next(err);
+    res.json({success: true});
+  });
 });
 router.get('/protected', isAuthHandler, (req, res, next) => {
   res.json({

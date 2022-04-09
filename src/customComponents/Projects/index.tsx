@@ -25,13 +25,11 @@ export const Rating: React.FC<{
   const [rated, setRated] = useState(0);
   const [hover, setHover] = useState(0);
   // debug
-  const debug = false;
   useEffect(() => {
     if (rating) setRated(Number(rating));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rating]);
   useEffect(() => {
-    if (debug) console.count('Used setOuterRate effect');
     if (!fixed) setOuterRate(rated);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fixed, rated]);
@@ -80,7 +78,7 @@ const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   const { name } = metadata;
   const { status } = proposalStatus;
   let rateBar = <></>;
-  let toProject = <></>;
+  let toProject: JSX.Element = <></>;
   if (status === 'Accepted') {
     rateBar = <Rating rating={5} fixed />;
     toProject = (
@@ -115,7 +113,7 @@ const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   );
 };
 
-/** @description Houses the projects */
+/** @description Houses the projects -- Refactor to new when ready */
 export const ProjectsView: React.FC<{
   data: NewProjectWithIndex[];
   gallery?: boolean;

@@ -13,9 +13,6 @@
       "name": "auth-server",
       "path": "polkadot-apac-hackathon/auth-server"
     }
-    // {
-    // "path": "../githubtest"
-    // },
   ],
   "settings": {
     "npm-intellisense.recursivePackageJsonLookup": true,

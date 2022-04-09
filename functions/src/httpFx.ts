@@ -25,7 +25,7 @@ type PinataResponse = PinataSuccess | PinataError;
 interface PinSuccess {success: string}
 interface PinFail {error: string}
 type PinRes = PinFail | PinSuccess
-// For env var race condition in gCloud env. 
+// For env var race condition in gCloud env.
 const headersList = () => ({
   "Accept": "*/*",
   "User-Agent": "Thunder Client (https://www.thunderclient.io)",
@@ -42,7 +42,7 @@ app.use(cors({origin: true}));
 app.use(express.json());
 // Error handler. Must have  next as arg
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const error: express.ErrorRequestHandler = function (err, req, res, next) {
+const error: express.ErrorRequestHandler = function(err, req, res, next) {
   // log it
   debug(err.stack);
   debug(err.message);
@@ -59,35 +59,36 @@ interface PinRequest {
 }
 // Generics: app.[method]<Params,ResBody,ReqBody,ReqQuery,Locals>
 app.post<null, PinRes, PinRequest>("/pin", (request, response, next) => {
-  const { body } = request;
+  const {body} = request;
   // External error, return early with bad res.
   // Body is always json.
   const invalidBod = !body.reviewText || !body.rating;
-  if (invalidBod) return response.status(400).send({ error: "Invalid json" });
+  if (invalidBod) return response.status(400).send({error: "Invalid json"});
 
   fetch(endpoint, {
     method: "POST",
     body: JSON.stringify(body),
     headers: headersList(),
   })
-    .then(async (_response) => {
-      if (_response.status < 200 || _response.status >= 300) {
+      .then(async (_response) => {
+        if (_response.status < 200 || _response.status >= 300) {
         // Internal err
-        debug(JSON.stringify(headersList()));
-        throw new Error(String(_response.status).concat("Pinata responded with that status"));
-      }
+          debug(JSON.stringify(headersList()));
+          throw new Error(String(_response.status)
+              .concat("Pinata responded with that status"));
+        }
 
-      const data = (await _response.json()) as unknown as PinataResponse;
-      if (data.error) {
-        throw new Error(JSON.stringify(data.error));
-      }
-      // sending a string over
-      response.status(200).json({ success: data.IpfsHash });
-    })
-    .catch((error) => {
+        const data = (await _response.json()) as unknown as PinataResponse;
+        if (data.error) {
+          throw new Error(JSON.stringify(data.error));
+        }
+        // sending a string over
+        response.status(200).json({success: data.IpfsHash});
+      })
+      .catch((error) => {
       // Internal err, logged in errback, just pass to next.
-      next(error);
-    });
+        next(error);
+      });
   // Ts err, must return val.
   return;
 });
