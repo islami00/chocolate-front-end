@@ -13,7 +13,7 @@ function Main() {
    *  @type {Record<"key" | "value"|"text"|"icon",string>[] | undefined}
    *
    */
-  const keyringOptions = keyring?.getPairs().map(account => ({
+  const keyringOptions = keyring?.getPairs().map((account) => ({
     key: account.address,
     value: account.address,
     text: String(account.meta.name).toUpperCase(),
@@ -33,7 +33,7 @@ function Main() {
     setAccountSelected(address);
     // find the userName from existing list
     /** @type {NonNullable<typeof keyringOptions[number]>} */
-    const userName = keyringOptions.find(thisOpt => thisOpt.value === address);
+    const userName = keyringOptions.find((thisOpt) => thisOpt.value === address);
     dispatch({ type: 'USER_DATA', payload: { accountAddress: address, name: userName?.text } });
   };
 
@@ -42,7 +42,11 @@ function Main() {
       {!accountSelected ? (
         <span>
           Add your account with the{' '}
-          <a target='_blank' rel='noopener noreferrer' href='https://github.com/polkadot-js/extension'>
+          <a
+            target='_blank'
+            rel='noopener noreferrer'
+            href='https://github.com/polkadot-js/extension'
+          >
             Polkadot JS Extension
           </a>
         </span>
@@ -84,7 +88,7 @@ const BalanceAnnotation = function (props) {
 
     /** @param {...voidFn} subs */
     function desub(...subs) {
-      subs.forEach(unsubable => {
+      subs.forEach((unsubable) => {
         unsubable && unsubable();
       });
     }
@@ -92,10 +96,10 @@ const BalanceAnnotation = function (props) {
     if (accountSelected) {
       api &&
         api.query.system
-          .account(accountSelected, balance => {
+          .account(accountSelected, (balance) => {
             setAccountBalance(balance.data.free.toHuman());
           })
-          .then(unsub => {
+          .then((unsub) => {
             unsubscribe = unsub;
           })
           .catch(console.error);
@@ -107,12 +111,12 @@ const BalanceAnnotation = function (props) {
     if (accountSelected) {
       api &&
         api.query.usersModule
-          .users(accountSelected, userOpt => {
+          .users(accountSelected, (userOpt) => {
             const rank = userOpt.unwrapOrDefault().rank_points;
             // can't pass structs/objects as props
             dispatch({ type: 'USER_DATA', payload: { rankPoints: rank.toHuman() } });
           })
-          .then(unsub => {
+          .then((unsub) => {
             unsubscribe2 = unsub;
           });
     }

@@ -1,9 +1,12 @@
+// eslint-disable-next-line import/no-unresolved
+import { useSubstrate } from 'chocolate/substrate-lib';
 import { ProjectsView } from '../Projects';
-import { useProjects } from '../ProjectsRe/hooks';
+import { useSearchData } from '../ProjectsRe/hooks';
 
 function WallOfShame(): JSX.Element {
-  const { data, isFetched } = useProjects();
-  return isFetched && <ProjectsView shame data={data} />;
+  const { api } = useSubstrate();
+  const [data] = useSearchData(api);
+  return <ProjectsView shame data={data} />;
 }
 
 export default WallOfShame;

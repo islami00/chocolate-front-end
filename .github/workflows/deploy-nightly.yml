@@ -1,0 +1,111 @@
+name: CD (Deploy All)
+
+on:
+  push:
+    # releases should only stem from related tags. No auto checks for now though, only branch protection for nightly env.
+    tags:
+      - v*.*.*
+
+jobs:
+  config-env:
+    runs-on: ubuntu-20.04
+    # Map a step output to job output
+    outputs:
+      deploy-env: ${{ steps.step1.outputs.deploy_env }}
+    steps:
+      - id: step1
+        name: Set env
+        if: contains(github.ref, 'nightly')
+        run: echo "::set-output name=deploy_env::nightly"
+
+  web-app:
+    needs: ['config-env']
+    if: "! startsWith(github.event.head_commit.message, '[CI Skip]')"
+    environment: ${{ needs.config-env.outputs.deploy-env }}
+    runs-on: ubuntu-20.04
+    env:
+      DEPLOY_ENV: ${{ needs.config-env.outputs.deploy-env }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      # Repeat Build Setup. Separate terminal outs.
+      # Configure app for env
+      - run: yarn install --immutable
+      - run: yarn lint
+      - name: Configure, build.
+        run: |
+          node ./scripts/frontend_env_set.cjs
+          yarn build
+      - name: tar
+        run: node ./scripts/do-tar-frontend.cjs
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ env.ARTIFACT_NAME }}'
+          path: '${{ env.ARTIFACT_PATH }}'
+      - name: Deploy to firebase hosting
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+  servers:
+    needs: ['config-env']
+    runs-on: ubuntu-20.04
+    environment: ${{ needs.config-env.outputs.deploy-env }}
+    # Oidc perms.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    strategy:
+      matrix:
+        server: ['polkadot-apac-hackathon/auth-server','functions']
+    # All scripts run in server wd.
+    defaults:
+      run:
+        working-directory: ${{ matrix.server }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      # Build and upload tar
+      - run: | 
+          npm install -g npm@7
+          npm install
+          sh ./scripts/gcloud.sh
+      - run: node ./scripts/do-tar.cjs
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: '${{ env.ARTIFACT_NAME }}'
+          path: ${{ matrix.server }}/servers-*.tar
+        # Placed last due to credential export.
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: ${{ secrets.SERVER_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: '${{ secrets.AUTH_SA_NAME }}@${{ secrets.GCLOUD_PROJECT_ID }}.iam.gserviceaccount.com'
+      - name: Publish to gcp
+        run: npm run publish-code -- --version=${{ env.APP_VERSION_GCLOUD }} -q
+        working-directory: ${{ matrix.server }}/lib
+  
+  # Finally, create release with artifacts 
+  create-release:
+    needs: ['config-env','web-app','servers']
+    runs-on: ubuntu-20.04
+    environment: ${{ needs.config-env.outputs.deploy-env }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: github-downloaded-artifacts
+      - name: Create release with artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          files: github-downloaded-artifacts/**/*.tar
