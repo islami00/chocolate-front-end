@@ -2,30 +2,27 @@ name: Deploy to Preview Channel
 
 on:
   pull_request:
-    branches: [master]
+    branches: [master,development]
     # Optionally configure to run only for specific files. For example:
     # paths:
     # - "website/**"
 
 jobs:
   build_and_preview:
-    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    if: "! github.event.pull_request.head.repo.fork "
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-      - run: npm i -g yarn
-      - run: yarn set version stable
-      - run: yarn install --immutable
-      - run: yarn run lint:fix
-      - run: yarn run build
-      # - run: npm ci && yarn run build
+      - run: |
+          yarn install --immutable
+          yarn run lint
+          yarn run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CHOCOLATE_DEMO }}'
-          expires: 30d
+          expires: 10d
           projectId: chocolate-demo
-
