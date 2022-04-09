@@ -10,6 +10,7 @@ on:
 jobs:
   build_and_preview:
     runs-on: ubuntu-20.04
+    if: "! github.event.pull_request.head.repo.fork "
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -22,9 +23,6 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ env.FIREBASE_SA }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CHOCOLATE_DEMO }}'
           expires: 10d
           projectId: chocolate-demo
-        env:
-          FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CHOCOLATE_DEMO }}    
-

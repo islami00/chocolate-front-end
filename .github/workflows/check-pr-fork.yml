@@ -1,0 +1,13 @@
+name: Check fork prop
+
+on:
+  pull_request:
+    branches: ["development"]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event.pull_request.head.repo.fork }}
+      - run: echo ${{ github.event.pull_request.head.repo.full_name }}
+      - run: echo ${{ github.repository }}
+
