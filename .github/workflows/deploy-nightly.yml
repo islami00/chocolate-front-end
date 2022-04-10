@@ -12,16 +12,21 @@ jobs:
     # Map a step output to job output
     outputs:
       deploy-env: ${{ steps.step1.outputs.deploy_env }}
+      deploy-url: ${{ steps.step1.outputs.deploy_url }}
     steps:
       - id: step1
-        name: Set env
+        name: Set env, url nightly
         if: contains(github.ref, 'nightly')
-        run: echo "::set-output name=deploy_env::nightly"
-
+        run: | 
+          echo ::set-output name=deploy_env::nightly
+          echo ::set-output name=deploy_url::"https://chocolate-web-app-nightly.web.app"
+      
   web-app:
     needs: ['config-env']
     if: "! startsWith(github.event.head_commit.message, '[CI Skip]')"
-    environment: ${{ needs.config-env.outputs.deploy-env }}
+    environment: 
+      name: ${{ needs.config-env.outputs.deploy-env }}
+      url: ${{ needs.config-env.outputs.deploy-url }}
     runs-on: ubuntu-20.04
     env:
       DEPLOY_ENV: ${{ needs.config-env.outputs.deploy-env }}
@@ -55,7 +60,9 @@ jobs:
   servers:
     needs: ['config-env']
     runs-on: ubuntu-20.04
-    environment: ${{ needs.config-env.outputs.deploy-env }}
+    environment: 
+      name: ${{ needs.config-env.outputs.deploy-env }}
+      url: ${{ needs.config-env.outputs.deploy-url }}
     # Oidc perms.
     permissions:
       contents: 'read'
@@ -98,7 +105,9 @@ jobs:
   create-release:
     needs: ['config-env','web-app','servers']
     runs-on: ubuntu-20.04
-    environment: ${{ needs.config-env.outputs.deploy-env }}
+    environment: 
+      name: ${{ needs.config-env.outputs.deploy-env }}
+      url: ${{ needs.config-env.outputs.deploy-url }}
     steps:
       - uses: actions/checkout@v2
       - name: Download artifacts
