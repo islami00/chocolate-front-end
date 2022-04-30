@@ -136,6 +136,10 @@ declare module '@polkadot/api/types/errors' {
        **/
       ReviewNotFound: AugmentedError<ApiType>;
       /**
+       * Review score is out of range 1-5
+       **/
+      ReviewScoreOutOfRange: AugmentedError<ApiType>;
+      /**
        * The reward on the project isn't same as reserve
        **/
       RewardInconsistent: AugmentedError<ApiType>;

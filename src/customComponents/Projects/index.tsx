@@ -20,7 +20,6 @@ export const Rating: React.FC<{
   fixed: boolean;
   setOuterRate?: ReactNumberDis | ((rate: number) => ReturnType<ReactNumberDis>);
 }> = function (props) {
-  // expect rating to 2dp
   const { rating, fixed, setOuterRate } = props;
   const [rated, setRated] = useState(0);
   const [hover, setHover] = useState(0);

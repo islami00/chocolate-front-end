@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 import type { Bytes, Compact, Option, Vec, bool, u32, u64, u8 } from '@polkadot/types';
-import type { AnyNumber } from '@polkadot/types/types';
+import type { AnyNumber, ITuple } from '@polkadot/types/types';
 import type { AssetDestroyWitness, TAssetBalance } from '@polkadot/types/interfaces/assets';
 import type { MemberCount, ProposalIndex } from '@polkadot/types/interfaces/collective';
 import type { Proposal } from '@polkadot/types/interfaces/democracy';
@@ -541,13 +541,13 @@ declare module '@polkadot/api/types/submittable' {
        * Create a project
        * 
        * - O(1).
-       * - Init: Index starts at 0
+       * - Init: Index starts at 1
        **/
       createProject: AugmentedSubmittable<(projectMeta: Bytes | string | Uint8Array) => SubmittableExtrinsic<ApiType>, [Bytes]>;
       /**
        * Create a review, reserve required collateral and increase total of user trust scores on project.
        **/
-      createReview: AugmentedSubmittable<(reviewMeta: Bytes | string | Uint8Array, projectId: ProjectID | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [Bytes, ProjectID]>;
+      createReview: AugmentedSubmittable<(reviewMeta: ITuple<[u8, Bytes]> | [u8 | AnyNumber | Uint8Array, Bytes | string | Uint8Array], projectId: ProjectID | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [ITuple<[u8, Bytes]>, ProjectID]>;
       mint: AugmentedSubmittable<(x: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>, [BalanceOf]>;
       /**
        * Generic tx
