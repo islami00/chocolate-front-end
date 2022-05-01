@@ -20,7 +20,9 @@ export const Rating: React.FC<{
   fixed: boolean;
   setOuterRate?: ReactNumberDis | ((rate: number) => ReturnType<ReactNumberDis>);
 }> = function (props) {
-  const { rating, fixed, setOuterRate } = props;
+  const { fixed } = props;
+  // eslint-disable-next-line react/destructuring-assignment
+  const [rating, setOuterRate] = [props.rating, props.setOuterRate];
   const [rated, setRated] = useState(0);
   const [hover, setHover] = useState(0);
   // debug
@@ -36,7 +38,7 @@ export const Rating: React.FC<{
     <section className='review-wrap'>
       {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        [...Array(5)].map((undef, i) => {
+        Array.from(Array(5)).map((undef, i) => {
           const currentRating = i + 1;
 
           return (
@@ -45,7 +47,6 @@ export const Rating: React.FC<{
                 className='rate'
                 type='radio'
                 name='Rating'
-                id=''
                 value={currentRating}
                 onClick={!fixed ? () => setRated(currentRating) : undefined}
               />
@@ -79,11 +80,12 @@ const ProjectView: React.FC<{ data: HumanNewProjectWithIndex }> = function (prop
   let rateBar = <></>;
   let toProject: JSX.Element = <></>;
   if (status === 'Accepted') {
-    rateBar = <Rating rating={5} fixed />;
+    const rating = Number(project.totalReviewScore) / Number(project.numberOfReviews);
+    rateBar = <Rating rating={rating} fixed />;
     toProject = (
       <Button
         as={Link}
-        to={`/project/${Id.toString()}`}
+        to={`/project/${Id}`}
         color='brown'
         icon
         labelPosition='right'
