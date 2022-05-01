@@ -21,10 +21,10 @@ import { useQuery } from 'react-query';
 import { ProjectID } from '../../../interfaces';
 import { useSubstrate } from '../../../substrate-lib';
 import {
-  NewProjectWithIndex,
-  NewReview,
+  HumanNewProjectWithIndex,
+  HumanNewReview,
+  HumanTableSetReview,
   ReviewKeyAl,
-  TableSetReview,
 } from '../../../typeSystem/jsonTypes';
 
 // Get related review keys from chain
@@ -45,14 +45,17 @@ const useRelatedKeys = function (api: ApiPromise, web3Address: AccountId | strin
  * Worry: One may finish before the other leading to wait.
  * How to represent waiting??
  */
-const consolidateMetas = function (revMetas: NewReview[], prMetas: NewProjectWithIndex[]) {
+const consolidateMetas = function (
+  revMetas: HumanNewReview[],
+  prMetas: HumanNewProjectWithIndex[]
+) {
   const merged = revMetas
     .map((each) => {
       // Map to table rev
       // Find associated project
       const relatedPr = prMetas.find((v) => v.Id === each.projectID); // Careful for overflow. Both are strings actually.
       if (!relatedPr) return;
-      return { ...each, project: relatedPr.project } as TableSetReview;
+      return { ...each, project: relatedPr.project } as HumanTableSetReview;
     })
     .filter((each) => !!each);
   return merged;
@@ -97,7 +100,7 @@ const useRelatedProjects = function (
     anyPrMetaErr,
     anyPrMetaInitiallyLoading,
     allCheck(prMetaStates, 'idle'),
-  ] as [NewProjectWithIndex[], boolean, boolean, boolean];
+  ] as [HumanNewProjectWithIndex[], boolean, boolean, boolean];
 };
 /**
  * Uses context of parent (Including fallback and keys) to fetch reviews related to a user in the same pattern as used elsewhere in this app.
@@ -132,7 +135,7 @@ const useRelatedReviews = function (
     anyRevMetaErr,
     anyRevMetaInitiallyLoading,
     allCheck(revMetaStates, 'idle'),
-  ] as [NewReview[], boolean, boolean, boolean];
+  ] as [HumanNewReview[], boolean, boolean, boolean];
 };
 /**
  * This hook culminates work from useProjects and useSearchData by calling subhooks of each to fetch all reviews related to a user and the related projects, merging them into search data for the user's stats table.
@@ -172,5 +175,5 @@ export const useUserReviews = function (web3Address: string) {
     anyMetaInitiallyLoading,
     // UI reacts when metadata available
     isEitherCompletelyIdle,
-  ] as [TableSetReview[], boolean, boolean, boolean];
+  ] as [HumanTableSetReview[], boolean, boolean, boolean];
 };

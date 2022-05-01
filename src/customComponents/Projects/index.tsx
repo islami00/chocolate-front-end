@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { Button, Icon, Label } from 'semantic-ui-react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
 import Pensive from '../../assets/pensive-face-emoji.svg';
-import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { HumanNewProjectWithIndex } from '../../typeSystem/jsonTypes';
 // styles
 import './projects.scss';
 
@@ -70,7 +70,7 @@ export const Rating: React.FC<{
   );
 };
 /** @description Houses a single project */
-const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
+const ProjectView: React.FC<{ data: HumanNewProjectWithIndex }> = function (props) {
   const { data } = props;
   const { Id, project } = data;
   const { ownerID, proposalStatus, metadata } = project;
@@ -114,7 +114,7 @@ const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
 
 /** @description Houses the projects -- Refactor to new when ready */
 export const ProjectsView: React.FC<{
-  data: NewProjectWithIndex[];
+  data: HumanNewProjectWithIndex[];
   gallery?: boolean;
   shame?: boolean;
 }> = function (props) {
@@ -125,7 +125,7 @@ export const ProjectsView: React.FC<{
   let render;
   let header;
   let desc;
-  const toProject = (project: NewProjectWithIndex) => (
+  const toProject = (project: HumanNewProjectWithIndex) => (
     <ProjectView data={project} key={project.Id.toString()} />
   );
   if (gallery) {

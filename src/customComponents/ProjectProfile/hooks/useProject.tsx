@@ -5,11 +5,11 @@ import { ApiPromise } from '@polkadot/api';
 import { VoidFn } from '@polkadot/api/types';
 import { Option, U32 } from '@polkadot/types';
 import {
-  ChainProject,
-  ChainReview,
+  HumanChainReview,
+  HumanNewProjectWithIndex,
+  HumanNewReview,
+  HumanChainProject,
   NewMetaData,
-  NewProjectWithIndex,
-  NewReview,
   ReviewContent,
   ReviewKeyAl,
   // eslint-disable-next-line import/no-unresolved
@@ -126,11 +126,11 @@ const retrieveProjectMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
 
   //  Merge metadata in.
   // First, json stringify (This should be handled by a wrapper class)
-  const prString = pr.toHuman() as unknown as ChainProject;
+  const prString = pr.toHuman() as unknown as HumanChainProject;
   const nPr = {
     Id: id.toHuman(),
     project: { ...prString, metadata: json[0] },
-  } as NewProjectWithIndex;
+  } as HumanNewProjectWithIndex;
   return nPr;
 };
 /**
@@ -259,8 +259,8 @@ const retrieveReviewMeta = async function ([rev]: [ReviewAl, ReviewKeyAl]) {
 
   //  Merge metadata in.
   // First, json stringify (This should be handled by a wrapper class)
-  const revString = rev.toHuman() as unknown as ChainReview;
-  const nRv = { ...revString, content: json[0] } as NewReview;
+  const revString = rev.toHuman() as unknown as HumanChainReview;
+  const nRv = { ...revString, content: json[0] } as HumanNewReview;
   return nRv;
 };
 /**
@@ -338,5 +338,5 @@ export const useReelData = function (project: [ProjectAl, ProjectID]) {
     anyMetaInitiallyLoading,
     // UI reacts when metadata available
     allCheck(metaStates, 'idle'),
-  ] as [NewReview[], boolean, boolean, boolean];
+  ] as [HumanNewReview[], boolean, boolean, boolean];
 };

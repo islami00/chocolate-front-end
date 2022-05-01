@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { TableSetReview } from 'chocolate/typeSystem/jsonTypes';
+import { HumanTableSetReview } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
 import { useEffect, useReducer, useState } from 'react';
 import {
@@ -18,14 +18,14 @@ interface TableReducerAction {
   type: 'FILTER_PROJECT_NAME' | 'FILTER_REVIEW_RATING' | 'INITIALISE' | 'FILTER_REVIEW_STATUS';
   projectID?: number;
   rating?: number;
-  payload?: TableSetReview[];
+  payload?: HumanTableSetReview[];
   status?: string;
 }
 
-const tableReducer = (state: TableSetReview[], action: TableReducerAction) => {
+const tableReducer = (state: HumanTableSetReview[], action: TableReducerAction) => {
   switch (action.type) {
     case 'FILTER_PROJECT_NAME':
-      return state.filter((review) => review.projectID === action.projectID);
+      return state.filter((review) => review.projectID === action.projectID.toString());
     case 'FILTER_REVIEW_RATING':
       return state.filter((review) => review.content.rating === action.rating);
     case 'INITIALISE':
@@ -39,9 +39,9 @@ const tableReducer = (state: TableSetReview[], action: TableReducerAction) => {
  * A table with headers being our filter buttons
  * Cells are reviews
  * Props come from useYourReviews return val:
- * [TableSetReview[], anyMetaErr,anyMetaInitiallyLoading,isEitherCompletelyIdle]
+ * [HumanTableSetReview[], anyMetaErr,anyMetaInitiallyLoading,isEitherCompletelyIdle]
  * */
-const Main: React.FC<{ data: [TableSetReview[], boolean, boolean, boolean] }> = (props) => {
+const Main: React.FC<{ data: [HumanTableSetReview[], boolean, boolean, boolean] }> = (props) => {
   const { data } = props;
   const [searchData, isAnyDataErr, isAnyDataInitiallyLoading, isEitherDataIdle] = data;
   const [activeIndex, setActiveIndex] = useState(-1);

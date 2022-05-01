@@ -102,7 +102,7 @@ const BalanceAnnotation = function (props) {
           .then((unsub) => {
             unsubscribe = unsub;
           })
-          .catch(console.error);
+          .catch(() => {});
     }
 
     // get user rank point data; Include reviews when obtained
@@ -112,7 +112,7 @@ const BalanceAnnotation = function (props) {
       api &&
         api.query.usersModule
           .users(accountSelected, (userOpt) => {
-            const rank = userOpt.unwrapOrDefault().rank_points;
+            const rank = userOpt.unwrapOrDefault().rankPoints;
             // can't pass structs/objects as props
             dispatch({ type: 'USER_DATA', payload: { rankPoints: rank.toHuman() } });
           })

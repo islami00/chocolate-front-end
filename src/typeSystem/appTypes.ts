@@ -2,18 +2,18 @@
 //
 
 import { AnyJson } from '@polkadot/types/types';
-import { NewProject, ReviewContent } from './jsonTypes';
+import { HumanNewProject, ReviewContent } from './jsonTypes';
 
 /**
  * @description this class decorates a plain object with our ideal project type with useful getter functions
  * It retains a base project that can be destructured, and also has useful getters for rankPoints and the like that utilise the base struct.
  */
 class JSONProject {
-  project: NewProject;
+  project: HumanNewProject;
 
   projectReviews: ReviewContent[];
 
-  constructor(fresh: NewProject, revs: ReviewContent[]) {
+  constructor(fresh: HumanNewProject, revs: ReviewContent[]) {
     this.project = fresh;
     this.projectReviews = revs;
   }
