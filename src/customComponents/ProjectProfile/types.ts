@@ -10,7 +10,6 @@ export type PrProf = React.FC<{
 }>;
 export type ProfileSum = React.FC<{
   profileQ: UseQueryResult<HumanNewProjectWithIndex, unknown>;
-  reviews: HumanNewReview[];
 }>;
 export type SumRev = React.FC<{
   disabled: boolean;

@@ -32,3 +32,5 @@ src/**/SearchBarStd.tsx
 
 # Thunder client export.
 thunder*.json
+# Notes.
+islm-notes.md
