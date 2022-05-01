@@ -28,7 +28,7 @@ if (isDev) {
     'https://chocolate-demo.web.app',
     'https://chocolate-web-app-nightly.web.app',
     // Dynamically include dev list
-    'https://8000-chocolatenetwor-chocolat-qnb1x5sione.ws-eu38.gitpod.io',
+    'https://8000-chocolatenetwor-chocolat-qnb1x5sione.ws-eu43.gitpod.io',
     'http://localhost:8000',
   ];
 } else {
