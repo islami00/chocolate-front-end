@@ -107,6 +107,7 @@ const SubmitReviewForm: SubRev = function (props) {
   const initChainProps = {
     id,
     cid: cache.stage2,
+    rating: cache.stage1.rating,
   };
   const location = useLocation();
 

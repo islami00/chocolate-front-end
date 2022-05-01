@@ -1,7 +1,7 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
 /* eslint-disable */
 
-import type { Enum, Option, Struct, Text, bool, u128, u32, u64 } from '@polkadot/types';
+import type { Enum, Option, Struct, Text, bool, u128, u32, u64, u8 } from '@polkadot/types';
 import type { AccountId } from '@polkadot/types/interfaces/runtime';
 
 /** @name Balance */
@@ -21,6 +21,8 @@ export interface Project extends Struct {
   readonly proposalStatus: ProposalStatus;
   readonly reward: Balance;
   readonly totalUserScores: u32;
+  readonly totalReviewScore: u64;
+  readonly numberOfReviews: u32;
 }
 
 /** @name ProjectAl */
@@ -51,6 +53,7 @@ export interface Review extends Struct {
   readonly content: Text;
   readonly projectID: ProjectID;
   readonly pointSnapshot: u32;
+  readonly reviewScore: u8;
 }
 
 /** @name ReviewAl */

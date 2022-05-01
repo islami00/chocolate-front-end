@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { JSONProject } from '../../../typeSystem/appTypes';
-import { NewProjectWithIndex, NewReview } from '../../../typeSystem/jsonTypes';
+import { HumanNewProjectWithIndex, HumanNewReview } from '../../../typeSystem/jsonTypes';
 /**
  * @description This hook calculates the average. Eventually, this will be depracated upon introduction of the "rating", "totalRating", "totalReviews" fields on the review and project respectively.
  * That way, JSONProject can simply use those fields instead for average and the average can be calculated on the fly.
  */
 const useAverage = (
-  projectMeta: NewProjectWithIndex,
+  projectMeta: HumanNewProjectWithIndex,
   fetchedProject: boolean,
-  reviews: NewReview[]
+  reviews: HumanNewReview[]
 ): [string, React.Dispatch<React.SetStateAction<string>>] => {
   const [avRate, setAvRate] = useState('0.0');
   useEffect(() => {

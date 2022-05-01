@@ -2,12 +2,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { calcResults, handleSubmit } from '../majorUtils';
-import { NewProjectWithIndex } from '../../../typeSystem/jsonTypes';
+import { HumanNewProjectWithIndex } from '../../../typeSystem/jsonTypes';
 
 type TimeoutId = ReturnType<typeof setTimeout>;
 // to-do: Make data types generic.
 /** @description A placeholder for project view. Replace as needed */
-const DataSummaryDisplay: React.FC<{ data: NewProjectWithIndex }> = function (props) {
+const DataSummaryDisplay: React.FC<{ data: HumanNewProjectWithIndex }> = function (props) {
   const { data } = props;
   const { Id, project } = data;
   const { metadata, proposalStatus } = project;
@@ -29,7 +29,7 @@ const DataSummaryDisplay: React.FC<{ data: NewProjectWithIndex }> = function (pr
 
 /** @description - A placeholder for projects view. Replace as needed */
 const DisplayResults: React.FC<{
-  data: NewProjectWithIndex[];
+  data: HumanNewProjectWithIndex[];
   found: boolean;
 }> = function (props) {
   const { data, found } = props;
@@ -48,12 +48,12 @@ const DisplayResults: React.FC<{
   return <ul className='ui results transition visible search-results'>{content}</ul>;
 };
 
-const SearchBar: React.FC<{ projects: NewProjectWithIndex[] }> = function (props) {
+const SearchBar: React.FC<{ projects: HumanNewProjectWithIndex[] }> = function (props) {
   // data state is handled externally
   const { projects } = props;
   const [value, setValue] = useState('');
   const [found, setFound] = useState(false);
-  const [results, setResults] = useState<NewProjectWithIndex[]>([]);
+  const [results, setResults] = useState<HumanNewProjectWithIndex[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const blurTimeoutRef = useRef<TimeoutId>();
   const searchTimeoutRef = useRef<TimeoutId>();

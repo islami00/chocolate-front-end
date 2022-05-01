@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseQueryResult } from 'react-query';
 import { ProjectAl, ProjectID } from '../../interfaces';
-import { NewProjectWithIndex, NewReview } from '../../typeSystem/jsonTypes';
+import { HumanNewProjectWithIndex, HumanNewReview } from '../../typeSystem/jsonTypes';
 
 export type PrProf = React.FC<{
   data: ProjectAl;
@@ -9,8 +9,8 @@ export type PrProf = React.FC<{
   id: string;
 }>;
 export type ProfileSum = React.FC<{
-  profileQ: UseQueryResult<NewProjectWithIndex, unknown>;
-  reviews: NewReview[];
+  profileQ: UseQueryResult<HumanNewProjectWithIndex, unknown>;
+  reviews: HumanNewReview[];
 }>;
 export type SumRev = React.FC<{
   disabled: boolean;
@@ -18,7 +18,7 @@ export type SumRev = React.FC<{
 }>;
 export type RevReel = React.FC<{
   /**  [reviews,anyErred, anyInitiallyLoading, allIdle] --toDo: Change to object */
-  reelData: [NewReview[], boolean, boolean, boolean];
+  reelData: [HumanNewReview[], boolean, boolean, boolean];
 }>;
 export type SubRev = React.FC<{
   proj: [ProjectAl, ProjectID];

@@ -11,9 +11,9 @@ import { EventView } from './EventView';
 import { FinalNotif } from './FinalNotif';
 
 /** Submit review data as transaction */
-const SubmitReviewTx: React.FC<{ id: string; cid: string }> = (props) => {
+const SubmitReviewTx: React.FC<{ id: string; cid: string; rating: number }> = (props) => {
   const [status, setStatus] = useState('');
-  const { id, cid } = props;
+  const { id, cid, rating } = props;
   const { state } = useApp();
   const { userData } = state;
   const [run, setRun] = useState(false);
@@ -21,7 +21,7 @@ const SubmitReviewTx: React.FC<{ id: string; cid: string }> = (props) => {
   const { keyringState, keyring } = useSubstrate();
   const [stat, setStat] = useState<'sending' | 'error' | 'finalized'>(undefined);
   useLoadAccounts(run, setRun);
-  const { data: txFee } = useReviewSend({ id, cid }, userData.accountAddress);
+  const { data: txFee } = useReviewSend({ id, cid, rating }, userData.accountAddress);
   useEffect(() => {
     if (/(sending)|(ready)|(inBlock)/i.exec(status)) setStat('sending');
     else if (/finalized/i.exec(status)) setStat('finalized');
@@ -59,7 +59,7 @@ const SubmitReviewTx: React.FC<{ id: string; cid: string }> = (props) => {
         attrs={{
           palletRpc: 'chocolateModule',
           callable: 'createReview',
-          inputParams: [cid, id],
+          inputParams: [[rating, cid], id],
           paramFields: [true, true],
         }}
       />
