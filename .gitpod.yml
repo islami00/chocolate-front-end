@@ -5,7 +5,8 @@
 tasks:
   - init: yarn install && yarn run build
     command: yarn run start
-  - init: sh ./scripts/setup-node.
+  - init: sh ./scripts/setup-node.sh
+    command: $CHOC_BIN_PATH/chocolate --dev
 
 vscode:
   extensions:
