@@ -1,7 +1,6 @@
 import { writeFile } from "fs/promises";
 import fetch from "node-fetch";
 import path from "path";
-process.env;
 const rpcEndpoint = "http://127.0.0.1:9933";
 const headersList = {
   Accept: "*/*",
