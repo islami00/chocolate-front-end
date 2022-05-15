@@ -41,21 +41,12 @@ and open `build/index.html` in your favorite browser.
 ## Configuration
 
 The template's configuration is stored in the `src/config` directory, with
-`common.json` being loaded first, then the environment-specific json file,
-and finally environment variables, with precedence.
+`common.json` being loaded first, then the environment-specific json file with precedence.
 
 - `development.json` affects the development environment
 - `test.json` affects the test environment, triggered in `yarn test` command.
 - `production.json` affects the production environment, triggered in
   `yarn build` command.
-
-Some environment variables are read and integrated in the template `config` object,
-including:
-
-- `REACT_APP_PROVIDER_SOCKET` overriding `config[PROVIDER_SOCKET]`
-- `REACT_APP_DEVELOPMENT_KEYRING` overriding `config[DEVELOPMENT_KEYRING]`
-
-More on [React environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables).
 
 When writing and deploying your own front end, you should configure:
 

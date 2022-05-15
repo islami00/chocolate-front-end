@@ -11,6 +11,7 @@ import { useAccounts, useSubstrate } from '../../substrate-lib/SubstrateContext'
 import { errorHandled } from '../utils';
 import './index.css';
 import './wallet.css';
+import config from '../../config';
 
 export const useLoadAccounts = (
   run: boolean,
@@ -83,7 +84,7 @@ interface LogoutResult {
 }
 const LOGOUT_MUTATION = async function () {
   const res = await errorHandled(
-    fetch(`${process.env.REACT_APP_AUTH_SERVER}/logout`, { method: 'POST', credentials: 'include' })
+    fetch(`${config.REACT_APP_AUTH_SERVER}/logout`, { method: 'POST', credentials: 'include' })
   );
   if (res[1]) throw res[1];
   const json = await errorHandled<LogoutResult>(res[0].json());

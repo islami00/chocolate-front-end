@@ -4,15 +4,16 @@ import { VoidFn } from '@polkadot/api/types';
 import { Option } from '@polkadot/types';
 import { useEffect, useMemo } from 'react';
 import { QueryStatus, useQueries, useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import config from '../../config';
 import { ProjectAl, ProjectID } from '../../interfaces';
 import {
-  HumanNewProjectWithIndex,
   HumanChainProject,
+  HumanNewProjectWithIndex,
   NewMetaData,
 } from '../../typeSystem/jsonTypes';
 import { errorHandled, limitedPinataFetch } from '../utils';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
 /**
  * @description Get the keys of all projects from the chain.
  * Fallback here would be same as next hook. Throw if you haven't memoised and the api isn't available

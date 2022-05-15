@@ -1,8 +1,9 @@
 import { AddressOrPair } from '@polkadot/api/types';
 import { useState } from 'react';
+import config from '../../../config';
 import { useSubstrate } from '../../../substrate-lib';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
 
 type RevSend = (
   txData: { id: string; cid: string; rating: number },

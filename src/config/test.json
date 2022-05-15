@@ -1,3 +1,7 @@
 {
-  "PROVIDER_SOCKET": "wss://dev-node.substrate.dev"
+  "PROVIDER_SOCKET": "wss://choc-test-dt2vlebvla-uc.a.run.app",
+  "REACT_APP_AUTH_SERVER": "https://db-dot-chocolate-web-app-nightly.oa.r.appspot.com",
+  "REACT_APP_PIN_SERVER": "https://united-option-342615.oa.r.appspot.com",
+  "REACT_APP_CAPTCHA_SITE_KEY": "dad203ef-ed62-47f3-965f-baa67b9dbbac",
+  "REACT_APP_DEBUG": false
 }
