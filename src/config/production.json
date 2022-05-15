@@ -1,7 +1,7 @@
 {
   "PROVIDER_SOCKET": "wss://test-m2kaxlp5xa-ew.a.run.app/",
+  "IPFS_ADD_PINNED_URL": "https://united-option-342615.oa.r.appspot.com/pin",
   "REACT_APP_AUTH_SERVER": "https://db-dot-united-option-342615.oa.r.appspot.com",
-  "REACT_APP_PIN_SERVER": "https://united-option-342615.oa.r.appspot.com",
   "REACT_APP_CAPTCHA_SITE_KEY": "dad203ef-ed62-47f3-965f-baa67b9dbbac",
   "REACT_APP_DEBUG": false
 }
