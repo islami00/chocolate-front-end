@@ -1,26 +1,28 @@
+#!/usr/bin/bash
+
+set -eu
 # Pre command to setup a chocolate node in workspace and build it.
 
 cd /workspace
-git clone https://github.com/chocolatenetwork/chocolate-node.git
+if [ ! -d "/workspace/chocolate-node" ]; then
+    git clone https://github.com/chocolatenetwork/chocolate-node.git
+fi
 cd chocolate-node
+git checkout development
 
 # Rustup issue with current setup
-rustup self uninstall -y
-source ~/.bash_profile
-rustup self uninstall -y
-source ~/.bash_profile
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y
+
+# Try-Refresh
+. ~/.bashrc
+. $HOME/.cargo/env
 
 # Substrate init
-curl https://getsubstrate.io -o a.o
-chmod +x a.o 
-./a.o --fast
-# Try-Refresh
-source /workspace/.cargo/env
-
-# Rustup issues
-rustup update nightly
+rustup toolchain install nightly --allow-downgrade --profile minimal --component cargo
 rustup target add wasm32-unknown-unknown --toolchain nightly
 
 # Cargo
+cargo build --release
 
-cargo run --dev --ws-external && rm a.o # Cleanup and start
+# Cleanup and start
+find ./target ! -name "chocolate" -type f -exec rm {} +

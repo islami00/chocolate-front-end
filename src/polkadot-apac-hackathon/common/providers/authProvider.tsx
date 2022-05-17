@@ -1,8 +1,10 @@
 import { createContext, Reducer, useContext, useEffect, useReducer } from 'react';
 import toast from 'react-hot-toast';
+import config from '../../../config';
 import { useAuthState } from '../hooks/useAuth';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
+
 const AuthContext = createContext({
   isAuthenticated: false,
   user: {

@@ -1,11 +1,13 @@
 // will be more full blown, but fn returns true and a user object
 // leverages useAuth and returns results from that reducer**
 /* eslint-disable import/no-unresolved */
+import config from 'chocolate/config';
 import { ApiErr, errorHandled } from 'chocolate/customComponents/utils';
 /* eslint-enable import/no-unresolved */
 import { useQuery, UseQueryResult } from 'react-query';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
+
 interface AuthRes {
   success: boolean;
   user: {
@@ -26,14 +28,18 @@ type AuthStateFx = () => UseQueryResult<AuthState, Error>;
  * Basically, It pings the server to see if the user is logged in.
  * */
 export const useAuthState: AuthStateFx = () => {
-  const authCheckEndpoint = `${process.env.REACT_APP_AUTH_SERVER}/auth/check`;
+  const authCheckEndpoint = `${config.REACT_APP_AUTH_SERVER}/auth/check`;
   const fetchServer = async function () {
     const unauthorized = { isAuthenticated: false, user: { publicKey: '' } };
     const headers = {
       Accept: 'application/json',
     };
     const res = await errorHandled(
-      fetch(authCheckEndpoint, { method: 'GET', headers, credentials: 'include' })
+      fetch(authCheckEndpoint, {
+        method: 'GET',
+        headers,
+        credentials: 'include',
+      })
     );
     if (res[1]) {
       const msg = res[1].message;

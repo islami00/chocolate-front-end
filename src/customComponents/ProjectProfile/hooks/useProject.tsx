@@ -20,8 +20,9 @@ import { ProjectAl, ProjectID, ReviewAl } from '../../../interfaces';
 import { useSubstrate } from '../../../substrate-lib';
 import { allCheck, resArr, shouldComputeValid } from '../../ProjectsRe/hooks';
 import { errorHandled, limitedPinataFetch } from '../../utils';
+import config from '../../../config';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
 
 /**
  * Then deal with websockets

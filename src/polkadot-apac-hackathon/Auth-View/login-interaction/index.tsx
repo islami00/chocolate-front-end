@@ -8,8 +8,9 @@ import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
 import { Location as RRLocation, Navigate, useLocation } from 'react-router-dom';
 import { Form, FormProps, InputOnChangeData } from 'semantic-ui-react';
+import config from '../../../config';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
 interface LoginLocation extends RRLocation {
   state: {
     from?: string;
@@ -27,7 +28,7 @@ const LOGIN_MUTATION = async function (form: SignInMut) {
   };
   //
   const res = await errorHandled(
-    fetch(`${process.env.REACT_APP_AUTH_SERVER}/login`, {
+    fetch(`${config.REACT_APP_AUTH_SERVER}/login`, {
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify(form),
@@ -131,7 +132,7 @@ const Login: React.FC = function () {
       <HCaptcha
         // This is testing sitekey, will autopass
         // Make sure to replace
-        sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY ?? ''}
+        sitekey={config.REACT_APP_CAPTCHA_SITE_KEY}
         onVerify={handleVerify}
         onError={onError}
         onExpire={onExpire}

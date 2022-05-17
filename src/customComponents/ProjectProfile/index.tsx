@@ -12,8 +12,9 @@ import { useProject } from './hooks';
 import { noPrjErr, useProfileData, useReelData } from './hooks/useProject';
 import './profile.css';
 import { ProfileSum, PrProf, RevReel, SumRev } from './types';
+import config from '../../config';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
 
 const ProjectProfileSummary: ProfileSum = function (props) {
   const { profileQ } = props;

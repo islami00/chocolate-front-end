@@ -8,12 +8,11 @@ const process = require('process');
   const env = process.env.DEPLOY_ENV;
   console.log('Deploying to env', env);
   if (env === 'nightly') {
-    // Use path to resolve relative to script dir
-    const nightlyEnv = await readFile(path.resolve(__dirname, '../.env.nightly'), {
+    const nightlyEnv = await readFile(path.resolve(__dirname, '../src/config/test.json'), {
       encoding: 'utf-8',
     });
     writeFile(
-      path.resolve(__dirname, '../.env'),
+      path.resolve(__dirname, '../src/config/production.json'),
       nightlyEnv,
       { encoding: 'utf-8', flag: 'w' },
       () => {}

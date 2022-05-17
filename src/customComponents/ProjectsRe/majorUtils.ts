@@ -7,7 +7,9 @@ const calcResults = function (
   value: string
 ): [HumanNewProjectWithIndex[], boolean] {
   const filtered = data.filter((each) => {
-    const reg = new RegExp(`(${value})`, 'gi');
+    // FIXME: Whitelist only username values. Err: "\" breaks regex.
+    const escapedInput = _.escapeRegExp(`${value}`);
+    const reg = new RegExp(`(${escapedInput})`, 'gi');
     const escaped = _.escapeRegExp(each.project.metadata.name);
     return reg.exec(escaped); /* returns null otherwise */
   });
