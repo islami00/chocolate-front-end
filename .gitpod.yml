@@ -1,3 +1,6 @@
+image:
+  file: .github/dockerfiles/Dockerfile.gitpod-base
+
 tasks:
   - name: Web app
     init: yarn install && yarn run build
@@ -11,7 +14,8 @@ tasks:
   - name: Auth server
     init: npm install --prefix=polkadot-apac-hackathon/auth-server
     command: npm run start-dev --prefix=polkadot-apac-hackathon/auth-server
-
+  - name: IPFS 
+    command: ipfs daemon
 vscode:
   extensions:
     # Linters

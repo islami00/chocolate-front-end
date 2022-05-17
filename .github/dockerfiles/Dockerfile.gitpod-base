@@ -1,0 +1,7 @@
+FROM gitpod/workspace-full
+
+USER gitpod:gitpod
+
+RUN nix-env -i ipfs
+RUN ipfs init
+

@@ -26,5 +26,3 @@ cargo build --release
 
 # Cleanup and start
 find ./target ! -name "chocolate" -type f -exec rm {} +
-
-export CHOC_BIN_PATH="$(pwd)/release"
