@@ -1,7 +1,17 @@
 FROM gitpod/workspace-full
 
-USER gitpod:gitpod
+USER gitpod
+RUN pwd
+RUN mkdir /home/gitpod/ip-init -p
+WORKDIR /home/gitpod/ip-init
 
-RUN nix-env -i ipfs
-RUN ipfs init
+ARG GO_IPFS_VERSION="v0.12.2"
+ARG GO_IPFS_PKG="go-ipfs_${GO_IPFS_VERSION}_linux-amd64.tar.gz"
+RUN wget https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/${GO_IPFS_PKG}
+RUN tar -xvzf ${GO_IPFS_PKG}
+RUN sudo bash ./go-ipfs/install.sh
+RUN ipfs --version
+# Cleanup
+WORKDIR /home/gitpod
+RUN rm -r /home/gitpod/ip-init
 

@@ -14,8 +14,8 @@ tasks:
   - name: Auth server
     init: npm install --prefix=polkadot-apac-hackathon/auth-server
     command: npm run start-dev --prefix=polkadot-apac-hackathon/auth-server
-  - name: IPFS 
-    command: ipfs daemon
+  - name: IPFS node
+    command: ipfs init --profile server && ipfs daemon
 vscode:
   extensions:
     # Linters
