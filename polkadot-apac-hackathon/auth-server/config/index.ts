@@ -34,13 +34,13 @@ const wrapMockGConnect = async function () {
 type ResolveEnvVar =  ((arg : {dbString: string; sessionSecret: string;})=>void);
 type RejectEnvVar = (arg: Error)=>void;
 const envVarPromise = new Promise(function(res: ResolveEnvVar, rej: RejectEnvVar){
-  if (process.env.NODE_ENV === 'test' && process.env.NODE_RAW) {
+  if (process.env.NODE_ENV === 'dev-dotenv') {
     // Testing.
     if (!DB_STRING) return rej(new Error('Secrets not defined'));
     const dbString = DB_STRING;
     const sessionSecret = SESSION_SECRET ?? randomBytes(32).toString();
     res({dbString, sessionSecret});
-  } else if (process.env.NODE_ENV === 'test') {
+  } else if (process.env.NODE_ENV === 'prod-gcp') {
     // Setup Gcloud and pass on for later use.
     gcpSecretsLoader = new SecretsReader();
     isGconnect = true;
