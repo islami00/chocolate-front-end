@@ -34,7 +34,6 @@
     "@polkadot/util-crypto": "^7.1.1",
     "ipfs-http-client": "49.0.0",
     "lodash": "^4.17.14",
-    "node-sass": "^6.0.1",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.5",
     "react": "^16.14.0",
