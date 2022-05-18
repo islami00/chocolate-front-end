@@ -50,7 +50,8 @@
 
     "js/ts.implicitProjectConfig.checkJs": true,
     "conventionalCommits.scopes": [
-      "web-app"
+      "web-app",
+      "deps"
     ]
   },
   "extensions": {
