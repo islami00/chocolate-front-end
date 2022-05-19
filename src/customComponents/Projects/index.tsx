@@ -11,7 +11,7 @@ import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
 import Pensive from '../../assets/pensive-face-emoji.svg';
 import { HumanNewProjectWithIndex } from '../../typeSystem/jsonTypes';
 // styles
-import './projects.scss';
+import './projects.css';
 
 type ReactNumberDis = React.Dispatch<React.SetStateAction<number>>;
 /** @description rating component, optionally interactive */
