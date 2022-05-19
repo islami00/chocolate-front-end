@@ -40,7 +40,7 @@ function IndexPageEntry(): JSX.Element {
       <QueryClientProvider contextSharing client={client}>
         <AuthProvider>
           <Router>
-            <MenuBar setBack={setBack} />
+            <MenuBar />
             <Routes>
               <Route index element={<ProjectsRe />} />
               <Route path='/gallery' element={<Gallery />} />
