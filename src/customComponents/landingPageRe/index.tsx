@@ -28,7 +28,7 @@ const queryCache = new QueryCache({
 });
 const client = new QueryClient({ queryCache });
 
-function Main(): JSX.Element {
+function IndexPageEntry(): JSX.Element {
   const { apiState, apiError } = useSubstrate();
   const [back, setBack] = useState(false);
 
@@ -60,4 +60,4 @@ function Main(): JSX.Element {
   );
 }
 
-export default Main;
+export default IndexPageEntry;
