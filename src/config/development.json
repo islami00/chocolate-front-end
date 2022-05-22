@@ -1,7 +1,6 @@
 {
   "PROVIDER_SOCKET": "ws://127.0.0.1:9944",
   "IPFS_ADD_PINNED_URL": "http://localhost:3000/pin",
-  "IPFS_API_SERVER": "http://localhost:5001",
   "REACT_APP_AUTH_SERVER": "http://localhost:3001",
   "REACT_APP_CAPTCHA_SITE_KEY": "dad203ef-ed62-47f3-965f-baa67b9dbbac",
   "IPFS_CAT_URL": "http://localhost:8080/ipfs",
