@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Container, Loader } from 'semantic-ui-react';
 import { useCid } from '../hooks';
 import type { CacheAction, Stage1Cache } from './SubmitReviewForm';
@@ -7,17 +7,14 @@ import type { CacheAction, Stage1Cache } from './SubmitReviewForm';
 export interface CheckCidProps extends Stage1Cache {
   isAuthenticated: boolean;
   dispatchCache: React.Dispatch<CacheAction>;
+  id: string;
 }
 
 const CheckAuthAndGetCid: React.FC<CheckCidProps> = function (props) {
   // first, check if auth
-  const { isAuthenticated, comment, rating, dispatchCache } = props;
+  const { isAuthenticated, comment, rating, dispatchCache, id } = props;
   // if auth, get cid
   const { isLoading, isError, data } = useCid(isAuthenticated, comment, rating);
-
-  const params = useParams<{ id: string }>();
-  const id = params.id as string; //  Only valid ids pass initial api fetch. Will never be undefined
-
   const [next, setNext] = useState<boolean>(false);
   const navigate = useNavigate();
   useEffect(() => {

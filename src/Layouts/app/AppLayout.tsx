@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { AppShell } from '@mantine/core';
+import { AppShell, Header } from '@mantine/core';
 import { DeveloperConsole } from 'chocolate/substrate-lib/components';
 import { Toaster } from 'react-hot-toast';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -18,7 +18,13 @@ export function AppLayout(): JSX.Element {
 
   return (
     <InnerAppProvider api={substrState.api}>
-      <AppShell header={<MenuBar />}>
+      <AppShell
+        header={
+          <Header height={60}>
+            <MenuBar />
+          </Header>
+        }
+      >
         <AppRoutes />
         <Toaster position='bottom-right' />
         {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}

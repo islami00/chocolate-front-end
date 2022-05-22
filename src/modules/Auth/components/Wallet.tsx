@@ -22,12 +22,12 @@ export function Wallet(): JSX.Element {
   };
   // clean returns
   return (
-    <section className='wallet'>
+    <div className='wallet'>
       <button type='button' className='wallet_btn' onClick={handleModal}>
         <img src={WalletPurple} alt='Wallet' className='wallet-icon' />
       </button>
       {/* Position absolute, start at leftmost part */}
       <Modal />
-    </section>
+    </div>
   );
 }

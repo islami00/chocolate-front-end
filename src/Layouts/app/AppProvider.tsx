@@ -1,4 +1,5 @@
 /* eslint-disable import/no-unresolved */
+import { MantineProvider } from '@mantine/core';
 import { LocalStateProvider } from 'chocolate/customComponents/state';
 import AuthProvider from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
 import { SubstrateContextProvider } from 'chocolate/substrate-lib';
@@ -19,6 +20,9 @@ function AppProvider(props: Props): JSX.Element {
           <QueryClientProvider contextSharing client={rqClient} />,
           <AuthProvider />,
           <BrowserRouter />,
+          <MantineProvider withNormalizeCSS>
+            <></>
+          </MantineProvider>,
         ]}
       >
         {children}
