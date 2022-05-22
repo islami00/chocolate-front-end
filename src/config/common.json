@@ -1,6 +1,6 @@
 {
   "APP_NAME": "substrate-front-end-tutorial",
   "DEVELOPMENT_KEYRING": true,
-  "IPFS_CAT_URL": "https://gateway.pinata.cloud/ipfs/",
+  "IPFS_CAT_URL": "https://gateway.pinata.cloud/ipfs",
   "RPC": {}
 }
