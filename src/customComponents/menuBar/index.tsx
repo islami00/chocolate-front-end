@@ -5,7 +5,6 @@ import chocLogo from 'chocolate/assets/chocolate-red-small-responsive.svg';
 import { AuthBtns } from 'chocolate/modules/Auth/components/AuthBtns';
 import { Wallet } from 'chocolate/modules/Auth/components/Wallet';
 import { Link } from 'react-router-dom';
-import './wallet.css';
 
 const useStyles = createStyles((theme, _params: { liHeight: number }, getRef) => ({
   'top-nav': {

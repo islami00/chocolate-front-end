@@ -6,9 +6,9 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import MenuBar from '../../customComponents/menuBar';
 import { loader, message } from '../../customComponents/utilities';
 import { useSubstrate } from '../../substrate-lib';
+import './app.css';
 import { AppRoutes } from './components/AppRoutes';
 import { InnerAppProvider } from './InnerAppProvider';
-
 /* NB: AppLayout==AppShell, so do  all box styling here */
 export function AppLayout(): JSX.Element {
   const substrState = useSubstrate();
