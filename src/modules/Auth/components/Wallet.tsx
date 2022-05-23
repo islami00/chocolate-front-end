@@ -27,19 +27,7 @@ export function Wallet(): JSX.Element {
   // clean returns
   return (
     <Center className={classes.wallet}>
-      <Button
-        onClick={handleModal}
-        styles={(theme) => ({
-          root: {
-            '@media (hover: hover)': {
-              '&:hover': { backgroundColor: theme.colors.gray[1] },
-            },
-          },
-        })}
-        variant='subtle'
-        radius='md'
-        size='sm'
-      >
+      <Button onClick={handleModal} variant='default' size='sm'>
         {/* TOdo: Move wallet to a left icon */}
         <img src={WalletPurple} alt='Wallet' className={classes.wallet_icon} />
         {/* Then content as current addr or name */}

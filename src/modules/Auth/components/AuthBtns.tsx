@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { Text } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { useAuthService } from 'chocolate/polkadot-apac-hackathon/common/providers/authProvider';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -42,14 +42,14 @@ export function AuthBtns(): JSX.Element {
   return (
     <>
       <li>
-        <Text component={Link} to='/signup'>
+        <Button variant='default' component={Link} to='/signup'>
           Sign up
-        </Text>
+        </Button>
       </li>
       <li>
-        <Text component={Link} to='/login'>
+        <Button variant='default' component={Link} to='/login'>
           Login
-        </Text>
+        </Button>
       </li>
     </>
   );

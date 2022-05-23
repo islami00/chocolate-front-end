@@ -1,12 +1,11 @@
 /* eslint-disable import/no-unresolved */
-import { Center, createStyles, MediaQuery, Text } from '@mantine/core';
-import { useElementSize } from '@mantine/hooks';
+import { Button, Center, createStyles, MediaQuery, Text } from '@mantine/core';
 import chocLogo from 'chocolate/assets/chocolate-red-small-responsive.svg';
 import { AuthBtns } from 'chocolate/modules/Auth/components/AuthBtns';
 import { Wallet } from 'chocolate/modules/Auth/components/Wallet';
 import { Link } from 'react-router-dom';
 
-const useStyles = createStyles((theme, _params: { liHeight: number }, getRef) => ({
+const useStyles = createStyles((theme, _params, getRef) => ({
   'top-nav': {
     /* init */
     width: '100%',
@@ -41,31 +40,23 @@ const useStyles = createStyles((theme, _params: { liHeight: number }, getRef) =>
     display: 'none',
     alignItems: 'center',
     height: '100%',
+    columnGap: theme.spacing.xs / 2,
 
     '& > li': {
       listStyleType: 'none',
       transition: 'all 0.2s linear',
       // !necessary for measurement to work
       height: '100%',
+      display: 'flex',
+      alignItems: 'center',
       '& > a': {
-        display: 'inline-block',
-        padding: `0 ${theme.spacing.md}px`,
-        // Centers the text in the anchor by filling parent.
-        lineHeight: `${_params.liHeight}px`,
-      },
-      '&:hover': {
-        '> a': {
-          //  theme.colors.violet[5] is choc col
-          backgroundColor: theme.colors.violet[1],
-          borderRadius: theme.radius.lg,
-        },
+        border: 0,
       },
     },
   },
 }));
 const Menu = function (): JSX.Element {
-  const { ref: liRef, height: liHeight } = useElementSize();
-  const { classes, cx } = useStyles({ liHeight });
+  const { classes, cx } = useStyles();
   const logo = cx(classes.logo);
   return (
     <div className={classes['top-nav']}>
@@ -78,10 +69,10 @@ const Menu = function (): JSX.Element {
         </Center>
         <MediaQuery largerThan='xs' styles={{ display: 'flex' }}>
           <ul className={classes.nav_ul}>
-            <li ref={liRef}>
-              <Text component={Link} to='/gallery'>
+            <li>
+              <Button variant='default' component={Link} to='/gallery'>
                 Projects
-              </Text>
+              </Button>
             </li>
             <AuthBtns />
           </ul>
