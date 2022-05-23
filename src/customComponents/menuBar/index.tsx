@@ -16,27 +16,31 @@ const useStyles = createStyles((theme, _params: { liHeight: number }, getRef) =>
     /* content buffing */
     padding: `${theme.spacing.xs / 2}px ${theme.spacing.xl}px`,
     boxSizing: 'border-box',
-    [`& > .${getRef('logo')}`]: {
+    [`& > .${getRef('logo_container')}`]: {
       marginRight: 'auto',
     },
     color: theme.colors.dark[8],
     textAlign: 'center',
   },
+  logo_container: {
+    ref: getRef('logo_container'),
+    columnGap: theme.spacing.xl,
+  },
   logo: {
     ref: getRef('logo'),
     fontFamily: "'Pacifico', cursive",
     fontSize: theme.fontSizes.xl,
-    img: {
-      marginRight: theme.spacing.xs / 2,
+    columnGap: theme.spacing.xs / 2,
+    '& > img': {
       width: theme.spacing.xl,
     },
   },
-  'nav-link': {},
   nav_ul: {
     padding: 0,
     margin: 0,
     display: 'none',
     alignItems: 'center',
+    height: '100%',
 
     '& > li': {
       listStyleType: 'none',
@@ -65,22 +69,24 @@ const Menu = function (): JSX.Element {
   const logo = cx(classes.logo);
   return (
     <div className={classes['top-nav']}>
-      <Center inline className={logo}>
-        <img src={chocLogo} alt='Chocolate logo' />
-        <Text inherit component={Link} to='/'>
-          Chocolate
-        </Text>
+      <Center className={classes.logo_container}>
+        <Center className={logo}>
+          <img src={chocLogo} alt='Chocolate logo' />
+          <Text inherit component={Link} to='/'>
+            Chocolate
+          </Text>
+        </Center>
+        <MediaQuery largerThan='xs' styles={{ display: 'flex' }}>
+          <ul className={classes.nav_ul}>
+            <li ref={liRef}>
+              <Text component={Link} to='/gallery'>
+                Projects
+              </Text>
+            </li>
+            <AuthBtns />
+          </ul>
+        </MediaQuery>
       </Center>
-      <MediaQuery largerThan='xs' styles={{ display: 'flex' }}>
-        <ul className={classes.nav_ul}>
-          <li ref={liRef}>
-            <Text component={Link} className={classes['nav-link']} to='/gallery'>
-              Projects
-            </Text>
-          </li>
-          <AuthBtns classes={classes} />
-        </ul>
-      </MediaQuery>
       <Wallet />
     </div>
   );

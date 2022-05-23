@@ -8,11 +8,10 @@ import { Link } from 'react-router-dom';
 import { LOGOUT_MUTATION } from '../utils';
 
 /** These are used to Authenticate the user from the navbar  */
-interface AuthBtnsProps {
-  classes: Record<'logo' | 'nav-link', string>;
-}
-export function AuthBtns(props: AuthBtnsProps): JSX.Element {
-  const { classes } = props;
+// interface AuthBtnsProps {
+//   classes: Record<'logo', string>;
+// }
+export function AuthBtns(): JSX.Element {
   const { isAuthenticated, logout } = useAuthService();
   const logoutMutation = useMutation(LOGOUT_MUTATION);
   if (logoutMutation.error) {
@@ -43,12 +42,12 @@ export function AuthBtns(props: AuthBtnsProps): JSX.Element {
   return (
     <>
       <li>
-        <Text component={Link} className={classes['nav-link']} to='/signup'>
+        <Text component={Link} to='/signup'>
           Sign up
         </Text>
       </li>
       <li>
-        <Text component={Link} className={classes['nav-link']} to='/login'>
+        <Text component={Link} to='/login'>
           Login
         </Text>
       </li>
