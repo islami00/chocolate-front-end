@@ -1,6 +1,8 @@
 /* eslint-disable import/no-unresolved */
-import { Button, Center, createStyles, MediaQuery, Text } from '@mantine/core';
-import chocLogo from 'chocolate/assets/chocolate-red-small-responsive.svg';
+import { Button, Center, createStyles, MediaQuery } from '@mantine/core';
+import { ChocolateFancy } from 'chocolate/common/components/icons/ChocolateFancy';
+import { ChocolateIcon } from 'chocolate/common/components/icons/ChocolateIcon';
+import { SearchBar } from 'chocolate/common/components/inputs/SearchBar';
 import { AuthBtns } from 'chocolate/modules/Auth/components/AuthBtns';
 import { Wallet } from 'chocolate/modules/Auth/components/Wallet';
 import { Link } from 'react-router-dom';
@@ -12,8 +14,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     height: '100%',
     display: 'flex',
     justifyContent: 'flex-end',
+    columnGap: theme.spacing.xl,
+
     /* content buffing */
-    padding: `${theme.spacing.xs / 2}px ${theme.spacing.xl}px`,
+    padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
     boxSizing: 'border-box',
     [`& > .${getRef('logo_container')}`]: {
       marginRight: 'auto',
@@ -26,12 +30,17 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     columnGap: theme.spacing.xl,
   },
   logo: {
-    ref: getRef('logo'),
-    fontFamily: "'Pacifico', cursive",
-    fontSize: theme.fontSizes.xl,
     columnGap: theme.spacing.xs / 2,
-    '& > img': {
-      width: theme.spacing.xl,
+  },
+  logo_icon: {
+    width: theme.headings.sizes.h1.fontSize,
+    [`@media (min-width: ${theme.breakpoints.xs}px )`]: { width: theme.fontSizes.xl },
+  },
+  logo_text: {
+    display: 'none',
+    [`@media (min-width: ${theme.breakpoints.xs}px )`]: {
+      display: 'block',
+      height: '23px',
     },
   },
   nav_ul: {
@@ -62,11 +71,10 @@ const Menu = function (): JSX.Element {
     <div className={classes['top-nav']}>
       <Center className={classes.logo_container}>
         <Center className={logo}>
-          <img src={chocLogo} alt='Chocolate logo' />
-          <Text inherit component={Link} to='/'>
-            Chocolate
-          </Text>
+          <ChocolateIcon className={classes.logo_icon} />
+          <ChocolateFancy className={classes.logo_text} />
         </Center>
+        <SearchBar />
         <MediaQuery largerThan='xs' styles={{ display: 'flex' }}>
           <ul className={classes.nav_ul}>
             <li>

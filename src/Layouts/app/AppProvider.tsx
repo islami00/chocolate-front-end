@@ -20,7 +20,13 @@ function AppProvider(props: Props): JSX.Element {
           <QueryClientProvider contextSharing client={rqClient} />,
           <AuthProvider />,
           <BrowserRouter />,
-          <MantineProvider withNormalizeCSS>
+          <MantineProvider
+            withNormalizeCSS
+            withGlobalStyles
+            theme={{
+              primaryColor: 'violet',
+            }}
+          >
             <></>
           </MantineProvider>,
         ]}

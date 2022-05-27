@@ -1,6 +1,6 @@
 import { Button, Center, createStyles } from '@mantine/core';
 import { useState } from 'react';
-import WalletPurple from '../../../assets/wallet-purple.svg';
+import { WalletPurple } from '../../../common/components/icons/WalletPurple';
 import { HandleWallet } from './HandleWallet';
 
 const useStyles = createStyles((theme) => ({
@@ -29,7 +29,7 @@ export function Wallet(): JSX.Element {
     <Center className={classes.wallet}>
       <Button onClick={handleModal} variant='default' size='sm'>
         {/* TOdo: Move wallet to a left icon */}
-        <img src={WalletPurple} alt='Wallet' className={classes.wallet_icon} />
+        <WalletPurple className={classes.wallet_icon} />
         {/* Then content as current addr or name */}
         {/* Then we have a right icon signifying dropdown arrow */}
       </Button>

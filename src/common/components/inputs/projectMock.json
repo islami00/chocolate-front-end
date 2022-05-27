@@ -1,0 +1,31 @@
+[
+  {
+    "image": "https://img.icons8.com/clouds/256/000000/futurama-bender.png",
+    "name": "Bender Bending Rodríguez",
+    "ticker": "BBR",
+    "value": "Bender Bending Rodríguez",
+    "description": "Fascinated with cooking"
+  },
+
+  {
+    "image": "https://img.icons8.com/clouds/256/000000/futurama-mom.png",
+    "name": "Carol Miller",
+    "ticker": "CM",
+    "value": "Carol Miller",
+    "description": "One of the richest people on Earth"
+  },
+  {
+    "image": "https://img.icons8.com/clouds/256/000000/homer-simpson.png",
+    "name": "Homer Simpson",
+    "ticker": "HMS",
+    "value": "Homer Simpson",
+    "description": "Overweight, lazy, and often ignorant"
+  },
+  {
+    "image": "https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png",
+    "name": "Spongebob Squarepants",
+    "ticker": null,
+    "value": "Spongebob Squarepants",
+    "description": "Not just a sponge"
+  }
+]
