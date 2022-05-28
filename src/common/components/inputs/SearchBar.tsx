@@ -1,4 +1,4 @@
-import { createStyles, Select } from '@mantine/core';
+import { createStyles, Select, SelectProps } from '@mantine/core';
 import { forwardRef } from 'react';
 import { SearchIcon } from '../icons/SearchIcon';
 import data from './projectMock.json';
@@ -16,10 +16,12 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const SelectItemRef = forwardRef<HTMLDivElement, ItemProps>(SelectItemComponent);
-export function SearchBar(): JSX.Element {
+type SearchBarProps = Omit<SelectProps, 'data'> & React.RefAttributes<HTMLInputElement>;
+export function SearchBar(props: SearchBarProps = {}): JSX.Element {
   const { classes } = useStyles();
   return (
     <Select
+      {...props}
       icon={<SearchIcon className={classes.search} />}
       itemComponent={SelectItemRef}
       placeholder='Search for a project'

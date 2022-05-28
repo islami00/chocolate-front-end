@@ -11,7 +11,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UserProfile from '../../polkadot-apac-hackathon/userProfile';
 import { useSubstrate } from '../../substrate-lib';
 import Gallery from '../Gallery';
-import MenuBar from '../menuBar';
+import MenuBar from '../../Layouts/app/components/MenuBar';
 import ProjectProfile from '../ProjectProfile';
 import ProjectsRe from '../ProjectsRe';
 import { loader, message } from '../utilities';

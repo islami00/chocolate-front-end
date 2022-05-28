@@ -3,7 +3,7 @@ import { AppShell, Header } from '@mantine/core';
 import { DeveloperConsole } from 'chocolate/substrate-lib/components';
 import { Toaster } from 'react-hot-toast';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import MenuBar from '../../customComponents/menuBar';
+import MenuBar from './components/MenuBar';
 import { loader, message } from '../../customComponents/utilities';
 import { useSubstrate } from '../../substrate-lib';
 import './app.css';
@@ -32,5 +32,4 @@ export function AppLayout(): JSX.Element {
       </AppShell>
     </InnerAppProvider>
   );
-  /*  */
 }

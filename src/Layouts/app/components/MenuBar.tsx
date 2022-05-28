@@ -1,29 +1,29 @@
 /* eslint-disable import/no-unresolved */
-import { Button, Center, createStyles, MediaQuery } from '@mantine/core';
+import { Button, Center, createStyles, Group, MediaQuery } from '@mantine/core';
 import { ChocolateFancy } from 'chocolate/common/components/icons/ChocolateFancy';
 import { ChocolateIcon } from 'chocolate/common/components/icons/ChocolateIcon';
 import { SearchBar } from 'chocolate/common/components/inputs/SearchBar';
 import { AuthBtns } from 'chocolate/modules/Auth/components/AuthBtns';
 import { Wallet } from 'chocolate/modules/Auth/components/Wallet';
-import { Link } from 'react-router-dom';
+import { Link, useMatch } from 'react-router-dom';
 
-const useStyles = createStyles((theme, _params, getRef) => ({
+interface Params {
+  isSearchPage: boolean;
+}
+const useStyles = createStyles((theme, params: Params = { isSearchPage: false }, getRef) => ({
   'top-nav': {
-    /* init */
+    /* init, necessary for good size */
     width: '100%',
     height: '100%',
-    display: 'flex',
-    justifyContent: 'flex-end',
     columnGap: theme.spacing.xl,
+    [`@media (min-width: ${theme.breakpoints.xs}px )`]: { columnGap: '0px' },
 
     /* content buffing */
     padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
-    boxSizing: 'border-box',
     [`& > .${getRef('logo_container')}`]: {
       marginRight: 'auto',
     },
     color: theme.colors.dark[8],
-    textAlign: 'center',
   },
   logo_container: {
     ref: getRef('logo_container'),
@@ -34,11 +34,11 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   logo_icon: {
     width: theme.headings.sizes.h1.fontSize,
-    [`@media (min-width: ${theme.breakpoints.xs}px )`]: { width: theme.fontSizes.xl },
+    [`@media (min-width: ${theme.breakpoints.sm}px )`]: { width: theme.fontSizes.xl },
   },
   logo_text: {
     display: 'none',
-    [`@media (min-width: ${theme.breakpoints.xs}px )`]: {
+    [`@media (min-width: ${theme.breakpoints.sm}px )`]: {
       display: 'block',
       height: '23px',
     },
@@ -63,19 +63,23 @@ const useStyles = createStyles((theme, _params, getRef) => ({
       },
     },
   },
+  searchbar: {
+    display: params.isSearchPage ? undefined : 'none',
+  },
 }));
 const Menu = function (): JSX.Element {
-  const { classes, cx } = useStyles();
+  const isSearchPage = !!useMatch('/search');
+  const { classes, cx } = useStyles({ isSearchPage });
   const logo = cx(classes.logo);
   return (
-    <div className={classes['top-nav']}>
+    <Group noWrap position='right' className={classes['top-nav']}>
       <Center className={classes.logo_container}>
         <Center className={logo}>
           <ChocolateIcon className={classes.logo_icon} />
           <ChocolateFancy className={classes.logo_text} />
         </Center>
-        <SearchBar />
-        <MediaQuery largerThan='xs' styles={{ display: 'flex' }}>
+        <SearchBar className={classes.searchbar} />
+        <MediaQuery largerThan='sm' styles={{ display: 'flex' }}>
           <ul className={classes.nav_ul}>
             <li>
               <Button variant='default' component={Link} to='/gallery'>
@@ -87,7 +91,7 @@ const Menu = function (): JSX.Element {
         </MediaQuery>
       </Center>
       <Wallet />
-    </div>
+    </Group>
   );
 };
 export default Menu;
