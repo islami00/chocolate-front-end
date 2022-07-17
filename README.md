@@ -62,11 +62,10 @@ When writing and deploying your own front end, you should configure:
 
 Open the vscode workspace file [here](./chocolateapp.code-workspace). `chocolateapp.code-workspace`, as it groups the main folders in this workspace. Folders of focus are: 
 
-   * [`functions`](./functions/) : This is a nodejs server that handles pinning cids to pinata. Can be run locally with `npm run test` from the folder
-   * [`auth-server`](./polkadot-apac-hackathon/auth-server/): This server handles authentication and can be run locally with `npm run start-dev`
+   * [`functions`](./functions/) : This is a nodejs server that handles pinning cids to pinata.
+   * [`auth-server`](./polkadot-apac-hackathon/auth-server/): This server handles authentication.
 
-
-Both have `.env.sample` files which will need to be filled with the respective environment variables and copied to a `.env` file in the folder.
+Both servers can be run locally with `npm run start-dev`, and have `.env.sample` files which will need to be filled with the respective environment variables and copied to a `.env` file in the folder.
 
 > The `functions` folder requires pinata env variables to connect to ipfs, while the `auth-server` uses mongo so a db url would be needed to connect to the database
 

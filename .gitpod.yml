@@ -17,9 +17,6 @@ tasks:
   - name: IPFS node
     command: ipfs init --profile server && ipfs daemon
 
-workspaceLocation: 
-  ./chocolateapp.code-workspace
-
 vscode:
 
   extensions:
