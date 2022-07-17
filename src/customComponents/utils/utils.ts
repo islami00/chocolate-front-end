@@ -2,6 +2,7 @@
 // Utility - by call order in app
 // prettier-ignore
 import { isJsonObject } from '@polkadot/util';
+import config from 'chocolate/config';
 import { ReviewID } from 'chocolate/interfaces';
 import { combineLimit } from './rateLimit';
 // construct promise wrapper around localstorage
@@ -26,7 +27,7 @@ const sortReviewIDs =  function(a:ReviewID,b:ReviewID){
       return 1
 }
 const toPinataFetch = function(link:string){
-  return `https://gateway.pinata.cloud/ipfs/${link}`
+  return `${config.IPFS_CAT_URL}/${link}`
 }
 /** Wrapper over fetch to provide one entry to fetching ipfs data from pinata to ease rate-limiting */
 const pinataFetch = function(link: string){

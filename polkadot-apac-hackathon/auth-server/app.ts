@@ -20,25 +20,14 @@ import { errorHandled } from './utils/regUtils';
  */
 const app = express();
 // Cors
-const isDev = process.env.NODE_ENV === 'test' && process.env.NODE_RAW === 'true';
-let corsList: string[];
+const isDev = process.env.NODE_ENV === 'dev-dotenv';
+const corsList: string[] = [
+  'https://chocolate-demo.web.app',
+  'https://chocolate-web-app-nightly.web.app',
+];
 if (isDev) {
-  corsList = [
-    'http://localhost:3000',
-    'https://chocolate-demo.web.app',
-    'https://chocolate-web-app-nightly.web.app',
-    // Dynamically include dev list
-    'https://8000-chocolatenetwor-chocolat-qnb1x5sione.ws-eu38.gitpod.io',
-    'http://localhost:8000',
-  ];
-} else {
-  corsList = [
-    'http://localhost:3000',
-    'https://chocolate-demo.web.app',
-    'https://chocolate-web-app-nightly.web.app',
-    // Dynamically include dev list
-    'http://localhost:8000',
-  ];
+  corsList.push(...['http://localhost:8000', 'http://localhost:3000']);
+  if (process.env.PUBLIC_HOST) corsList.push(process.env.PUBLIC_HOST);
 }
 /*
  * express middles - logger is necessarry for development

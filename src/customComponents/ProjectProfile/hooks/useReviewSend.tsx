@@ -1,17 +1,23 @@
 import { AddressOrPair } from '@polkadot/api/types';
 import { useState } from 'react';
+import config from '../../../config';
 import { useSubstrate } from '../../../substrate-lib';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
 
-type RevSend = (txData: { id: string; cid: string }, account: AddressOrPair) => { data: string };
+type RevSend = (
+  txData: { id: string; cid: string; rating: number },
+  account: AddressOrPair
+) => { data: string };
 /** Send the actual review to chain along with cid */
 const useReviewSend: RevSend = function (txData, account) {
-  const { id, cid } = txData;
+  const { id, cid, rating } = txData;
   const { api } = useSubstrate();
   const [fee, setFee] = useState('..loading fee..');
   const getPaymentInfo = async function () {
-    const paymentInfo = await api.tx.chocolateModule.createReview(cid, id).paymentInfo(account);
+    const paymentInfo = await api.tx.chocolateModule
+      .createReview([rating, cid], id)
+      .paymentInfo(account);
     const retFee = paymentInfo.partialFee.toHuman();
     setFee(retFee);
   };

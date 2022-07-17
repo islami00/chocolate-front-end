@@ -4,11 +4,16 @@ import { VoidFn } from '@polkadot/api/types';
 import { Option } from '@polkadot/types';
 import { useEffect, useMemo } from 'react';
 import { QueryStatus, useQueries, useQuery, useQueryClient, UseQueryResult } from 'react-query';
+import config from '../../config';
 import { ProjectAl, ProjectID } from '../../interfaces';
-import { ChainProject, NewMetaData, NewProjectWithIndex } from '../../typeSystem/jsonTypes';
+import {
+  HumanChainProject,
+  HumanNewProjectWithIndex,
+  NewMetaData,
+} from '../../typeSystem/jsonTypes';
 import { errorHandled, limitedPinataFetch } from '../utils';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
 /**
  * @description Get the keys of all projects from the chain.
  * Fallback here would be same as next hook. Throw if you haven't memoised and the api isn't available
@@ -106,11 +111,11 @@ const retrieveProjectsMeta = async function ([pr, id]: [ProjectAl, ProjectID]) {
 
   //  Merge metadata in.
   // First, json stringify (This should be handled by a wrapper class)
-  const prString = pr.toHuman() as unknown as ChainProject;
+  const prString = pr.toHuman() as unknown as HumanChainProject;
   const nPr = {
     Id: id.toHuman(),
     project: { ...prString, metadata: json[0] },
-  } as NewProjectWithIndex;
+  } as HumanNewProjectWithIndex;
   return nPr;
 };
 // Then get json metadata
@@ -165,7 +170,7 @@ const allCheck = function (states: QueryStatus[], status: QueryStatus) {
 };
 
 // Also, some metadata switcheroo to complete:
-export const mockImages = function (pr: NewProjectWithIndex) {
+export const mockImages = function (pr: HumanNewProjectWithIndex) {
   pr.project.metadata.icon = `https://avatars.dicebear.com/api/initials/${pr.project.metadata.name}.svg`;
   return pr;
 };
@@ -183,7 +188,7 @@ export const mockImages = function (pr: NewProjectWithIndex) {
 // Also, memoise vigorously in regular functions.
 const useSearchData = function (
   api: ApiPromise
-): [NewProjectWithIndex[], boolean, boolean, boolean] {
+): [HumanNewProjectWithIndex[], boolean, boolean, boolean] {
   // Start project loop
   const { data: keys, status } = useProjectKeys(api);
   const parallelProjects = useParallelProjects(api, keys ?? [], status === 'success');
@@ -214,6 +219,6 @@ const useSearchData = function (
     anyMetaInitiallyLoading,
     // UI reacts when metadata available
     allCheck(metaStates, 'idle'),
-  ] as [NewProjectWithIndex[], boolean, boolean, boolean];
+  ] as [HumanNewProjectWithIndex[], boolean, boolean, boolean];
 };
 export { useSearchData, shouldComputeValid, resArr, allCheck };

@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Card, Label, Image } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { Rating } from '../../Projects';
+import { Card, Image, Label } from 'semantic-ui-react';
 import { useSubstrate } from '../../../substrate-lib';
-import { NewReview } from '../../../typeSystem/jsonTypes';
+import { HumanNewReview } from '../../../typeSystem/jsonTypes';
+import { Rating } from '../../Projects';
 // looks good, refactor doesn't edge on this
-const ReviewSingle: React.FC<{ each: NewReview }> = function (props) {
+const ReviewSingle: React.FC<{ each: HumanNewReview }> = function (props) {
   const { each } = props;
   const { content, userID, proposalStatus } = each;
   const { keyringState, keyring } = useSubstrate();

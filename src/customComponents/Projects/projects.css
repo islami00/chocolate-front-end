@@ -1,43 +1,43 @@
 .project {
-  // init
+  /* init */
   height: max-content;
-  // grid frame and spacing
+  /* grid frame and spacing */
   display: grid;
   grid-template-columns: max-content max-content 1fr;
   column-gap: 10px;
-  // alignment
+  /* alignment */
   align-items: center;
-  // edges and rounding
+  /* edges and rounding */
   border: 1px solid #000000;
   border-radius: 5px;
-  // result spacing
+  /* result spacing */
   padding: 0 10px;
   margin: 10px 16vw 10px 16vw;
 }
 .description {
-  // text and framing for bottom edge pokes out
+  /* text and framing for bottom edge pokes out */
   text-transform: capitalize;
   padding: 10px;
 }
 .description h2 {
-  // init
+  /* init */
   padding-bottom: 0;
   margin: 0;
-  // sizing - To-do
+  /* sizing - To-do */
   font-weight: normal;
 }
 .this-icon {
-  // color overrides and smoothing
+  /* color overrides and smoothing */
   color: hsl(0, 0%, 34%);
   transition: color 0.5s;
 }
 .this-icon:hover {
-  // darken
+  /* darken */
   color: black;
 }
 .project .button {
-  // place button on far right
-  // horizontal grid alignment
+  /* place button on far right */
+  /* horizontal grid alignment */
   justify-self: right;
 }
 

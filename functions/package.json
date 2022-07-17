@@ -6,12 +6,11 @@
     "build": "./node_modules/.bin/tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "start": "NODE_ENV=test node ./src/test.js",
+    "start": "NODE_ENV=prod-gcp node ./src/test.js",
     "deploy": "firebase deploy --only functions",
     "publish-code": "gcloud app deploy",
     "logs": "firebase functions:log",
-    "test-prod": "cd lib && NODE_RAW=true npm start",
-    "test": "NODE_RAW=true NODE_ENV=test npx ts-node src/test.ts -P ./tsconfig.json"
+    "start-dev": "NODE_ENV=dev-dotenv npx ts-node src/test.ts -P ./tsconfig.json"
   },
   "engines": {
     "node": "14"
@@ -26,7 +25,7 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.1",
     "express-winston": "^4.2.0",
-    "firebase-admin": "^9.8.0",
+    "firebase-admin": "^10.2.0",
     "firebase-functions": "^3.14.1",
     "node-fetch": "^2.6.5",
     "winston": "^3.6.0"

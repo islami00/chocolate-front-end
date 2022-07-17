@@ -24,13 +24,13 @@ const gConnect = async (): Promise<void> => {
 };
 
 // NOTE: Env vars would need to be explicitly set in app.yaml
-// or removed and set via dotenv if using RAW with App Engine
-if (process.env.NODE_ENV === "test" && process.env.NODE_RAW) {
+// or removed and set via dotenv if using environment variables with App Engine
+if (process.env.NODE_ENV === "dev-dotenv") {
   // Testing
   pinataApiKey = PINATA_API_KEY;
   pinataSecretApiKey = PINATA_API_SECRET;
   pinataJWT = PINATA_JWT;
-} else if (process.env.NODE_ENV === "test") {
+} else if (process.env.NODE_ENV === "prod-gcp") {
   // Setup Gcloud and pass on for later use.
   gcpSecretsLoader = new SecretsReader();
   isGconnect = true;

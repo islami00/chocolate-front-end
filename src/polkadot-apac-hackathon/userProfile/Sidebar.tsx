@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { useSubstrate } from 'chocolate/substrate-lib';
-import { User } from 'chocolate/typeSystem/jsonTypes';
+import { JSONUser } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { Button, Card, Container, Image, Label } from 'semantic-ui-react';
 import { useUserReviews } from '../common/hooks/useUserReviews';
 
 interface SidebarProps {
-  user: User;
+  user: JSONUser;
 }
 
 const SideBarStat: React.FC<{

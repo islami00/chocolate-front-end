@@ -8,20 +8,18 @@ import { loader } from '../utilities';
 import { message } from '../utilities/message';
 import { ReviewSingle } from './components/ReviewSingle';
 import { SubmitReviewForm } from './components/SubmitReviewForm';
-import { useAverage, useProject } from './hooks';
+import { useProject } from './hooks';
 import { noPrjErr, useProfileData, useReelData } from './hooks/useProject';
 import './profile.css';
 import { ProfileSum, PrProf, RevReel, SumRev } from './types';
+import config from '../../config';
 
-const isDebug = process.env.REACT_APP_DEBUG === 'true';
+const isDebug = config.REACT_APP_DEBUG;
 
 const ProjectProfileSummary: ProfileSum = function (props) {
-  // Req: Pass in both project and reviews as props
-  const { profileQ, reviews } = props;
+  const { profileQ } = props;
   const { data: profile, isIdle, isLoading: isInitiallyLoading, isError } = profileQ;
-
-  const [ave] = useAverage(profile, profileQ.isSuccess, reviews);
-  // Do proper error handling for each data, useAverage will wait
+  // Do proper error handling for each state
   if (!profile) {
     if (isIdle) {
       // User still sees loading. Only change/add ctx if fallback
@@ -40,7 +38,9 @@ const ProjectProfileSummary: ProfileSum = function (props) {
   }
   // Then do necessary displays
   const { name, Link: site, description } = profile.project.metadata;
+  const { totalReviewScore, numberOfReviews } = profile.project;
   const src = `https://avatars.dicebear.com/api/initials/${name}.svg`;
+  const ave = Number(totalReviewScore) / Number(numberOfReviews);
   return (
     <article className='head-profile'>
       <section className='left'>
@@ -207,7 +207,7 @@ const ProjectProfile: PrProf = function (props) {
   const profileQ = useProfileData(proj);
   return (
     <main className='profile-wrap'>
-      <ProjectProfileSummary profileQ={profileQ} reviews={reviewQ[0]} />
+      <ProjectProfileSummary profileQ={profileQ} />
       <SubmitReview disabled={!canReview} proj={proj} />
       <ReviewReel reelData={reviewQ} />
     </main>

@@ -1,5 +1,6 @@
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 /* eslint-disable import/no-unresolved */
+import config from 'chocolate/config';
 import { ApiErr, errorHandled } from 'chocolate/customComponents/utils';
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -26,7 +27,7 @@ const SIGNUP_MUTATION = async function (form: SignUpMut) {
   };
   //
   const res = await errorHandled(
-    fetch(`${process.env.REACT_APP_AUTH_SERVER}/register`, {
+    fetch(`${config.REACT_APP_AUTH_SERVER}/register`, {
       method: 'POST',
       body: JSON.stringify(form),
       headers: headersList,
@@ -41,7 +42,7 @@ const SIGNUP_MUTATION = async function (form: SignUpMut) {
   };
   return result;
 };
-const isDebug = !!process.env.REACT_APP_DEBUG;
+const isDebug = config.REACT_APP_DEBUG;
 const SignUp: React.FC = function () {
   const captchaRef = useRef<HCaptcha>(null);
   // const navigate = useNavigate();
@@ -151,7 +152,7 @@ const SignUp: React.FC = function () {
         <Form.Button type='submit' content='Submit' fluid color='purple' onChange={handleChange} />
       </Form>
       <HCaptcha
-        sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY ?? ''}
+        sitekey={config.REACT_APP_CAPTCHA_SITE_KEY}
         onVerify={handleVerify}
         onError={onError}
         onExpire={onExpire}

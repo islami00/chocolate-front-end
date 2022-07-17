@@ -48,7 +48,11 @@
       "source.organizeImports": true
     },
 
-    "js/ts.implicitProjectConfig.checkJs": true
+    "js/ts.implicitProjectConfig.checkJs": true,
+    "conventionalCommits.scopes": [
+      "web-app",
+      "deps"
+    ]
   },
   "extensions": {
     "recommendations": [ "dbaeumer.vscode-eslint",

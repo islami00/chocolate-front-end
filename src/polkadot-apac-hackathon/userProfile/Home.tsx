@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { User } from 'chocolate/typeSystem/jsonTypes';
+import { JSONUser } from 'chocolate/typeSystem/jsonTypes';
 /* eslint-enable import/no-unresolved */
 import { useParams } from 'react-router-dom';
 import { Grid } from 'semantic-ui-react';
@@ -8,7 +8,7 @@ import Sidebar from './Sidebar';
 import TableOfReviews from './TableOfReviews';
 
 interface ProfileTableProps {
-  user: User;
+  user: JSONUser;
 }
 const ProfileTable: React.FC<ProfileTableProps> = (props) => {
   const { web3Address } = useParams<{ web3Address: string }>();

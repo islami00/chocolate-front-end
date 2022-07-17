@@ -9,9 +9,9 @@ import { Link } from 'react-router-dom';
 import { Button, Icon, Label } from 'semantic-ui-react';
 import ChocolateRedSmall from '../../assets/chocolate-red-small.svg';
 import Pensive from '../../assets/pensive-face-emoji.svg';
-import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { HumanNewProjectWithIndex } from '../../typeSystem/jsonTypes';
 // styles
-import './projects.scss';
+import './projects.css';
 
 type ReactNumberDis = React.Dispatch<React.SetStateAction<number>>;
 /** @description rating component, optionally interactive */
@@ -20,8 +20,9 @@ export const Rating: React.FC<{
   fixed: boolean;
   setOuterRate?: ReactNumberDis | ((rate: number) => ReturnType<ReactNumberDis>);
 }> = function (props) {
-  // expect rating to 2dp
-  const { rating, fixed, setOuterRate } = props;
+  const { fixed } = props;
+  // eslint-disable-next-line react/destructuring-assignment
+  const [rating, setOuterRate] = [props.rating, props.setOuterRate];
   const [rated, setRated] = useState(0);
   const [hover, setHover] = useState(0);
   // debug
@@ -37,7 +38,7 @@ export const Rating: React.FC<{
     <section className='review-wrap'>
       {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        [...Array(5)].map((undef, i) => {
+        Array.from(Array(5)).map((undef, i) => {
           const currentRating = i + 1;
 
           return (
@@ -46,7 +47,6 @@ export const Rating: React.FC<{
                 className='rate'
                 type='radio'
                 name='Rating'
-                id=''
                 value={currentRating}
                 onClick={!fixed ? () => setRated(currentRating) : undefined}
               />
@@ -71,7 +71,7 @@ export const Rating: React.FC<{
   );
 };
 /** @description Houses a single project */
-const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
+const ProjectView: React.FC<{ data: HumanNewProjectWithIndex }> = function (props) {
   const { data } = props;
   const { Id, project } = data;
   const { ownerID, proposalStatus, metadata } = project;
@@ -80,11 +80,12 @@ const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
   let rateBar = <></>;
   let toProject: JSX.Element = <></>;
   if (status === 'Accepted') {
-    rateBar = <Rating rating={5} fixed />;
+    const rating = Number(project.totalReviewScore) / Number(project.numberOfReviews);
+    rateBar = <Rating rating={rating} fixed />;
     toProject = (
       <Button
         as={Link}
-        to={`/project/${Id.toString()}`}
+        to={`/project/${Id}`}
         color='brown'
         icon
         labelPosition='right'
@@ -115,7 +116,7 @@ const ProjectView: React.FC<{ data: NewProjectWithIndex }> = function (props) {
 
 /** @description Houses the projects -- Refactor to new when ready */
 export const ProjectsView: React.FC<{
-  data: NewProjectWithIndex[];
+  data: HumanNewProjectWithIndex[];
   gallery?: boolean;
   shame?: boolean;
 }> = function (props) {
@@ -126,7 +127,7 @@ export const ProjectsView: React.FC<{
   let render;
   let header;
   let desc;
-  const toProject = (project: NewProjectWithIndex) => (
+  const toProject = (project: HumanNewProjectWithIndex) => (
     <ProjectView data={project} key={project.Id.toString()} />
   );
   if (gallery) {

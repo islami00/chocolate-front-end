@@ -1,13 +1,15 @@
 import _ from 'lodash';
-import { NewProjectWithIndex } from '../../typeSystem/jsonTypes';
+import { HumanNewProjectWithIndex } from '../../typeSystem/jsonTypes';
 
 /** @description - Filters data by the search field and returns a copy for now, it returns the same data */
 const calcResults = function (
-  data: NewProjectWithIndex[],
+  data: HumanNewProjectWithIndex[],
   value: string
-): [NewProjectWithIndex[], boolean] {
+): [HumanNewProjectWithIndex[], boolean] {
   const filtered = data.filter((each) => {
-    const reg = new RegExp(`(${value})`, 'gi');
+    // FIXME: Whitelist only username values. Err: "\" breaks regex.
+    const escapedInput = _.escapeRegExp(`${value}`);
+    const reg = new RegExp(`(${escapedInput})`, 'gi');
     const escaped = _.escapeRegExp(each.project.metadata.name);
     return reg.exec(escaped); /* returns null otherwise */
   });
